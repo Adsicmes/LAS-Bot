@@ -14,7 +14,6 @@ import java.net.URL;
 public class AppConfigs {
 
     private static Logger logger = Logger.getLogger(AppConfigs.class);
-    private static IniSection iniSection;
 
     //常量名字为全大写
     public static final int QQ;
@@ -28,6 +27,7 @@ public class AppConfigs {
         String path = url.toString().replaceAll("file:/", "");
         logger.info("当前env配置路径是：" + path);
 
+        IniSection iniSection;
         //获取管理员QQ
         iniSection = getInit(new BasicIniFile(), path).getSection("superuser");
         QQ = Integer.parseInt(iniSection.getItem("qq").getValue());
@@ -39,7 +39,6 @@ public class AppConfigs {
         JDBC = iniSection.getItem("jdbc").getValue();
         USER = iniSection.getItem("user").getValue();
         PWD = iniSection.getItem("passwd").getValue();
-
         logger.info("数据库连接DRIVER信息：" + DRIVER);
         logger.info("数据库连接JDBC信息：" + JDBC);
         logger.info("数据库连接USER信息：" + USER);
