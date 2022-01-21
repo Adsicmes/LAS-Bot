@@ -1,0 +1,26 @@
+create table qqGroups
+(
+    qqGroup   int             null,
+    functions multilinestring null,
+    constraint qqGroups_qqGroup_uindex
+        unique (qqGroup)
+);
+
+create table user
+(
+    id               int auto_increment comment '用户id',
+    qq               int           null comment '用户qq',
+    fromGroup        int           null comment '来自群',
+    userExecuteLevel int default 0 null comment '用户权限等级',
+    userLevel        int default 0 null comment '用户等级',
+    money            int           null comment '钱钱钱',
+    moneyYesterday   int           null comment '昨天的钱',
+    latestCheckIn    datetime      null comment '最后签到日期',
+    checkInDays      int           null comment '签到天数',
+    userSigner       text          null comment '用户个性签名',
+    constraint user_id_uindex
+        unique (id)
+);
+
+alter table user
+    add primary key (id);
