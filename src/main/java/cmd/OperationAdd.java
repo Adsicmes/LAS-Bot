@@ -1,4 +1,4 @@
-package commmand;
+package cmd;
 
 class GearStrategyOne implements Strategy {
     @Override

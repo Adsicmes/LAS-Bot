@@ -1,21 +1,22 @@
-import com.alibaba.fastjson.JSON;
+package filter;
+
 import com.alibaba.fastjson.JSONObject;
+import config.AppConfigs;
 import org.jetbrains.annotations.NotNull;
-import commmand.Strategy;
-import java.util.Objects;
 
 public class Filter {
-    public static void mainFilter(String msg){
+
+    public static void mainFilter(String msg) {
         JSONObject jsonObject = JSONObject.parseObject(msg);
-        switch (jsonObject.getString("type")){
+        switch (jsonObject.getString("type")) {
             //https://docs.mirai.mamoe.net/mirai-api-http/api/MessageType.html
-                // 消息事件
+            // 消息事件
             case "GroupMessage":
             case "FriendMessage":
             case "TempMessage":  //群临时消息
             case "StrangerMessage": //陌生人消息
             case "OtherClientMessage": //其他客户端消息
-            //https://docs.mirai.mamoe.net/mirai-api-http/api/EventType.html
+                //https://docs.mirai.mamoe.net/mirai-api-http/api/EventType.html
                 // bot自身事件
             case "BotOnlineEvent":  //bot上线
             case "BotOfflineEventActive":  //bot主动离线
@@ -63,9 +64,9 @@ public class Filter {
     }
 
     @NotNull
-    private static JSONObject filter(@NotNull JSONObject msg){
+    private static JSONObject filter(@NotNull JSONObject msg) {
         JSONObject msgProp = new JSONObject();
-        int superuser = Configs.env.superuser.qq;
+        int superuser = AppConfigs.QQ;
         if (msg.getInteger("sender") == superuser) {
             msgProp.put("", "");
         }

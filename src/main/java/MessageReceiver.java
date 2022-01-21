@@ -1,10 +1,6 @@
 /*
 * 该文件用于收取来自mirai的信息并转化为json发送给Filter进行消息过滤
 * */
-import org.dtools.ini.BasicIniFile;
-import org.dtools.ini.IniFile;
-import org.dtools.ini.IniFileReader;
-import org.dtools.ini.IniSection;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -12,7 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 @WebServlet("/bot") //注册路径
 public class MessageReceiver extends HttpServlet {  //继承Servlet类
