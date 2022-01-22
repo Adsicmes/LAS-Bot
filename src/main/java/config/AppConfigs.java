@@ -29,12 +29,12 @@ public class AppConfigs {
 
         IniSection iniSection;
         //获取管理员QQ
-        iniSection = getInit(new BasicIniFile(), path).getSection("superuser");
+        iniSection = getInit(path).getSection("superuser");
         QQ = Integer.parseInt(iniSection.getItem("qq").getValue());
         logger.info("管理员QQ是：" + QQ);
 
         //设置mysql数据账号密码
-        iniSection = getInit(new BasicIniFile(), path).getSection("dbmysql");
+        iniSection = getInit(path).getSection("dbmysql");
         DRIVER = iniSection.getItem("driver").getValue();
         JDBC = iniSection.getItem("jdbc").getValue();
         USER = iniSection.getItem("user").getValue();
@@ -47,11 +47,11 @@ public class AppConfigs {
 
     /**
      * ini文件需要每次都初始化读取配置
-     * @param iniFile ini文件
      * @param path 文件路径
      * @return IniFile对象
      */
-    private static IniFile getInit(BasicIniFile iniFile, String path) {
+    private static IniFile getInit(String path) {
+        IniFile iniFile = new BasicIniFile();
         IniFileReader red = new IniFileReader(iniFile, new File(path));
         try {
             red.read();
