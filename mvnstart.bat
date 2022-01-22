@@ -1,1 +1,1 @@
-mvn clean package appassembler:assemble -Pdw
+mvn clean package -Pdw
