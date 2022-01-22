@@ -1,6 +1,7 @@
-package dao;
+package com.las.dao;
 
-import config.AppConfigs;
+
+import com.las.config.AppConfigs;
 
 import java.sql.*;
 

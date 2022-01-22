@@ -1,10 +1,10 @@
-package filter;
+package com.las.core;
 
 import com.alibaba.fastjson.JSONObject;
-import config.AppConfigs;
+import com.las.config.AppConfigs;
 import org.jetbrains.annotations.NotNull;
 
-public class Filter {
+public class MessageFilter {
 
     public static void mainFilter(String msg) {
         JSONObject jsonObject = JSONObject.parseObject(msg);

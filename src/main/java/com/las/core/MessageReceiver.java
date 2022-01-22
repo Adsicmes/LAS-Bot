@@ -1,4 +1,4 @@
-/*
+package com.las.core;/*
  * 该文件用于收取来自mirai的信息并转化为json发送给Filter进行消息过滤
  * */
 

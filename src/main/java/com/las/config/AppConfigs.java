@@ -1,4 +1,4 @@
-package config;
+package com.las.config;
 
 import org.apache.log4j.Logger;
 import org.dtools.ini.BasicIniFile;
