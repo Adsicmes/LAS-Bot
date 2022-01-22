@@ -23,8 +23,11 @@ public class AppConfigs {
     public static final String PWD;
 
     static {
+        String property = System.getProperty("user.dir");
+        logger.info("当前env配置路径是：" + property);
+
         URL url = ClassLoader.getSystemResource("env.ini");
-        String path = url.toString().replaceAll("file:/", "");
+        String path = url.getPath();
         logger.info("当前env配置路径是：" + path);
 
         IniSection iniSection;
