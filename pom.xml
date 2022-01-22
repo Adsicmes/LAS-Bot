@@ -93,32 +93,22 @@
 
         <plugins>
 
+            <!--编译打包插件-->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                     <compilerArguments>
-                        <extdirs>${project.basedir}/lib</extdirs>
+                        <extdirs>src/main/resources/lib</extdirs>　　　
                     </compilerArguments>
                 </configuration>
             </plugin>
 
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                    <!--必须添加compilerArgument配置，才能使用JFinal的Controller方法带参数的功能-->
-                    <compilerArgument>-parameters</compilerArgument>
-                </configuration>
-            </plugin>
-
-
+            <!--mojo生成运行脚本插件-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>appassembler-maven-plugin</artifactId>
@@ -201,7 +191,7 @@
                     <include>**/*.properties</include>
                     <include>**/*.ini</include>
                     <include>**/*.html</include>
-                    <include>**/*.jpg</include>
+                    <include>**/*.jar</include>
                     <include>**/env/**/*</include>
                 </includes>
             </resource>
