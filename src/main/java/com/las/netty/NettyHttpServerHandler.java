@@ -2,6 +2,7 @@ package com.las.netty;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.las.enums.MsgCallBackEnum;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,19 +44,34 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
             response = responseOK(HttpResponseStatus.OK, buf);
 
         } else if (fullHttpRequest.method() == HttpMethod.POST) {
-            String uri = fullHttpRequest.getUri();
+            String uri = fullHttpRequest.uri();
             logger.info(uri);
             if(uri.equals("/cq/getMsg")){
                 Map<String, Object> params = getPostParamsFromChannel(fullHttpRequest);
                 String content = JSONObject.toJSONString(params);
                 logger.info(content);
-
+                assert params != null;
+                String type = params.get("type").toString();
+                logger.info("事件类型是：" + type);
+                String className = MsgCallBackEnum.getClassNameByEvent(type);
+                if(null != className){
+                    //不为空，说明找到了对应的处理类
+                    logger.info(className);
+                    try {
+                        Class<?> aClass = Class.forName(className);
+                        Object obj = aClass.newInstance();
+                        Method handleMsg = aClass.getMethod("handleMsg", Map.class);
+                        handleMsg.invoke(obj, params);
+                        aClass.getMethod("exec").invoke(obj);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             String data = "POST method over";
             ByteBuf content = copiedBuffer(data, CharsetUtil.UTF_8);
             response = responseOK(HttpResponseStatus.OK, content);
-
         } else {
             response = responseOK(HttpResponseStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -67,7 +83,6 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
      * 获取GET方式传递的参数
      */
     private Map<String, Object> getGetParamsFromChannel(FullHttpRequest fullHttpRequest) {
-
         Map<String, Object> params = new HashMap<String, Object>();
 
         if (fullHttpRequest.method() == HttpMethod.GET) {

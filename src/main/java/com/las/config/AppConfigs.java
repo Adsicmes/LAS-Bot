@@ -7,7 +7,6 @@ import org.dtools.ini.IniFileReader;
 import org.dtools.ini.IniSection;
 
 import java.io.*;
-import java.net.URL;
 
 
 public class AppConfigs {
@@ -40,7 +39,7 @@ public class AppConfigs {
         }
 
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
-        logger.info("当前env配置路径是：" + path);
+        logger.debug("当前env配置路径是：" + path);
 
 //        URL url = ClassLoader.getSystemResource("env.ini");
 //        String path = url.getPath();
@@ -58,10 +57,7 @@ public class AppConfigs {
         JDBC = iniSection.getItem("jdbc").getValue();
         USER = iniSection.getItem("user").getValue();
         PWD = iniSection.getItem("passwd").getValue();
-        logger.info("数据库连接DRIVER信息：" + DRIVER);
-        logger.info("数据库连接JDBC信息：" + JDBC);
-        logger.info("数据库连接USER信息：" + USER);
-        logger.info("数据库连接PWD信息：" + PWD);
+        logger.debug("数据库连接DRIVER信息：" + DRIVER);
     }
 
     /**
