@@ -104,6 +104,13 @@
             <systemPath>${base.lib.path}/mysql-connector-java-5.1.39-bin.jar</systemPath>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.6.Final</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -163,7 +170,6 @@
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.ini</include>
-                    <include>**/*.jsp</include>
                 </includes>
             </resource>
         </resources>
