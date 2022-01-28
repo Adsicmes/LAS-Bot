@@ -1,4 +1,10 @@
 package com.las.strategy.handle;
 
-public class BotReloginMsgHandler {
+import com.las.strategy.BotMsgHandler;
+
+public class BotReloginMsgHandler extends BotMsgHandler {
+    @Override
+    public void exec() {
+
+    }
 }

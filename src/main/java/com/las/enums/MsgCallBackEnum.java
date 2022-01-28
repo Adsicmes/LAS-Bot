@@ -53,7 +53,7 @@ public enum MsgCallBackEnum {
     // Bot被踢出一个群
     BOT_LEAVE_KICK_MSG("BotLeaveEventKick", BotLeaveKickMsgHandler.class.getName()),
     // 群消息撤回
-    GROUP_RECALL_MSG("GroupRecallEvent", GroupRecallMsgHanlder.class.getName()),
+    GROUP_RECALL_MSG("GroupRecallEvent", GroupRecallMsgHandler.class.getName()),
     // 好友消息撤回
     FRIEND_RECALL_MSG("FriendRecallEvent", FriendRecallMsgHandler.class.getName()),
     // 戳一戳事件

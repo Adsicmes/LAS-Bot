@@ -1,4 +1,10 @@
 package com.las.strategy.handle;
 
-public class GroupEntranceAnnouncementChangeMsgHandler {
+import com.las.strategy.BotMsgHandler;
+
+public class GroupEntranceAnnouncementChangeMsgHandler extends BotMsgHandler {
+    @Override
+    public void exec() {
+
+    }
 }

@@ -14,13 +14,13 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 
 import org.apache.log4j.Logger;
 
-public class EchoServer {
+public class HttpServer {
 
-    private static Logger logger = Logger.getLogger(EchoServer.class);
+    private static Logger logger = Logger.getLogger(HttpServer.class);
 
     private final int port;
 
-    public EchoServer(int port) {
+    public HttpServer(int port) {
         this.port = port;
     }
 
@@ -46,7 +46,7 @@ public class EchoServer {
                             socketChannel.pipeline().addLast("http-encoder", new HttpResponseEncoder());
                             socketChannel.pipeline().addLast("http-chunked", new ChunkedWriteHandler());
                             // 自定义处理handler
-                            socketChannel.pipeline().addLast("http-server", new NettyHttpServerHandler());
+                            socketChannel.pipeline().addLast("http-server", new HttpServerHandler());
                         }
                     });
             logger.info("启动bot服务完成,等待监听信息...");

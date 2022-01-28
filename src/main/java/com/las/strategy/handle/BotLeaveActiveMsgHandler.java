@@ -1,4 +1,10 @@
 package com.las.strategy.handle;
 
-public class BotLeaveActiveMsgHandler {
+import com.las.strategy.BotMsgHandler;
+
+public class BotLeaveActiveMsgHandler extends BotMsgHandler {
+    @Override
+    public void exec() {
+
+    }
 }

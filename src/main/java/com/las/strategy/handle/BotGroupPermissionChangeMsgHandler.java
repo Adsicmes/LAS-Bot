@@ -1,4 +1,12 @@
 package com.las.strategy.handle;
 
-public class BotGroupPermissionChangeMsgHandler {
+import com.las.strategy.BotMsgHandler;
+
+public class BotGroupPermissionChangeMsgHandler extends BotMsgHandler {
+
+    @Override
+    public void exec() {
+
+    }
+
 }

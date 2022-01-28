@@ -1,4 +1,10 @@
 package com.las.strategy.handle;
 
-public class NewFriendRequestsMsgHandler {
+import com.las.strategy.BotMsgHandler;
+
+public class NewFriendRequestsMsgHandler extends BotMsgHandler {
+    @Override
+    public void exec() {
+
+    }
 }

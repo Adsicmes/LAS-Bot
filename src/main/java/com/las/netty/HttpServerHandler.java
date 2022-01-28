@@ -27,10 +27,10 @@ import static io.netty.buffer.Unpooled.copiedBuffer;
 /*
  * 自定义处理的handler
  */
-public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 
-    private static Logger logger = Logger.getLogger(NettyHttpServerHandler.class);
+    private static Logger logger = Logger.getLogger(HttpServerHandler.class);
 
     /*
      * 处理请求

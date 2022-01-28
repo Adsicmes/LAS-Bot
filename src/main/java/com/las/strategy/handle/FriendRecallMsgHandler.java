@@ -1,4 +1,10 @@
 package com.las.strategy.handle;
 
-public class FriendRecallMsgHandler {
+import com.las.strategy.BotMsgHandler;
+
+public class FriendRecallMsgHandler extends BotMsgHandler {
+    @Override
+    public void exec() {
+
+    }
 }

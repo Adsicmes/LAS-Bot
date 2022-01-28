@@ -1,7 +1,7 @@
 package com.las;
 
 import com.las.config.AppConfigs;
-import com.las.netty.EchoServer;
+import com.las.netty.HttpServer;
 import org.apache.log4j.Logger;
 
 public class App {
@@ -11,7 +11,7 @@ public class App {
     public static void main(String[] args) {
         try {
             logger.info("准备初始化bot,管理员QQ是："+ AppConfigs.QQ);
-            new EchoServer(8888).start(); // 启动netty
+            new HttpServer(8888).start(); // 启动netty
         } catch (Exception e) {
             logger.error("初始化bot失败,原因："+ e.toString());
         }
