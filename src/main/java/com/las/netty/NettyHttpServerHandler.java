@@ -3,7 +3,6 @@ package com.las.netty;
 
 import com.alibaba.fastjson.JSONObject;
 import com.las.enums.MsgCallBackEnum;
-import com.las.strategy.handle.FriendMsgHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
