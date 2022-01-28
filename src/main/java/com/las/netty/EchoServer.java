@@ -49,7 +49,7 @@ public class EchoServer {
                             socketChannel.pipeline().addLast("http-server", new NettyHttpServerHandler());
                         }
                     });
-            logger.info("启动bot完成,等待监听信息...");
+            logger.info("启动bot服务完成,等待监听信息...");
             // 4. 监听端口（服务器host和port端口），同步返回
             ChannelFuture future = server.bind(this.port).sync();
             // 当通道关闭时继续向后执行，这是一个阻塞方法
@@ -57,7 +57,7 @@ public class EchoServer {
         } finally {
             childGroup.shutdownGracefully();
             parentGroup.shutdownGracefully();
-            logger.info("bot机器人已完毕...");
+            logger.info("bot机器人服务已完毕...");
         }
     }
 
