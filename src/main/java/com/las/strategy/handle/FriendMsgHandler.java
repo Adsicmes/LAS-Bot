@@ -2,8 +2,11 @@ package com.las.strategy.handle;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.las.model.GroupFun;
 import com.las.strategy.BotMsgHandler;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 public class FriendMsgHandler extends BotMsgHandler {
 
@@ -16,11 +19,8 @@ public class FriendMsgHandler extends BotMsgHandler {
         logger.info("得到了sender --> " + sender.toJSONString());
         logger.info("得到了msgChain --> " + msgChain.toJSONString());
 
-        // #点歌 #Gal搜索 (我的思路使用注解)
-
-
-        // 查数据库 判断这家伙是哪个群 有什么权限 执行什么CMD
-
+        List<GroupFun> groupFunList = getGroupFunDao().queryGroup(1483492332L);
+        groupFunList.forEach(groupFun -> logger.info(JSONObject.toJSONString(groupFun)));
 
     }
 }

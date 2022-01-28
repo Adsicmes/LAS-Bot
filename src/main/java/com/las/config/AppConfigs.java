@@ -1,10 +1,12 @@
 package com.las.config;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.log4j.Logger;
 import org.dtools.ini.BasicIniFile;
 import org.dtools.ini.IniFile;
 import org.dtools.ini.IniFileReader;
 import org.dtools.ini.IniSection;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
 
@@ -15,10 +17,13 @@ public class AppConfigs {
 
     //常量名字为全大写
     public static final int QQ;
-    public static final String DRIVER;
-    public static final String JDBC;
-    public static final String USER;
-    public static final String PWD;
+    private static final String DRIVER;
+    private static final String JDBC;
+    private static final String USER;
+    private static final String PWD;
+    public static final DruidDataSource DATA_SOURCE;
+    public static final ClassPathXmlApplicationContext APP_CONTEXT;
+
 
     static {
         try {
@@ -26,7 +31,7 @@ public class AppConfigs {
             BufferedReader br = new BufferedReader(new InputStreamReader(initialStream));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini")));
             String line;
-            while (null != (line = br.readLine())){
+            while (null != (line = br.readLine())) {
                 bw.write(line);
                 bw.newLine();
                 bw.flush();
@@ -37,20 +42,13 @@ public class AppConfigs {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.debug("当前env配置路径是：" + path);
-
-//        URL url = ClassLoader.getSystemResource("env.ini");
-//        String path = url.getPath();
-//        logger.info("当前env配置路径是：" + path);
-
         IniSection iniSection;
         //获取管理员QQ
         iniSection = getInit(path).getSection("superuser");
         QQ = Integer.parseInt(iniSection.getItem("qq").getValue());
         logger.info("管理员QQ是：" + QQ);
-
         //设置mysql数据账号密码
         iniSection = getInit(path).getSection("dbmysql");
         DRIVER = iniSection.getItem("driver").getValue();
@@ -58,10 +56,25 @@ public class AppConfigs {
         USER = iniSection.getItem("user").getValue();
         PWD = iniSection.getItem("passwd").getValue();
         logger.debug("数据库连接DRIVER信息：" + DRIVER);
+        DATA_SOURCE = new DruidDataSource();
+        DATA_SOURCE.setDriverClassName(DRIVER);
+        DATA_SOURCE.setUrl(JDBC);
+        DATA_SOURCE.setUsername(USER);
+        DATA_SOURCE.setPassword(PWD);
+        //最后一步，初始化spring容器
+        APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
+        // 下面是测试
+        //GroupFunDao groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
+        //List<GroupFun> groupFunList = groupFunDao.queryGroup(1483492332L);
+        //groupFunList.forEach(groupFun -> logger.info(JSONObject.toJSONString(groupFun)));
+
+
+
     }
 
     /**
      * ini文件需要每次都初始化读取配置
+     *
      * @param path 文件路径
      * @return IniFile对象
      */
