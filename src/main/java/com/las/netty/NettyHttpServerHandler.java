@@ -3,6 +3,7 @@ package com.las.netty;
 
 import com.alibaba.fastjson.JSONObject;
 import com.las.enums.MsgCallBackEnum;
+import com.las.strategy.handle.FriendMsgHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -56,17 +57,23 @@ public class NettyHttpServerHandler extends SimpleChannelInboundHandler<FullHttp
                 String className = MsgCallBackEnum.getClassNameByEvent(type);
                 if(null != className){
                     //不为空，说明找到了对应的处理类
-                    logger.info(className);
+                    logger.info(className);// 假设我的bot收到了一条好友消息
+                    // com.las.strategy.handle.FriendMsgHandler
                     try {
                         Class<?> aClass = Class.forName(className);
                         Object obj = aClass.newInstance();
+                        // 用反射机制拿handleMsg方法
                         Method handleMsg = aClass.getMethod("handleMsg", Map.class);
+                        // 代理执行 obj.handleMsg()
                         handleMsg.invoke(obj, params);
-                        aClass.getMethod("exec").invoke(obj);
+                        // 用反射机制拿exec方法
+                        Method exec = aClass.getMethod("exec");
+                        exec.invoke(obj);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
+
             }
 
             String data = "POST method over";

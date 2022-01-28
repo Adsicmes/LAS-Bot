@@ -29,7 +29,7 @@ public abstract class AbstractMsgHandler implements BotStrategy {
     }
 
     /**
-     * 实现接口的方法(里面不做事情，具体可以让子类去实现)
+     * 实现接口的处理消息方法(可以让子类去实现)
      */
     @Override
     public final void handleMsg(Map map) {
