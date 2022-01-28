@@ -6,8 +6,7 @@ import org.dtools.ini.IniFile;
 import org.dtools.ini.IniFileReader;
 import org.dtools.ini.IniSection;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 
 
@@ -23,12 +22,29 @@ public class AppConfigs {
     public static final String PWD;
 
     static {
-        String property = System.getProperty("user.dir");
-        logger.info("当前env配置路径是：" + property);
+        try {
+            InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
+            BufferedReader br = new BufferedReader(new InputStreamReader(initialStream));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini")));
+            String line;
+            while (null != (line = br.readLine())){
+                bw.write(line);
+                bw.newLine();
+                bw.flush();
+            }
+            bw.close();
+            br.close();
+            initialStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        URL url = ClassLoader.getSystemResource("env.ini");
-        String path = url.getPath();
+        String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.info("当前env配置路径是：" + path);
+
+//        URL url = ClassLoader.getSystemResource("env.ini");
+//        String path = url.getPath();
+//        logger.info("当前env配置路径是：" + path);
 
         IniSection iniSection;
         //获取管理员QQ
