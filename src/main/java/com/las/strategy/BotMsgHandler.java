@@ -11,9 +11,9 @@ import java.util.Map;
  * 该抽象类的作用就是实现各种处理
  *
  */
-public abstract class AbstractMsgHandler implements BotStrategy {
+public abstract class BotMsgHandler implements BotStrategy {
 
-    private static Logger logger = Logger.getLogger(AbstractMsgHandler.class);
+    private static Logger logger = Logger.getLogger(BotMsgHandler.class);
 
     private JSONObject sender;
 

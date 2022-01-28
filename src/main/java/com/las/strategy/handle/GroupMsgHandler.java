@@ -2,9 +2,9 @@ package com.las.strategy.handle;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.las.strategy.AbstractMsgHandler;
+import com.las.strategy.BotMsgHandler;
 
-public class GroupMsgHandler extends AbstractMsgHandler {
+public class GroupMsgHandler extends BotMsgHandler {
 
 
     @Override
