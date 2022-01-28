@@ -13,7 +13,7 @@ public class App {
             logger.info("准备初始化bot,管理员QQ是："+ AppConfigs.QQ);
             new EchoServer(8888).start(); // 启动netty
         } catch (Exception e) {
-            System.out.println(e.toString());
+            logger.error("初始化bot失败,原因："+ e.toString());
         }
     }
 }

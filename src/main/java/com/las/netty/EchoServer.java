@@ -57,7 +57,7 @@ public class EchoServer {
         } finally {
             childGroup.shutdownGracefully();
             parentGroup.shutdownGracefully();
-            logger.info("bot机器人服务已完毕...");
+            logger.info("bot机器人服务已关闭...");
         }
     }
 
