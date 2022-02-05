@@ -29,14 +29,18 @@ public class AppConfigs {
     static {
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.debug("当前env配置路径是：" + path);
-        //先判断是否存在
-        if(!new File(path).exists()){
-            try {
-                InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
-                BufferedReader br = new BufferedReader(new InputStreamReader(initialStream));
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"),"GBK"));
+        try {
+            InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
+            BufferedReader br;
+            BufferedWriter bw;
+            //先判断是否存在
+            File file = new File(path);
+            if(!file.exists()){
+                br = new BufferedReader(new InputStreamReader(initialStream));
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"),"GBK"));
                 String line;
                 while (null != (line = br.readLine())) {
+                    logger.debug("读到内容：" + line);
                     bw.write(line);
                     bw.newLine();
                     bw.flush();
@@ -44,9 +48,9 @@ public class AppConfigs {
                 bw.close();
                 br.close();
                 initialStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         IniSection iniSection;
         //获取管理员QQ
@@ -73,8 +77,6 @@ public class AppConfigs {
         //GroupFunDao groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
         //List<GroupFun> groupFunList = groupFunDao.queryGroup(1483492332L);
         //groupFunList.forEach(groupFun -> logger.info(JSONObject.toJSONString(groupFun)));
-
-
 
     }
 
