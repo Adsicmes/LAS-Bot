@@ -4,6 +4,7 @@ package com.las.netty.adapter;
 import com.alibaba.fastjson.JSONObject;
 import com.las.enums.MsgCallBackEnum;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

@@ -38,6 +38,11 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
         if ("favicon.ico".equals(uri)) {
             return;
         }
+        // 设置bot服务
+        if ("/cq/getMsg".equals(uri)) {
+            ctx.fireChannelRead(request);
+            return;
+        }
         // 根据路径地址构建文件
         String path = location + uri;
         File html = new File(System.getProperty("user.dir"),path);
@@ -93,5 +98,22 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
     private static void send100Continue(ChannelHandlerContext ctx) {
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONTINUE);
         ctx.writeAndFlush(response);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        Channel channel = ctx.channel();
+        logger.info("关闭一个web通道：" + channel.toString());
+        boolean open = channel.isOpen();
+        boolean active = channel.isActive();
+        boolean registered = channel.isRegistered();
+        boolean writable = channel.isWritable();
+        logger.debug("open：" + open);
+        logger.debug("active：" + active);
+        logger.debug("registered：" + registered);
+        logger.debug("writable：" + writable);
+        if(active){
+            channel.close();
+        }
     }
 }
