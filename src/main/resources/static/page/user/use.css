@@ -1,0 +1,33 @@
+/*个人资料*/
+form input.layui-input[disabled]{ background:#f2f2f2; color:#595963!important; }
+.user_right{ text-align: center; }
+.user_right p{ margin:10px 0 25px; font-size: 12px; text-align: center; color: #FF5722;}
+.user_right img#userFace{ width:200px; height:200px; margin-top:20px; cursor:pointer; box-shadow:0 2px 10px #44576b; }
+.userAddress.layui-form-item .layui-input-inline{ width:23%; }
+.userAddress.layui-form-item .layui-input-inline:last-child{ margin-right:0; }
+/*用户等级*/
+.layui-table-view .layui-table span.seraph{ font-size:25px !important;}
+.vip1{ color:#994a2b;}
+.vip2{ color:#899396;}
+.vip3{ color:#bd6a08;}
+.vip4{ color:#a3b8c4;}
+.vip5{ color:#63c3ea;}
+.vip6{ color:#b563ed;}
+.vip7{ color:#ff9831;}
+.vip8{ color:#A757A8;}
+.vip9{ color:#0ff;}
+.vip10{ color:#f00;}
+
+
+
+/*响应式*/
+@media screen and (max-width:450px) {
+    #userFaceBtn{ height: 30px;line-height: 30px; padding: 0 10px; font-size: 12px;}
+    .user_right img#userFace{ width:100px; height:100px; margin-top:0;}
+    .layui-col-xs12 .layui-form-label{ width:60px; padding-left:0;}
+    .layui-col-xs12 .layui-input-block,.layui-col-xs12 .layui-input-inline{ margin-left:75px;}
+    .layui-col-xs12 .layui-input-inline{ left:0 !important; width:auto !important;}
+    .noFind{ padding-top:0;}
+    *[pc]{ display:none;}
+	.layui-carousel-ind li{width: 6px;height: 6px;}
+}

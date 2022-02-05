@@ -1,0 +1,36 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 3,
+  "data": [
+    {
+      "usersId": "1",
+      "userName": "哥哥小弟",
+      "userEmail": "1234ws.com",
+      "userSex": "男",
+      "userStatus": "0",
+      "userGrade": "4",
+      "userEndTime": "2020-02-14 09:00",
+      "userDesc" : "哥哥’"
+    },{
+      "usersId": "2",
+      "userName": "牛顿爱期",
+      "userEmail": "13452345.com",
+      "userSex": "男",
+      "userStatus": "0",
+      "userGrade": "3",
+      "userEndTime": "2019-10-12 12:15",
+      "userDesc" : "保密"
+    },
+    {
+      "usersId": "3",
+      "userName": "爱因斯坦可",
+      "userEmail": "124563253.com",
+      "userSex": "男",
+      "userStatus": "1",
+      "userGrade": "2",
+      "userEndTime": "2019-12-21 10:05",
+      "userDesc" : "帐号被封。"
+    }
+  ]
+}

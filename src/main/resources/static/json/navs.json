@@ -1,0 +1,67 @@
+{
+	"contentManagement": [{
+			"title": "系统设置",
+			"icon": "&#xe716;",
+			"href": "",
+			"spread": true,
+			"children": [{
+				"title": "模块管理",
+				"icon": "",
+				"href": "page/tree/tree.html",
+				"spread": false
+			}]
+		}, {
+			"title": "用户中心",
+			"icon": "&#xe770;",
+			"href": "",
+			"spread": true,
+			"children": [{
+					"title": "用户中心",
+					"icon": "",
+					"href": "page/user/userList.html",
+					"spread": false
+				},
+				{
+					"title": "会员等级",
+					"icon": "",
+					"href": "page/user/userGrade.html",
+					"spread": false
+				}
+			]
+		}, {
+			"title": "其他页面",
+			"icon": "&#xe653;",
+			"href": "",
+			"spread": true,
+			"children": [{
+					"title": "404页面",
+					"icon": "",
+					"href": "page/404/404.html",
+					"spread": false
+				},
+				{
+					"title": "文章列表",
+					"icon": "",
+					"href": "page/news/newsList.html",
+					"spread": false
+				}, {
+					"title": "图片管理",
+					"icon": "",
+					"href": "page/img/images.html",
+					"spread": false
+				}, {
+					"title": "轮播",
+					"icon": "",
+					"href": "page/carousel/carousel.html",
+					"spread": false
+				}
+				
+			
+				
+			]
+		}
+
+
+	]
+
+}

@@ -1,0 +1,78 @@
+[
+  
+  {
+	"id":"1", 
+    "title": "系统设置",
+    "icon": "fa-stop-circle",
+    "spread": true,
+    "href": "",
+    "children": [
+      {
+		 "id":"1-1", 
+        "title": "模块管理",
+        "icon": "",
+        "href": "",
+        "spread": true,
+        "children": [
+          {
+			 "id":"1-1-1", 
+            "title": "模块管理1-1-1",
+            "icon": " ",
+            "href": "",
+			"children": [
+			  {
+				"id":"1-1-1-1", 
+			    "title": "模块管理1-1-1-1",
+			    "icon": " ",
+			    "href": ""
+			  },
+			  {
+				  "id":"1-1-1-2", 
+			    "title": "模块管理1-1-1-2",
+			    "icon": " ",
+			    "href": ""
+			  }
+			]
+          },
+          {
+			  "id":"1-1-2", 
+            "title": "模块管理1-1-2",
+            "icon": " ",
+            "href": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+	  "id":"2", 
+    "title": "用户中心",
+    "icon": "fa-stop-circle",
+    "spread": true,
+    "href": "",
+	"children": [
+	  {
+		"id":"1-1-1-1", 
+	    "title": "用户中心",
+	    "icon": " ",
+	    "href": ""
+	  },
+	  {
+		  "id":"1-1-1-2", 
+	    "title": "会员等级",
+	    "icon": " ",
+	    "href": ""
+	  }
+	]
+ 
+  },
+  {
+	  "id":"3", 
+    "title": "其他页面",
+    "icon": "fa-stop-circle",
+    "spread": true,
+    "href": ""
+ 
+  }
+  
+]

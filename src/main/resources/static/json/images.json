@@ -1,0 +1,31 @@
+{
+	"title": "图片管理",
+	"id": "Images",
+	"start": 0,
+	"data": [
+		{
+			"src": "../../images/t1.png",
+			"thumb": "../../images/t1.png",
+			"alt": "标题内容1",
+			"pid":"1"
+		},
+		{
+			"src": "../../images/t2.png",
+			"thumb": "../../images/t2.png",
+			"alt": "标题内容2",
+			"pid":"2"
+		},
+		{
+			"src": "../../images/t1.png",
+			"thumb": "../../images/t1.png",
+			"alt": "标题内容3",
+			"pid":"3"
+		},
+		{
+			"src": "../../images/t2.png",
+			"thumb": "../../images/t2.png",
+			"alt": "标题内容4",
+			"pid":"4"
+		}
+	]
+}
