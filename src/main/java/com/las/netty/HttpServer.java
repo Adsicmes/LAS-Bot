@@ -35,20 +35,7 @@ public class HttpServer {
                     // 2. 绑定服务端通道NioServerSocketChannel
                     .channel(NioServerSocketChannel.class)
                     // 3. 给读写事件的线程通道绑定handler去真正处理读写
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            // 请求解码器
-                            socketChannel.pipeline().addLast("http-decoder", new HttpRequestDecoder());
-                            // 将HTTP消息的多个部分合成一条完整的HTTP消息
-                            socketChannel.pipeline().addLast("http-aggregator", new HttpObjectAggregator(65535));
-                            // 响应转码器
-                            socketChannel.pipeline().addLast("http-encoder", new HttpResponseEncoder());
-                            socketChannel.pipeline().addLast("http-chunked", new ChunkedWriteHandler());
-                            // 自定义处理handler
-                            socketChannel.pipeline().addLast("http-server", new HttpServerHandler());
-                        }
-                    });
+                    .childHandler(new HttpServerInitializer());
             logger.info("启动bot服务完成,等待监听信息...");
             // 4. 监听端口（服务器host和port端口），同步返回
             ChannelFuture future = server.bind(this.port).sync();

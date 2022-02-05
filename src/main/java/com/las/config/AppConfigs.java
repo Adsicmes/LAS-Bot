@@ -17,6 +17,7 @@ public class AppConfigs {
 
     //常量名字为全大写
     public static final int QQ;
+    public static final String WEB_PATH;
     private static final String DRIVER;
     private static final String JDBC;
     private static final String USER;
@@ -61,6 +62,8 @@ public class AppConfigs {
         DATA_SOURCE.setUrl(JDBC);
         DATA_SOURCE.setUsername(USER);
         DATA_SOURCE.setPassword(PWD);
+        iniSection = getInit(path).getSection("webpath");
+        WEB_PATH = iniSection.getItem("webpath").getValue();
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
         // 下面是测试

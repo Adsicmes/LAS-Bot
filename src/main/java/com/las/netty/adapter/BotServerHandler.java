@@ -1,4 +1,4 @@
-package com.las.netty;
+package com.las.netty.adapter;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -27,10 +27,10 @@ import static io.netty.buffer.Unpooled.copiedBuffer;
 /*
  * 自定义处理的handler
  */
-public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 
-    private static Logger logger = Logger.getLogger(HttpServerHandler.class);
+    private static Logger logger = Logger.getLogger(BotServerHandler.class);
 
     /*
      * 处理请求
