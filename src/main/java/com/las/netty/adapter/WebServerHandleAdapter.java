@@ -41,7 +41,6 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
         // 根据路径地址构建文件
         String path = location + uri;
         File html = new File(System.getProperty("user.dir"),path);
-        logger.debug("web访问路径：" + html.getAbsolutePath());
 
         // 状态为1xx的话，继续请求
         if (HttpUtil.is100ContinueExpected(request)) {

@@ -27,24 +27,27 @@ public class AppConfigs {
 
 
     static {
-        try {
-            InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
-            BufferedReader br = new BufferedReader(new InputStreamReader(initialStream));
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini")));
-            String line;
-            while (null != (line = br.readLine())) {
-                bw.write(line);
-                bw.newLine();
-                bw.flush();
-            }
-            bw.close();
-            br.close();
-            initialStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.debug("当前env配置路径是：" + path);
+        //先判断是否存在
+        if(!new File(path).exists()){
+            try {
+                InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
+                BufferedReader br = new BufferedReader(new InputStreamReader(initialStream));
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"),"GBK"));
+                String line;
+                while (null != (line = br.readLine())) {
+                    bw.write(line);
+                    bw.newLine();
+                    bw.flush();
+                }
+                bw.close();
+                br.close();
+                initialStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         IniSection iniSection;
         //获取管理员QQ
         iniSection = getInit(path).getSection("superuser");
