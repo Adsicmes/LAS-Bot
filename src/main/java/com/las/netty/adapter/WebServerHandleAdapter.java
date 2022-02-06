@@ -103,15 +103,7 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        logger.info("关闭一个web通道：" + channel.toString());
-        boolean open = channel.isOpen();
         boolean active = channel.isActive();
-        boolean registered = channel.isRegistered();
-        boolean writable = channel.isWritable();
-        logger.debug("open：" + open);
-        logger.debug("active：" + active);
-        logger.debug("registered：" + registered);
-        logger.debug("writable：" + writable);
         if(active){
             channel.close();
         }

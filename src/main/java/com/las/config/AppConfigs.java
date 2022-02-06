@@ -40,7 +40,6 @@ public class AppConfigs {
                 bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"),"GBK"));
                 String line;
                 while (null != (line = br.readLine())) {
-                    logger.debug("读到内容：" + line);
                     bw.write(line);
                     bw.newLine();
                     bw.flush();
@@ -73,10 +72,6 @@ public class AppConfigs {
         WEB_PATH = iniSection.getItem("webpath").getValue();
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
-        // 下面是测试
-        //GroupFunDao groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
-        //List<GroupFun> groupFunList = groupFunDao.queryGroup(1483492332L);
-        //groupFunList.forEach(groupFun -> logger.info(JSONObject.toJSONString(groupFun)));
 
     }
 
