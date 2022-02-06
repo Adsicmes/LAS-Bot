@@ -1,34 +1,87 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : dullwolf
+ Source Server Type    : MySQL
+ Source Server Version : 50633
+ Source Host           : 47.106.142.49:3306
+ Source Schema         : lasbot
+
+ Target Server Type    : MySQL
+ Target Server Version : 50633
+ File Encoding         : 65001
+
+ Date: 06/02/2022 16:07:23
+*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for qqGroups
+-- Table structure for fun
+-- ----------------------------
+DROP TABLE IF EXISTS `fun`;
+CREATE TABLE `fun`  (
+  `id` bigint(20) NOT NULL,
+  `fun_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '功能名',
+  `fun_weight` int(11) NULL DEFAULT NULL COMMENT '功能权重',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of fun
+-- ----------------------------
+INSERT INTO `fun` VALUES (2, 'admin', 9999);
+INSERT INTO `fun` VALUES (3, 'gal', 10);
+INSERT INTO `fun` VALUES (4, 'osu', 5);
+
+-- ----------------------------
+-- Table structure for group
+-- ----------------------------
+DROP TABLE IF EXISTS `group`;
+CREATE TABLE `group`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '群名',
+  `group_id` bigint(20) NULL DEFAULT NULL COMMENT '群号',
+  `group_role` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '群身份',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of group
 -- ----------------------------
 
-CREATE TABLE `qqGroups`  (
-  `qqGroup` bigint(20) NULL DEFAULT NULL,
-  `functions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  UNIQUE INDEX `qqGroups_qqGroup_uindex`(`qqGroup`) USING BTREE
+-- ----------------------------
+-- Table structure for group_fun
+-- ----------------------------
+DROP TABLE IF EXISTS `group_fun`;
+CREATE TABLE `group_fun`  (
+  `id` bigint(20) NOT NULL,
+  `group_id` bigint(20) NULL DEFAULT NULL COMMENT '群号',
+  `group_fun` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '群拥有功能',
+  `is_enable` tinyint(2) NULL DEFAULT NULL COMMENT '是否开启',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of group_fun
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user
 -- ----------------------------
-
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '用户id',
-  `qq` bigint(20) NULL DEFAULT NULL COMMENT '用户qq',
-  `fromGroup` bigint(20) NULL DEFAULT NULL COMMENT '来自群',
-  `userExecuteLevel` int(11) NULL DEFAULT 0 COMMENT '用户权限等级',
-  `userLevel` int(11) NULL DEFAULT 0 COMMENT '用户等级',
-  `money` double(18, 2) NULL DEFAULT NULL COMMENT '钱钱钱',
-  `moneyYesterday` double(18, 2) NULL DEFAULT NULL COMMENT '昨天的钱',
-  `latestCheckIn` datetime NULL DEFAULT NULL COMMENT '最后签到日期',
-  `checkInDays` int(11) NULL DEFAULT NULL COMMENT '签到天数',
-  `userSigner` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '用户个性签名',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `user_id_uindex`(`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+  `id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NULL DEFAULT NULL COMMENT '用户QQ号',
+  `nickname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'QQ昵称',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `fun_permission` int(11) NULL DEFAULT NULL COMMENT '用户权限',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;

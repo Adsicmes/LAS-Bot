@@ -12,7 +12,6 @@ import static com.las.config.AppConfigs.APP_CONTEXT;
 
 /**
  * 该抽象类的作用就是实现各种处理
- *
  */
 public abstract class BotMsgHandler implements BotStrategy {
 
@@ -45,7 +44,7 @@ public abstract class BotMsgHandler implements BotStrategy {
      * 实现接口的执行消息方法(子类也可以去重新实现)
      */
     @Override
-    public void exec(){
+    public void exec() {
         logger.info("bot开始执行默认消息...");
         //此方法可以由子类重写方法去做对应的事件
     }
@@ -63,7 +62,6 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     /**
      * 定义处理sender消息的方法
-     *
      */
     private JSONObject handleSender(JSONObject jsonObject) {
         return jsonObject.getJSONObject("sender");
@@ -72,7 +70,7 @@ public abstract class BotMsgHandler implements BotStrategy {
     /**
      * 定义处理messageChain消息的方法
      */
-    private JSONArray handleMsgChain(JSONObject jsonObject){
+    private JSONArray handleMsgChain(JSONObject jsonObject) {
         return jsonObject.getJSONArray("messageChain");
     }
 
