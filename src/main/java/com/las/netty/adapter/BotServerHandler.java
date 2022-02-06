@@ -2,6 +2,7 @@ package com.las.netty.adapter;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.las.config.AppConfigs;
 import com.las.enums.MsgCallBackEnum;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -47,7 +48,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         } else if (fullHttpRequest.method() == HttpMethod.POST) {
             String uri = fullHttpRequest.uri();
             logger.info(uri);
-            if(uri.equals("/cq/getMsg")){
+            if(uri.equals(AppConfigs.QQ_BOT_SERVER)){
                 Map<String, Object> params = getPostParamsFromChannel(fullHttpRequest);
                 String content = JSONObject.toJSONString(params);
                 logger.info(content);

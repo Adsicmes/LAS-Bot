@@ -132,6 +132,13 @@
             <version>5.3.3</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.jfinal/jfinal -->
+        <dependency>
+            <groupId>com.jfinal</groupId>
+            <artifactId>jfinal</artifactId>
+            <version>4.4</version>
+        </dependency>
+
 
 
 

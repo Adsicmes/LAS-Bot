@@ -39,13 +39,15 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
             return;
         }
         // 设置bot服务
-        if ("/cq/getMsg".equals(uri)) {
+        if (AppConfigs.QQ_BOT_SERVER.equals(uri)) {
             ctx.fireChannelRead(request);
             return;
         }
         // 根据路径地址构建文件
         String path = location + uri;
-        File html = new File(System.getProperty("user.dir"),path);
+        // 路径带有问号需要过滤
+        path = path.split("\\?")[0];
+        File html = new File(System.getProperty("user.dir"), path);
 
         // 状态为1xx的话，继续请求
         if (HttpUtil.is100ContinueExpected(request)) {
@@ -72,6 +74,9 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
             response.headers().set("Content-Type", "application/x-javascript");
         } else if (path.endsWith(".css")) {
             response.headers().set("Content-Type", "text/css; charset=UTF-8");
+        } else {
+            //其余文件一律按html文本类型，因为可能有woff之类的字体文件
+            response.headers().set("Content-Type", "text/html; charset=UTF-8");
         }
 
         boolean keepAlive = HttpUtil.isKeepAlive(request);
@@ -104,7 +109,7 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
         boolean active = channel.isActive();
-        if(active){
+        if (active) {
             channel.close();
         }
     }

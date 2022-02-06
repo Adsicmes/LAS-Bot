@@ -16,7 +16,10 @@ public class AppConfigs {
     private static Logger logger = Logger.getLogger(AppConfigs.class);
 
     //常量名字为全大写
-    public static final int QQ;
+    public static final String QQ;
+    public static final String QQ_AUTH;
+    public static final String MIRAT_API_URL;
+    public static final String QQ_BOT_SERVER;
     public static final String WEB_PATH;
     private static final String DRIVER;
     private static final String JDBC;
@@ -54,7 +57,10 @@ public class AppConfigs {
         IniSection iniSection;
         //获取管理员QQ
         iniSection = getInit(path).getSection("superuser");
-        QQ = Integer.parseInt(iniSection.getItem("qq").getValue());
+        QQ = iniSection.getItem("qq").getValue();
+        QQ_AUTH = iniSection.getItem("qqAuth").getValue();
+        MIRAT_API_URL = iniSection.getItem("miraiUrl").getValue();
+        QQ_BOT_SERVER = iniSection.getItem("botServer").getValue();
         logger.info("管理员QQ是：" + QQ);
         //设置mysql数据账号密码
         iniSection = getInit(path).getSection("dbmysql");

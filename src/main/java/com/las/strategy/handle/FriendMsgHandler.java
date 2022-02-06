@@ -19,8 +19,6 @@ public class FriendMsgHandler extends BotMsgHandler {
         logger.info("得到了sender --> " + sender.toJSONString());
         logger.info("得到了msgChain --> " + msgChain.toJSONString());
 
-        List<GroupFun> groupFunList = getGroupFunDao().queryGroup(1483492332L);
-        groupFunList.forEach(groupFun -> logger.info(JSONObject.toJSONString(groupFun)));
 
     }
 }

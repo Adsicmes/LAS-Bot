@@ -1,7 +1,6 @@
 package com.las.dao.base;
 
 import com.las.config.AppConfigs;
-import com.las.model.GroupFun;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
