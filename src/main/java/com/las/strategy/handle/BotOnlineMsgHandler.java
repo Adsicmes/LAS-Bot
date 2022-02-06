@@ -42,7 +42,7 @@ public class BotOnlineMsgHandler extends BotMsgHandler {
             }
             user.setUserId(item.getLong("id"));
             user.setNickname(EmojiUtil.emojiChange(item.getString("nickname")));
-            user.setRemark(item.getString("remark"));
+            user.setRemark(EmojiUtil.emojiChange(item.getString("remark")));
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
                 user.setFunPermission(Constant.DEFAULT_PERMISSION);
