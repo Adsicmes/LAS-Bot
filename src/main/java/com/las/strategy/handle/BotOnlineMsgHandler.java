@@ -6,6 +6,7 @@ import com.las.dao.GroupDao;
 import com.las.model.Group;
 import com.las.model.User;
 import com.las.strategy.BotMsgHandler;
+import com.las.utils.EmojiUtil;
 import com.las.utils.MiraiUtil;
 import org.apache.log4j.Logger;
 
@@ -26,6 +27,7 @@ public class BotOnlineMsgHandler extends BotMsgHandler {
             }
             //id存在则是做更新
             group.setName(item.getString("name"));
+            group.setGroupId(item.getLong("id"));
             group.setGroupRole(item.getString("permission"));
             getGroupDao().saveOrUpdate(group);
         });
@@ -38,7 +40,8 @@ public class BotOnlineMsgHandler extends BotMsgHandler {
             if(null == user){
                 user = new User();
             }
-            user.setNickname(item.getString("nickname"));
+            user.setUserId(item.getLong("id"));
+            user.setNickname(EmojiUtil.emojiChange(item.getString("nickname")));
             user.setRemark(item.getString("remark"));
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
