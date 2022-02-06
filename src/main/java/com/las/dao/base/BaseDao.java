@@ -3,7 +3,6 @@ package com.las.dao.base;
 import com.las.annotation.Column;
 import com.las.annotation.Table;
 import com.las.config.AppConfigs;
-import com.las.strategy.BotMsgHandler;
 import org.apache.commons.dbutils.*;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.log4j.Logger;
@@ -26,15 +25,23 @@ public class BaseDao<T> {
     public BaseDao(Class<T> aClass) {
         this.aClass = aClass;
         if (aClass.isAnnotationPresent(Table.class)) {
-            tableName = aClass.getDeclaredAnnotation(Table.class).value();
+            tableName = "`" + aClass.getDeclaredAnnotation(Table.class).value() + "`";
             idKey = aClass.getDeclaredAnnotation(Table.class).idKey();
         }
     }
 
-    private QueryRunner getRunner() {
+    public QueryRunner getRunner() {
         return new QueryRunner(AppConfigs.DATA_SOURCE);
     }
 
+    public RowProcessor getProcessor() {
+        return processor;
+    }
+
+    /**
+     * 根据ID查找
+     * @param id 数据库主键ID
+     */
     public T findById(Object id) {
         String sql = "select * from " + tableName + " where " + idKey + " = ?";
         T bean = null;
@@ -46,21 +53,25 @@ public class BaseDao<T> {
         return bean;
     }
 
-    public boolean saveOrUpdate(T obj) {
+    /**
+     * 更新或者插入
+     *
+     */
+    public void saveOrUpdate(T obj) {
         StringBuilder sql = new StringBuilder();
         Class<?> aClass = obj.getClass();
         Field[] fields = aClass.getDeclaredFields();
         List<Object> params = new ArrayList<>();
         Object id;
         boolean isUpdate;
-        int row = 0;
         try {
             id = checkIdExist(obj, fields);
             isUpdate = null != id;
             if (isUpdate) {
                 sql.append(" update ").append(tableName).append(" set ");
             } else {
-                sql.append(" insert into ").append(tableName).append(" ( ");
+                sql.append(" insert into ").append(tableName).append("(").append(idKey).append(",");
+                params.add(null);
             }
             for (Field field : fields) {
                 String colName = field.getName();
@@ -84,20 +95,19 @@ public class BaseDao<T> {
                 sql.append(" where ").append(idKey).append(" = ? ");
                 params.add(id);
             } else {
-                sql.append(" ) values ( ");
+                sql.append(") values (");
                 for (int i = 0; i < params.size(); i++) {
-                    sql.append(" ?, ");
+                    sql.append("?,");
                 }
                 sql.delete(sql.lastIndexOf(","), sql.length());
                 sql.append(")");
             }
             //打印拼接的sql是？
             logger.debug("sql：" + sql.toString());
-            row = getRunner().update(sql.toString(), params.toArray());
+            getRunner().update(sql.toString(), params.toArray());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return row > 0;
     }
 
     /**

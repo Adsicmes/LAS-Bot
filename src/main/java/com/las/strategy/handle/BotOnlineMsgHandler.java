@@ -19,8 +19,8 @@ public class BotOnlineMsgHandler extends BotMsgHandler {
         list.forEach(item -> {
             logger.info(item);
             GroupDao groupDao = getGroupDao();
-            Group group = new Group();
-            group.setGroupId(item.getLong("id"));
+            Group group = groupDao.findByGid(item.getLong("id"));
+            //id存在则是做更新
             group.setName(item.getString("name"));
             group.setGroupRole(item.getString("permission"));
             groupDao.saveOrUpdate(group);
