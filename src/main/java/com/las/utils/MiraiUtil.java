@@ -64,13 +64,22 @@ public class MiraiUtil {
 
     /**
      * 获取群列表
-     *
      */
     public List<JSONObject> getGroupList() {
         initSession();
         String URL = baseURL + "/groupList?sessionKey=" + Constant.session;
         String result = HttpKit.get(URL);
-        logger.info("群列表：" + result);
+        releaseSession();
+        return JsonUtils.getJsonArrayByJsonString(result);
+    }
+
+    /**
+     * 获取好友列表
+     */
+    public List<JSONObject> getFriendList() {
+        initSession();
+        String URL = baseURL + "/friendList?sessionKey=" + Constant.session;
+        String result = HttpKit.get(URL);
         releaseSession();
         return JsonUtils.getJsonArrayByJsonString(result);
     }

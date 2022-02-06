@@ -8,7 +8,7 @@ public class Constant {
     public static volatile String session;
 
     /**
-     * mirai消息响应OK
+     * QQ用户默认权限
      */
-    public static final int OK = 0;
+    public static final int DEFAULT_PERMISSION = 0;
 }
