@@ -18,15 +18,15 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
     private static final String location;
 
     // 404文件页面地址
-    private static final File NOT_FOUND;
+    //private static final File NOT_FOUND;
 
     static {
         // 构建资源所在路径，此处参数可优化为使用配置文件传入
         location = AppConfigs.WEB_PATH;
         //location = "src/main/resources/static";
         // 构建404页面
-        String path = location + "/page/404/404.html";
-        NOT_FOUND = new File(path);
+        //String path = location + "/page/404/404.html";
+        //NOT_FOUND = new File(path);
     }
 
 
@@ -55,15 +55,15 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
         }
 
         // 当文件不存在的时候，将资源指向NOT_FOUND
-        if (!html.exists()) {
-            html = NOT_FOUND;
-        }
+//        if (!html.exists()) {
+//            html = NOT_FOUND;
+//        }
 
         RandomAccessFile file = new RandomAccessFile(html, "r");
         HttpResponse response = new DefaultHttpResponse(request.protocolVersion(), HttpResponseStatus.OK);
 
-        // 文件没有发现设置状态为404
-        if (html == NOT_FOUND) {
+        // 当文件不存在的时候，将资源指向NOT_FOUND
+        if (!html.exists()) {
             response.setStatus(HttpResponseStatus.NOT_FOUND);
         }
 
