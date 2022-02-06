@@ -1,6 +1,6 @@
 package com.las.model;
 
-public class UserFun {
+public class Group {
 
 
 }

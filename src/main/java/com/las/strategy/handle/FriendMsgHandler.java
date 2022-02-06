@@ -2,11 +2,8 @@ package com.las.strategy.handle;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.las.model.GroupFun;
 import com.las.strategy.BotMsgHandler;
 import org.apache.log4j.Logger;
-
-import java.util.List;
 
 public class FriendMsgHandler extends BotMsgHandler {
 

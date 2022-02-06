@@ -3,7 +3,7 @@ package com.las.strategy;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.las.dao.GroupFunDao;
+import com.las.dao.GroupDao;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
@@ -22,10 +22,10 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     private JSONArray msgChain;
 
-    private GroupFunDao groupFunDao;
+    private GroupDao groupDao;
 
     public BotMsgHandler() {
-        this.groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
+        this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
     }
 
     //后续安装下lombok插件，就不用总是写getter方法了，很累...
@@ -37,8 +37,8 @@ public abstract class BotMsgHandler implements BotStrategy {
         return msgChain;
     }
 
-    public GroupFunDao getGroupFunDao() {
-        return groupFunDao;
+    public GroupDao getGroupDao() {
+        return groupDao;
     }
 
     /**
