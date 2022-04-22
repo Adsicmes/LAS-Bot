@@ -17,12 +17,12 @@ public class AppConfigs {
     private static Logger logger = Logger.getLogger(AppConfigs.class);
 
     //常量名字为全大写
-    public static final String QQ;
-    public static final String QQ_AUTH;
-    public static final String MIRAT_API_URL;
-    public static final String QQ_BOT_SERVER;
-    public static final String WEB_PATH;
-    public static final ClassPathXmlApplicationContext APP_CONTEXT;
+    public static String QQ;
+    public static String QQ_AUTH;
+    public static String MIRAT_API_URL;
+    public static String QQ_BOT_SERVER;
+    public static String WEB_PATH;
+    public static ClassPathXmlApplicationContext APP_CONTEXT;
     public static DruidDataSource DATA_SOURCE;
 
 

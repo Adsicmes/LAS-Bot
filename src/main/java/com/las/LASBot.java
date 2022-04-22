@@ -41,14 +41,10 @@ public class LASBot {
             for (Class<?> aClass : classSet) {
                 BotRun annotation = aClass.getDeclaredAnnotation(BotRun.class);
                 if (annotation != null) {
-                    String botQQ = annotation.qq();
-                    String qqAuth = annotation.qqAuth();
-                    if (StrUtil.isBlank(botQQ) && StrUtil.isBlank(qqAuth)) {
-                        throw new Exception("初始化的机器人qq账号不能为空，请检查");
-                    }
                     // 初始化环境
                     init(annotation);
-                    new HttpServer(annotation.port()).start(); // 启动netty
+                    // 启动netty
+                    new HttpServer(annotation.port()).start();
                     break;
                 }
             }
@@ -81,7 +77,11 @@ public class LASBot {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("准备初始化bot,QQ是：" + AppConfigs.QQ);
+        if (StrUtil.isBlank(AppConfigs.QQ)) {
+            logger.error("botQQ暂未初始化，请在页面输入账号");
+        } else {
+            logger.info("准备初始化bot,QQ是：" + AppConfigs.QQ);
+        }
     }
 
     /**
