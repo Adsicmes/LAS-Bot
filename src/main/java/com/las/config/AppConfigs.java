@@ -52,6 +52,10 @@ public class AppConfigs {
         iniSection = getInit(path).getSection("webpath");
         WEB_PATH = iniSection.getItem("webpath").getValue();
 
+        // 根据路径地址构建文件
+        File html = new File(System.getProperty("user.dir"), WEB_PATH);
+        logger.debug("根据路径地址构建文件信息：" + html.getAbsolutePath());
+
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
 
