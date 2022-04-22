@@ -17,8 +17,16 @@ public class LASBot {
 
 
     public static void run() {
+        run("");
+    }
+
+    public static void run(String basePackage) {
         try {
-            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com.las", false, BotRun.class);
+            String pack = basePackage;
+            if(StrUtil.isBlank(pack)){
+                pack = "com.las";
+            }
+            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(pack, false, BotRun.class);
             for (Class<?> aClass : classSet) {
                 BotRun annotation = aClass.getDeclaredAnnotation(BotRun.class);
                 if (annotation != null) {
