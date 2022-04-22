@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <profiles>
-        <!--环境配置弄在这里-->
+        <!--正式环境配置弄在这里-->
         <profile>
             <id>bot</id>
             <activation>
@@ -27,6 +27,36 @@
                 <package.environment>bot</package.environment>
             </properties>
         </profile>
+
+        <!--不同的机器人配置弄在这里-->
+        <profile>
+            <id>frz</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/env/frz</directory>
+                    </resource>
+                </resources>
+            </build>
+            <properties>
+                <package.environment>frz</package.environment>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>dw</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/env/dw</directory>
+                    </resource>
+                </resources>
+            </build>
+            <properties>
+                <package.environment>dw</package.environment>
+            </properties>
+        </profile>
+
     </profiles>
 
     <properties>
