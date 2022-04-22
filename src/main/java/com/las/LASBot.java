@@ -19,10 +19,10 @@ public class LASBot {
     public static void run(Class<?> appClass) {
         BotRun botRun = appClass.getDeclaredAnnotation(BotRun.class);
         if (botRun != null) {
-            String simpleName = appClass.getSimpleName();
-            int index = simpleName.lastIndexOf(".");
+            String className = appClass.getName();
+            int index = className.lastIndexOf(".");
             if (-1 != index) {
-                String pack = simpleName.substring(0, index);
+                String pack = className.substring(0, index);
                 run(pack);
             } else {
                 run("");
@@ -34,11 +34,10 @@ public class LASBot {
 
     private static void run(String basePackage) {
         try {
-            String pack = basePackage;
-            if (StrUtil.isBlank(pack)) {
-                pack = "com.las";
+            if (StrUtil.isBlank(basePackage)) {
+                throw new Exception("启动方法入参不对，请检查");
             }
-            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(pack, false, BotRun.class);
+            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(basePackage, false, BotRun.class);
             for (Class<?> aClass : classSet) {
                 BotRun annotation = aClass.getDeclaredAnnotation(BotRun.class);
                 if (annotation != null) {
