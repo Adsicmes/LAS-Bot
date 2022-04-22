@@ -35,7 +35,7 @@ public class LASBot {
     private static void run(String basePackage) {
         try {
             if (StrUtil.isBlank(basePackage)) {
-                throw new Exception("启动方法入参不对，请检查");
+                throw new Exception("包名路径找不到，请检查是否带了BotRun注解");
             }
             Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(basePackage, false, BotRun.class);
             for (Class<?> aClass : classSet) {
@@ -48,7 +48,7 @@ public class LASBot {
                     }
                     // 初始化环境
                     init(annotation);
-                    new HttpServer(8888).start(); // 启动netty
+                    new HttpServer(annotation.port()).start(); // 启动netty
                     break;
                 }
             }
