@@ -79,6 +79,7 @@ public class LASBot {
         }
         if (StrUtil.isBlank(AppConfigs.QQ)) {
             logger.error("botQQ暂未初始化，请在页面输入账号");
+            logger.error("网址：http://127.0.0.1:"+annotation.port()+"/index.html");
         } else {
             logger.info("准备初始化bot,QQ是：" + AppConfigs.QQ);
         }
