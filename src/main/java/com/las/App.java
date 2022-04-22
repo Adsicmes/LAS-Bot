@@ -6,6 +6,6 @@ import com.las.annotation.BotRun;
 public class App {
 
     public static void main(String[] args) {
-        LASBot.run();
+        LASBot.run(App.class);
     }
 }

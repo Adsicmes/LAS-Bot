@@ -16,14 +16,26 @@ public class LASBot {
     private static Logger logger = Logger.getLogger(App.class);
 
 
-    public static void run() {
-        run("");
+    public static void run(Class<?> appClass) {
+        BotRun botRun = appClass.getDeclaredAnnotation(BotRun.class);
+        if (botRun != null) {
+            String simpleName = appClass.getSimpleName();
+            int index = simpleName.lastIndexOf(".");
+            if (-1 != index) {
+                String pack = simpleName.substring(0, index);
+                run(pack);
+            } else {
+                run("");
+            }
+        } else {
+            run("");
+        }
     }
 
-    public static void run(String basePackage) {
+    private static void run(String basePackage) {
         try {
             String pack = basePackage;
-            if(StrUtil.isBlank(pack)){
+            if (StrUtil.isBlank(pack)) {
                 pack = "com.las";
             }
             Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(pack, false, BotRun.class);
