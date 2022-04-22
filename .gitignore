@@ -16,6 +16,7 @@
 *.ipr
 *.pma
 *.log
+*.jar
 
 ### NetBeans ###
 /nbproject/private/
