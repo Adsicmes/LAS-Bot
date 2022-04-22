@@ -13,11 +13,11 @@ public @interface BotRun {
 
     String qqAuth() default "";
 
-    String miraiUrl() default "";
+    String miraiUrl();
 
-    String botServer() default "";
+    String botServer();
 
-    int port() default 6666;
+    int botPort();
 
     String webpath() default "target/classes/static";
 
