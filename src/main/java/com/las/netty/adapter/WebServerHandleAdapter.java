@@ -23,10 +23,6 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
     static {
         // 构建资源所在路径，此处参数可优化为使用配置文件传入
         location = AppConfigs.WEB_PATH;
-        //location = "src/main/resources/static";
-        // 构建404页面
-        //String path = location + "/page/404/404.html";
-        //NOT_FOUND = new File(path);
     }
 
 
@@ -48,22 +44,20 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
         // 路径带有问号需要过滤
         path = path.split("\\?")[0];
         File html = new File(System.getProperty("user.dir"), path);
+        //logger.debug("页面资源路径；" + html.getAbsolutePath());
 
         // 状态为1xx的话，继续请求
         if (HttpUtil.is100ContinueExpected(request)) {
             send100Continue(ctx);
         }
 
-        // 当文件不存在的时候，将资源指向NOT_FOUND
-//        if (!html.exists()) {
-//            html = NOT_FOUND;
-//        }
 
         RandomAccessFile file = new RandomAccessFile(html, "r");
         HttpResponse response = new DefaultHttpResponse(request.protocolVersion(), HttpResponseStatus.OK);
 
         // 当文件不存在的时候，将资源指向NOT_FOUND
         if (!html.exists()) {
+            logger.debug("不存在页面资源路径；" + html.getAbsolutePath());
             response.setStatus(HttpResponseStatus.NOT_FOUND);
         }
 
