@@ -8,7 +8,8 @@ import org.dtools.ini.IniFileReader;
 import org.dtools.ini.IniSection;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 
 public class AppConfigs {
@@ -21,61 +22,36 @@ public class AppConfigs {
     public static final String MIRAT_API_URL;
     public static final String QQ_BOT_SERVER;
     public static final String WEB_PATH;
-    private static final String DRIVER;
-    private static final String JDBC;
-    private static final String USER;
-    private static final String PWD;
-    public static final DruidDataSource DATA_SOURCE;
     public static final ClassPathXmlApplicationContext APP_CONTEXT;
+    public static DruidDataSource DATA_SOURCE;
 
 
     static {
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
-        logger.debug("当前env配置路径是：" + path);
-        try {
-            InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
-            BufferedReader br;
-            BufferedWriter bw;
-            //先判断是否存在
-            File file = new File(path);
-            if(!file.exists()){
-                br = new BufferedReader(new InputStreamReader(initialStream));
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"),"GBK"));
-                String line;
-                while (null != (line = br.readLine())) {
-                    bw.write(line);
-                    bw.newLine();
-                    bw.flush();
-                }
-                bw.close();
-                br.close();
-                initialStream.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         IniSection iniSection;
-        //获取管理员QQ
-        iniSection = getInit(path).getSection("superuser");
-        QQ = iniSection.getItem("qq").getValue();
-        QQ_AUTH = iniSection.getItem("qqAuth").getValue();
-        MIRAT_API_URL = iniSection.getItem("miraiUrl").getValue();
-        QQ_BOT_SERVER = iniSection.getItem("botServer").getValue();
-        logger.info("管理员QQ是：" + QQ);
         //设置mysql数据账号密码
         iniSection = getInit(path).getSection("dbmysql");
-        DRIVER = iniSection.getItem("driver").getValue();
-        JDBC = iniSection.getItem("jdbc").getValue();
-        USER = iniSection.getItem("user").getValue();
-        PWD = iniSection.getItem("passwd").getValue();
+        String DRIVER = iniSection.getItem("driver").getValue();
+        String JDBC = iniSection.getItem("jdbc").getValue();
+        String USER = iniSection.getItem("user").getValue();
+        String PWD = iniSection.getItem("passwd").getValue();
         logger.debug("数据库连接DRIVER信息：" + DRIVER);
         DATA_SOURCE = new DruidDataSource();
         DATA_SOURCE.setDriverClassName(DRIVER);
         DATA_SOURCE.setUrl(JDBC);
         DATA_SOURCE.setUsername(USER);
         DATA_SOURCE.setPassword(PWD);
+
+        //获取botQQ
+        iniSection = getInit(path).getSection("botqq");
+        QQ = iniSection.getItem("qq").getValue();
+        QQ_AUTH = iniSection.getItem("qqAuth").getValue();
+        MIRAT_API_URL = iniSection.getItem("miraiUrl").getValue();
+        QQ_BOT_SERVER = iniSection.getItem("botServer").getValue();
+        logger.info("botQQ是：" + QQ);
         iniSection = getInit(path).getSection("webpath");
         WEB_PATH = iniSection.getItem("webpath").getValue();
+
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
 

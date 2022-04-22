@@ -10,39 +10,23 @@
     <packaging>jar</packaging>
 
     <profiles>
-        <!--不同的机器人配置弄在这里-->
+        <!--环境配置弄在这里-->
         <profile>
-            <id>frz</id>
+            <id>bot</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <resources>
                     <resource>
-                        <directory>src/main/resources/env/frz</directory>
+                        <directory>src/main/resources/env/bot</directory>
                     </resource>
                 </resources>
             </build>
             <properties>
-                <package.environment>frz</package.environment>
+                <package.environment>bot</package.environment>
             </properties>
         </profile>
-
-        <profile>
-            <id>dw</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources/env/dw</directory>
-                    </resource>
-                </resources>
-            </build>
-            <properties>
-                <package.environment>dw</package.environment>
-            </properties>
-        </profile>
-
-
     </profiles>
 
     <properties>
@@ -137,6 +121,12 @@
             <groupId>com.jfinal</groupId>
             <artifactId>jfinal</artifactId>
             <version>4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.4.1</version>
         </dependency>
 
 

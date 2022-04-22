@@ -1,1 +1,1 @@
-call mvn clean package -Pdw
+call mvn clean package -Pbot

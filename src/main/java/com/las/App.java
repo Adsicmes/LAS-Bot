@@ -1,19 +1,11 @@
 package com.las;
 
-import com.las.config.AppConfigs;
-import com.las.netty.HttpServer;
-import org.apache.log4j.Logger;
+import com.las.annotation.BotRun;
 
+@BotRun(qq = "1091569752", qqAuth = "123456")
 public class App {
 
-    private static Logger logger = Logger.getLogger(App.class);
-
     public static void main(String[] args) {
-        try {
-            logger.info("准备初始化bot,管理员QQ是："+ AppConfigs.QQ);
-            new HttpServer(8888).start(); // 启动netty
-        } catch (Exception e) {
-            logger.error("初始化bot失败,原因："+ e.toString());
-        }
+        LASBot.run();
     }
 }
