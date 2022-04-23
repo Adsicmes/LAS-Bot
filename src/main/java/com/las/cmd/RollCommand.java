@@ -35,8 +35,9 @@ public class RollCommand extends Command {
             }
             int randNumber = new Random().nextInt(max - min + 1) + min;
             CmdUtil.sendMessage(String.format("摇到了:%d", randNumber), userId, id, type);
-        } catch (Exception ignored) {
-            logger.info(super.toString() + "执行时报错，命令内容:" + command);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(super.toString() + "执行时报错，命令内容:" + command);
         }
     }
 

@@ -62,8 +62,9 @@ public class SongCmd extends Command {
                     CmdUtil.sendMessage(msg, userId, id, type);
                 }
             }
-        } catch (Exception ignored) {
-            logger.info(super.toString() + "执行时报错，命令内容:" + command);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(super.toString() + "执行时报错，命令内容:" + command);
         }
     }
 
