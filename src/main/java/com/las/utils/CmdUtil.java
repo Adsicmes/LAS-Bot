@@ -136,7 +136,7 @@ public class CmdUtil {
             msg = msg.substring(1);
         }
         String cmd = CmdUtil.getLowerParams(msg);
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com", false, Command.class);
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com.las.cmd", false, Command.class);
         for (Class c : classSet) {
             if (null != command) {
                 logger.info("指令类是：" + command.toString());
