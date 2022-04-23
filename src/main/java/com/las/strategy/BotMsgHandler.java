@@ -130,11 +130,13 @@ public abstract class BotMsgHandler implements BotStrategy {
      * 定义处理消息内容的方法
      */
     private void handleMsgData() {
-        for (int i = 0; i < msgChain.size(); i++) {
-            JSONObject jsonObj = msgChain.getJSONObject(i);
-            if ("Plain".equals(jsonObj.getString("type"))) {
-                msgData = jsonObj.getString("text");
-                break;
+        if (!msgChain.isEmpty()) {
+            for (int i = 0; i < msgChain.size(); i++) {
+                JSONObject jsonObj = msgChain.getJSONObject(i);
+                if ("Plain".equals(jsonObj.getString("type"))) {
+                    msgData = jsonObj.getString("text");
+                    break;
+                }
             }
         }
     }
