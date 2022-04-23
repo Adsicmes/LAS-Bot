@@ -78,8 +78,8 @@ public class LASBot {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (StrUtils.isNotEmpty(AppConfigs.QQ)) {
-            logger.info("准备初始化bot,QQ是：" + AppConfigs.QQ);
+        if (StrUtils.isNotEmpty(AppConfigs.BOT_QQ)) {
+            logger.info("准备初始化bot,QQ是：" + AppConfigs.BOT_QQ);
         } else {
             logger.error("botQQ暂未初始化，请检查BotRun注解里面的参数");
             throw new Exception("botQQ暂未初始化");

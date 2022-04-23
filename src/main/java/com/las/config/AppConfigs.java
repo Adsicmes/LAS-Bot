@@ -18,8 +18,8 @@ public class AppConfigs {
 
     //常量名字为全大写
     public static String SUPER_QQ;
-    public static String QQ;
-    public static String QQ_AUTH;
+    public static String BOT_QQ;
+    public static String KEY_AUTH;
     public static String MIRAT_API_URL;
     public static String QQ_BOT_SERVER;
     public static String WEB_PATH;
@@ -45,11 +45,11 @@ public class AppConfigs {
 
         //获取botQQ
         iniSection = getInit(path).getSection("botqq");
-        QQ = iniSection.getItem("qq").getValue();
-        QQ_AUTH = iniSection.getItem("qqAuth").getValue();
+        BOT_QQ = iniSection.getItem("qq").getValue();
+        KEY_AUTH = iniSection.getItem("qqAuth").getValue();
         MIRAT_API_URL = iniSection.getItem("miraiUrl").getValue();
         QQ_BOT_SERVER = iniSection.getItem("botServer").getValue();
-        logger.info("botQQ是：" + QQ);
+        logger.info("botQQ是：" + BOT_QQ);
         iniSection = getInit(path).getSection("webpath");
         WEB_PATH = iniSection.getItem("webpath").getValue();
 

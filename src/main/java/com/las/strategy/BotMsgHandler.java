@@ -177,7 +177,7 @@ public abstract class BotMsgHandler implements BotStrategy {
             group.setName(item.getString("name"));
             group.setGroupId(item.getLong("id"));
             group.setGroupRole(item.getString("permission"));
-            group.setBotQQ(Long.parseLong(AppConfigs.QQ));
+            group.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
             getGroupDao().saveOrUpdate(group);
         });
 
@@ -192,7 +192,7 @@ public abstract class BotMsgHandler implements BotStrategy {
             user.setUserId(item.getLong("id"));
             user.setNickname(EmojiUtil.emojiChange(item.getString("nickname")));
             user.setRemark(EmojiUtil.emojiChange(item.getString("remark")));
-            user.setBotQQ(Long.parseLong(AppConfigs.QQ));
+            user.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
                 user.setFunPermission(Constant.DEFAULT_PERMISSION);

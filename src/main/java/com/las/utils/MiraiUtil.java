@@ -18,8 +18,8 @@ public class MiraiUtil {
     private static Logger logger = Logger.getLogger(MiraiUtil.class);
 
     private static String baseURL = AppConfigs.MIRAT_API_URL;
-    private static String qq = AppConfigs.QQ;
-    private static String qqAuth = AppConfigs.QQ_AUTH;
+    private static String qq = AppConfigs.BOT_QQ;
+    private static String qqAuth = AppConfigs.KEY_AUTH;
 
     private void releaseSession() {
         //之后需要释放session

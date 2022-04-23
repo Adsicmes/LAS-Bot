@@ -60,7 +60,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 if (null != className) {
                     //不为空，说明找到了对应的处理类
                     logger.debug(className);
-                    if (StrUtil.isBlank(AppConfigs.QQ) && StrUtil.isBlank(AppConfigs.QQ_AUTH)) {
+                    if (StrUtil.isBlank(AppConfigs.BOT_QQ) && StrUtil.isBlank(AppConfigs.KEY_AUTH)) {
                         logger.error("botQQ暂未初始化，无法执行bot事件");
                     } else {
                         try {
