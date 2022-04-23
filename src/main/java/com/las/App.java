@@ -2,7 +2,7 @@ package com.las;
 
 import com.las.annotation.BotRun;
 
-@BotRun(qq = "1091569752",
+@BotRun(qq = "2547170055",
         qqAuth = "dw0123456789",
         miraiUrl = "http://localhost:5700",
         botServer = "/cq/getMsg",
