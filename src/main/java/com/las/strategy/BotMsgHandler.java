@@ -32,12 +32,15 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     private JSONArray msgChain;
 
+    // 消息类型 0表示私有 1群消息 2讨论组
+    private int type = -1;
+
+    // 消息内容
+    private String msgData;
+
     private GroupDao groupDao;
 
     private UserDao userDao;
-
-    // 消息类型 0表示私有 1群消息 2讨论组
-    private int type = -1;
 
     public BotMsgHandler() {
         this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
@@ -55,6 +58,10 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     public int getMsgType() {
         return type;
+    }
+
+    public String getMsgData() {
+        return msgData;
     }
 
     public GroupDao getGroupDao() {
@@ -85,6 +92,7 @@ public abstract class BotMsgHandler implements BotStrategy {
         sender = handleSender(object);
         msgChain = handleMsgChain(object);
         type = handleMsgType(object);
+        handleMsgData();
     }
 
     /**
@@ -119,13 +127,9 @@ public abstract class BotMsgHandler implements BotStrategy {
     }
 
     /**
-     * 定义处理获取指令并且执行的方法
+     * 定义处理消息内容的方法
      */
-    protected Command exeCommand() {
-        Command command = null;
-        String msgData = null;
-        //指令小写
-        String cmd;
+    private void handleMsgData() {
         for (int i = 0; i < msgChain.size(); i++) {
             JSONObject jsonObj = msgChain.getJSONObject(i);
             if ("Plain".equals(jsonObj.getString("type"))) {
@@ -133,10 +137,18 @@ public abstract class BotMsgHandler implements BotStrategy {
                 break;
             }
         }
+    }
+
+    /**
+     * 定义处理获取指令并且执行的方法
+     */
+    protected Command exeCommand() {
+        Command command = null;
+        String msgData = getMsgData();
         if (StrKit.isBlank(msgData)) {
             return null;
         }
-        cmd = CmdUtil.getLowerParams(msgData);
+        String cmd = CmdUtil.getLowerParams(msgData);
         Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com", false, Command.class);
         for (Class c : classSet) {
             if (null != command) {

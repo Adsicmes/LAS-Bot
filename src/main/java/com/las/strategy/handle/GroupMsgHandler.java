@@ -9,8 +9,12 @@ public class GroupMsgHandler extends BotMsgHandler {
 
     @Override
     public void exec() {
-        //执行指令
-        exeCommand();
+        String msgData = getMsgData();
+        if(msgData.startsWith("#")){
+            logger.info("匹配到群消息前缀是#符号，开始执行指令");
+            //执行指令
+            exeCommand();
+        }
     }
 
 
