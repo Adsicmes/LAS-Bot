@@ -1,5 +1,6 @@
 package com.las.strategy;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -14,10 +15,7 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
 
@@ -130,7 +128,7 @@ public abstract class BotMsgHandler implements BotStrategy {
      * 定义处理消息内容的方法
      */
     private void handleMsgData() {
-        if (!msgChain.isEmpty()) {
+        if (CollectionUtil.isNotEmpty(msgChain)) {
             for (int i = 0; i < msgChain.size(); i++) {
                 JSONObject jsonObj = msgChain.getJSONObject(i);
                 if ("Plain".equals(jsonObj.getString("type"))) {
