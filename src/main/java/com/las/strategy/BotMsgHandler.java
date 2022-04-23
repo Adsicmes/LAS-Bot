@@ -148,7 +148,7 @@ public abstract class BotMsgHandler implements BotStrategy {
         if (StrKit.isBlank(msgData)) {
             return null;
         }
-        if (msgData.startsWith("#")) {
+        if (msgData.startsWith(Constant.DEFAULT_PRE)) {
             msgData = msgData.substring(1);
         }
         String cmd = CmdUtil.getLowerParams(msgData);

@@ -18,4 +18,9 @@ public class Constant {
     public static final int MESSAGE_TYPE_PRIVATE = 0;
     public static final int MESSAGE_TYPE_GROUP = 1;
     public static final int MESSAGE_TYPE_DISCUSS = 2;
+
+    /**
+     * 消息前缀
+     */
+    public static final String DEFAULT_PRE = "#";
 }
