@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
+import com.las.pojo.CqResponse;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,78 @@ public class MiraiUtil {
         String result = HttpKit.get(URL);
         releaseSession();
         return JsonUtils.getJsonArrayByJsonString(result);
+    }
+
+    public CqResponse sendImgMsg(Long id, Long gId, ArrayList<String> urls, String type) {
+        initSession();
+        String URL;
+        Map<String, Object> info = new HashMap<>();
+        switch (type) {
+            case "group":
+                URL = baseURL + "/sendImageMessage";
+                info.put("sessionKey", Constant.session);
+                info.put("qq", id);
+                info.put("group", gId);
+                info.put("target", gId);
+                info.put("urls", urls);
+
+                break;
+            case "discuss":
+                URL = baseURL + "/sendImageMessage";
+                info.put("sessionKey", Constant.session);
+                info.put("qq", id);
+                info.put("group", gId);
+                info.put("urls", urls);
+                break;
+            case "private":
+                URL = baseURL + "/sendImageMessage";
+                info.put("sessionKey", Constant.session);
+                info.put("qq", id);
+                info.put("urls", urls);
+                break;
+            default:
+                return null;
+        }
+        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
+        logger.info("CQ结果：" + result);
+        releaseSession();
+        return null;
+    }
+
+
+    public CqResponse sendMsg(Long id, Long gId, ArrayList<JSONObject> msgList, String type) {
+        initSession();
+        String URL;
+        Map<String, Object> info = new HashMap<>();
+        switch (type) {
+            case "group":
+                URL = baseURL + "/sendGroupMessage";
+                info.put("sessionKey", Constant.session);
+                info.put("target", gId);
+                info.put("messageChain", msgList);
+
+                break;
+            case "discuss":
+                URL = baseURL + "/sendTempMessage";
+                info.put("sessionKey", Constant.session);
+                info.put("qq", id);
+                info.put("group", gId);
+                info.put("messageChain", msgList);
+                break;
+            case "private":
+                URL = baseURL + "/sendFriendMessage";
+                info.put("sessionKey", Constant.session);
+                info.put("target", id);
+                info.put("messageChain", msgList);
+                break;
+            default:
+                return null;
+        }
+        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
+        logger.info("CQ结果：" + result);
+
+        releaseSession();
+        return JsonUtils.getObjectByJson(result, CqResponse.class);
     }
 
 }

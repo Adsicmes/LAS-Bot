@@ -11,4 +11,11 @@ public class Constant {
      * QQ用户默认权限
      */
     public static final int DEFAULT_PERMISSION = 0;
+
+    /**
+     * CQ消息类型
+     */
+    public static final int MESSAGE_TYPE_PRIVATE = 0;
+    public static final int MESSAGE_TYPE_GROUP = 1;
+    public static final int MESSAGE_TYPE_DISCUSS = 2;
 }

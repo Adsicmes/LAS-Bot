@@ -15,6 +15,7 @@ public class FriendMsgHandler extends BotMsgHandler {
         JSONArray msgChain = getMsgChain();
         logger.info("得到了sender --> " + sender.toJSONString());
         logger.info("得到了msgChain --> " + msgChain.toJSONString());
+        exeCommand();
 
 
     }
