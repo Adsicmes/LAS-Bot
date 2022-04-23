@@ -1,5 +1,6 @@
 package com.las.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.las.common.Constant;
@@ -117,6 +118,19 @@ public class MiraiUtil {
         }
         String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
         logger.info("CQ结果：" + result);
+        //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
+        if ("group".equals(type)) {
+            JSONArray array = JSONObject.parseArray(result);
+            if (!array.isEmpty()) {
+                URL = baseURL + "/sendImageMessage";
+                info.put("sessionKey", Constant.session);
+                info.put("qq", id);
+                info.put("group", gId);
+                info.put("target", id);
+                String result2 = HttpKit.post(URL, JsonUtils.getJsonString(info));
+                logger.info("CQ结果2：" + result2);
+            }
+        }
         releaseSession();
         return null;
     }
@@ -152,7 +166,23 @@ public class MiraiUtil {
         }
         String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
         logger.info("CQ结果：" + result);
-
+        //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
+        if ("group".equals(type)) {
+            JSONObject obj = JsonUtils.getJsonObjectByJsonString(result);
+            String msgCode = obj.getString("msg");
+            if ("success".equals(msgCode)) {
+                Long msgId = obj.getLong("messageId");
+                if (0 == msgId) {
+                    URL = baseURL + "/sendTempMessage";
+                    info.put("sessionKey", Constant.session);
+                    info.put("qq", id);
+                    info.put("group", gId);
+                    info.put("messageChain", msgList);
+                    String result2 = HttpKit.post(URL, JsonUtils.getJsonString(info));
+                    logger.info("CQ结果2：" + result2);
+                }
+            }
+        }
         releaseSession();
         return JsonUtils.getObjectByJson(result, CqResponse.class);
     }
