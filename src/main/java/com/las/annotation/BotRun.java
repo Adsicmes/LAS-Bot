@@ -9,9 +9,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BotRun {
 
-    String qq() default "";
+    String superQQ();
 
-    String qqAuth() default "";
+    String botQQ();
+
+    String keyAuth();
 
     String miraiUrl();
 

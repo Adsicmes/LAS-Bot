@@ -5,6 +5,7 @@ import com.las.annotation.BotRun;
 import com.las.config.AppConfigs;
 import com.las.netty.HttpServer;
 import com.las.utils.ClassUtil;
+import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -56,7 +57,7 @@ public class LASBot {
     /**
      * 初始化配置文件
      */
-    private static void init(BotRun annotation) {
+    private static void init(BotRun annotation) throws Exception {
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.debug("当前env配置路径是：" + path);
         try {
@@ -77,11 +78,11 @@ public class LASBot {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (StrUtil.isBlank(AppConfigs.QQ)) {
-            logger.error("botQQ暂未初始化，请在页面输入账号");
-            logger.error("网址：http://127.0.0.1:"+annotation.botPort()+"/index.html");
-        } else {
+        if (StrUtils.isNotEmpty(AppConfigs.QQ)) {
             logger.info("准备初始化bot,QQ是：" + AppConfigs.QQ);
+        } else {
+            logger.error("botQQ暂未初始化，请检查BotRun注解里面的参数");
+            throw new Exception("botQQ暂未初始化");
         }
     }
 
@@ -89,8 +90,9 @@ public class LASBot {
      * 更改文件中的替换文字
      */
     private static String changeLine(String content, BotRun botRun) {
-        content = content.replaceAll("BOT_QQ_PARAM", botRun.qq());
-        content = content.replaceAll("QQ_AUTH_PARAM", botRun.qqAuth());
+        content = content.replaceAll("SUPER_QQ_PARAM", botRun.superQQ());
+        content = content.replaceAll("BOT_QQ_PARAM", botRun.botQQ());
+        content = content.replaceAll("QQ_AUTH_PARAM", botRun.keyAuth());
         content = content.replaceAll("MIRAI_URL_PARAM", botRun.miraiUrl());
         content = content.replaceAll("BOT_SERVER_PARAM", botRun.botServer());
         content = content.replaceAll("WEB_PATH_PARAM", botRun.webpath());

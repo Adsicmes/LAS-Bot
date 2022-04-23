@@ -18,6 +18,9 @@ public class User {
     @Column("fun_permission")
     private Integer funPermission;
 
+    @Column("bot_qq")
+    private Long botQQ;
+
     public Long getId() {
         return id;
     }
@@ -56,5 +59,13 @@ public class User {
 
     public void setFunPermission(Integer funPermission) {
         this.funPermission = funPermission;
+    }
+
+    public Long getBotQQ() {
+        return botQQ;
+    }
+
+    public void setBotQQ(Long botQQ) {
+        this.botQQ = botQQ;
     }
 }

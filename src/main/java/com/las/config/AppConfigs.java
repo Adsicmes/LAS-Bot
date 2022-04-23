@@ -17,6 +17,7 @@ public class AppConfigs {
     private static Logger logger = Logger.getLogger(AppConfigs.class);
 
     //常量名字为全大写
+    public static String SUPER_QQ;
     public static String QQ;
     public static String QQ_AUTH;
     public static String MIRAT_API_URL;
@@ -51,6 +52,10 @@ public class AppConfigs {
         logger.info("botQQ是：" + QQ);
         iniSection = getInit(path).getSection("webpath");
         WEB_PATH = iniSection.getItem("webpath").getValue();
+
+        //超级管理员
+        iniSection = getInit(path).getSection("superuser");
+        SUPER_QQ = iniSection.getItem("superqq").getValue();
 
         // 根据路径地址构建文件
         File html = new File(System.getProperty("user.dir"), WEB_PATH);

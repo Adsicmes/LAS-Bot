@@ -7,10 +7,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
 import com.las.cmd.Command;
 import com.las.common.Constant;
+import com.las.config.AppConfigs;
 import com.las.dao.GroupDao;
 import com.las.dao.UserDao;
+import com.las.model.Group;
+import com.las.model.User;
 import com.las.utils.ClassUtil;
 import com.las.utils.CmdUtil;
+import com.las.utils.EmojiUtil;
+import com.las.utils.MiraiUtil;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
@@ -140,10 +145,50 @@ public abstract class BotMsgHandler implements BotStrategy {
     }
 
     /**
+     * 初始化机器人好友和群
+     */
+    protected void initBot() {
+        List<JSONObject> list = MiraiUtil.getInstance().getGroupList();
+        //采取异步
+        list.parallelStream().forEach(item -> {
+            Group group = getGroupDao().findByGid(item.getLong("id"));
+            if(null == group){
+                group = new Group();
+            }
+            //id存在则是做更新
+            group.setName(item.getString("name"));
+            group.setGroupId(item.getLong("id"));
+            group.setGroupRole(item.getString("permission"));
+            group.setBotQQ(Long.parseLong(AppConfigs.QQ));
+            getGroupDao().saveOrUpdate(group);
+        });
+
+        //下一步查询机器人QQ所有的好友列表
+        List<JSONObject> friendList = MiraiUtil.getInstance().getFriendList();
+        friendList.parallelStream().forEach(item -> {
+            logger.info(item);
+            User user = getUserDao().findByUid(item.getLong("id"));
+            if(null == user){
+                user = new User();
+            }
+            user.setUserId(item.getLong("id"));
+            user.setNickname(EmojiUtil.emojiChange(item.getString("nickname")));
+            user.setRemark(EmojiUtil.emojiChange(item.getString("remark")));
+            user.setBotQQ(Long.parseLong(AppConfigs.QQ));
+            if (null == user.getFunPermission()) {
+                //说明该用户是第一次？默认设置权限0
+                user.setFunPermission(Constant.DEFAULT_PERMISSION);
+            }
+            getUserDao().saveOrUpdate(user);
+        });
+    }
+
+    /**
      * 定义处理获取指令并且执行的方法
      */
     protected Command exeCommand() {
         Command command = null;
+        int cmdLength = 0;
         String msgData = getMsgData();
         if (StrKit.isBlank(msgData)) {
             return null;
@@ -184,7 +229,6 @@ public abstract class BotMsgHandler implements BotStrategy {
                 }
             }
             if (StrKit.notBlank(cmd)) {
-                int cmdLength = 0;
                 for (String cmds : cmdList) {
                     if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
                         if (cmdLength < cmds.length()) {
@@ -211,7 +255,7 @@ public abstract class BotMsgHandler implements BotStrategy {
             } else {
                 id = userId;
             }
-            command.execute(userId, id, getMsgType(), cmd, CmdUtil.getParamsArray(cmd));
+            command.execute(userId, id, getMsgType(), cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
         }
 
         return command;

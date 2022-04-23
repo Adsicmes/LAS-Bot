@@ -1,10 +1,12 @@
 package com.las.cmd;
 
 
+import com.las.strategy.BotMsgHandler;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public abstract class Command {
+public abstract class Command extends BotMsgHandler {
 
     private String name;                // 指令名
     private ArrayList<String> alias;    // 其他指向这个指令的指令名

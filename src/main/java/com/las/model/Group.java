@@ -16,6 +16,9 @@ public class Group {
     @Column("group_role")
     private String groupRole;
 
+    @Column("bot_qq")
+    private Long botQQ;
+
     public Long getId() {
         return id;
     }
@@ -46,5 +49,13 @@ public class Group {
 
     public void setGroupRole(String groupRole) {
         this.groupRole = groupRole;
+    }
+
+    public Long getBotQQ() {
+        return botQQ;
+    }
+
+    public void setBotQQ(Long botQQ) {
+        this.botQQ = botQQ;
     }
 }

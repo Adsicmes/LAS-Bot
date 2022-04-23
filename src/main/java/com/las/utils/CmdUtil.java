@@ -3,10 +3,10 @@ package com.las.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import com.jfinal.kit.StrKit;
 import com.las.common.Constant;
 import com.las.pojo.CqResponse;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CmdUtil {
+
+    private static Logger logger = Logger.getLogger(CmdUtil.class);
 
     /**
      * CQ发送消息
@@ -53,6 +55,7 @@ public class CmdUtil {
         info.put("type", "MusicShare");
         info.put("title", songName);
         info.put("jumpUrl", "https://y.music.163.com/m/song?id=" + obj.getString("id"));
+        logger.info("搜索到歌曲内容是：" + info.toJSONString());
 
         ArrayList<JSONObject> msgList = new ArrayList<>();
         msgList.add(info);
@@ -115,6 +118,21 @@ public class CmdUtil {
         return response;
     }
 
+
+    /**
+     * 截取命令后面的参数，例如 点歌 空山新雨后
+     *
+     * @param cmd 命令（带参数）
+     * @param num 截取命令前面长度
+     * @return 截取返回 空山新雨后
+     */
+    public static String getParams(String cmd, int num) {
+        String param = "";
+        if (StrUtils.isNotBlank(cmd)) {
+            param = cmd.substring(num).trim();
+        }
+        return param;
+    }
 
 
 
