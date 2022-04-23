@@ -4,23 +4,18 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jfinal.kit.StrKit;
-import com.las.cmd.Command;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.dao.GroupDao;
 import com.las.dao.UserDao;
 import com.las.model.Group;
 import com.las.model.User;
-import com.las.utils.ClassUtil;
-import com.las.utils.CmdUtil;
 import com.las.utils.EmojiUtil;
 import com.las.utils.MiraiUtil;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
 
@@ -40,6 +35,12 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     // 消息内容
     private String msgData;
+
+    // 用户ID
+    private Long userId;
+
+    // 组ID
+    private Long id;
 
     private GroupDao groupDao;
 
@@ -65,6 +66,14 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     public String getMsgData() {
         return msgData;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public GroupDao getGroupDao() {
@@ -96,6 +105,7 @@ public abstract class BotMsgHandler implements BotStrategy {
         msgChain = handleMsgChain(object);
         type = handleMsgType(object);
         handleMsgData();
+        handleUserId();
     }
 
     /**
@@ -129,9 +139,17 @@ public abstract class BotMsgHandler implements BotStrategy {
         }
     }
 
-    /**
-     * 定义处理消息内容的方法
-     */
+
+    private void handleUserId() {
+        userId = getSender().getLong("id");
+        JSONObject group = getSender().getJSONObject("group");
+        if (null != group) {
+            id = group.getLong("id");
+        } else {
+            id = userId;
+        }
+    }
+
     private void handleMsgData() {
         if (CollectionUtil.isNotEmpty(msgChain)) {
             for (int i = 0; i < msgChain.size(); i++) {
@@ -181,84 +199,6 @@ public abstract class BotMsgHandler implements BotStrategy {
             }
             getUserDao().saveOrUpdate(user);
         });
-    }
-
-    /**
-     * 定义处理获取指令并且执行的方法
-     */
-    protected Command exeCommand() {
-        Command command = null;
-        int cmdLength = 0;
-        String msgData = getMsgData();
-        if (StrKit.isBlank(msgData)) {
-            return null;
-        }
-        if (msgData.startsWith(Constant.DEFAULT_PRE)) {
-            msgData = msgData.substring(1);
-        }
-        String cmd = CmdUtil.getLowerParams(msgData);
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com", false, Command.class);
-        for (Class c : classSet) {
-            if (null != command) {
-                logger.info("指令类是：" + command.toString());
-                break;
-            }
-            Class superclass = c.getSuperclass();
-            Field[] fields = superclass.getDeclaredFields();
-            List<String> cmdList = new ArrayList<>();
-            for (Field field : fields) {
-                String colName = field.getName();
-                String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
-                Method method;
-                Object o = null;
-                try {
-                    method = superclass.getDeclaredMethod(methodName);
-                    o = method.invoke(c.newInstance());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if ("alias".equalsIgnoreCase(colName)) {
-                    if (cmdList.isEmpty()) {
-                        cmdList = (List<String>) o;
-                    } else {
-                        cmdList.addAll((List<String>) o);
-                    }
-                }
-                if ("name".equalsIgnoreCase(colName)) {
-                    cmdList.add(o.toString());
-                }
-            }
-            if (StrKit.notBlank(cmd)) {
-                for (String cmds : cmdList) {
-                    if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
-                        if (cmdLength < cmds.length()) {
-                            cmdLength = cmds.length();
-                            if (null == command) {
-                                try {
-                                    command = (Command) c.newInstance();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (null != command) {
-            logger.info("确认指令类是：" + command.toString());
-            Long userId = getSender().getLong("id");
-            JSONObject group = getSender().getJSONObject("group");
-            Long id;
-            if (null != group) {
-                id = group.getLong("id");
-            } else {
-                id = userId;
-            }
-            command.execute(userId, id, getMsgType(), cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
-        }
-
-        return command;
     }
 
 }

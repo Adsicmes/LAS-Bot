@@ -4,12 +4,17 @@ package com.las.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
+import com.las.cmd.Command;
 import com.las.common.Constant;
 import com.las.pojo.CqResponse;
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +29,7 @@ public class CmdUtil {
      * @param id   ID
      * @param type 消息类型
      */
-    public static CqResponse sendMessage(String msg, Long id, Long gId, int type) {
+    public static CqResponse sendMessage(String msg, Long userId, Long id, int type) {
         CqResponse response = null;
         //和Cq发消息内容不一样，Mirai采取用消息链，后续封装其他方法，例如发送语音消息、图片消息
         ArrayList<JSONObject> msgList = new ArrayList<>();
@@ -32,11 +37,11 @@ public class CmdUtil {
         object.put("type", "Plain");
         object.put("text", msg);
         msgList.add(object);
-        response = getCqResponse(id, gId, type, msgList);
+        response = getCqResponse(userId, id, type, msgList);
         return response;
     }
 
-    public static CqResponse send163MusicMessage(JSONObject obj, Long id, Long gId, int type) {
+    public static CqResponse send163MusicMessage(JSONObject obj, Long userId, Long id, int type) {
         CqResponse response = null;
         JSONObject info = new JSONObject();
         JSONArray authors = obj.getJSONArray("ar");
@@ -60,13 +65,13 @@ public class CmdUtil {
         ArrayList<JSONObject> msgList = new ArrayList<>();
         msgList.add(info);
 
-        response = getCqResponse(id, gId, type, msgList);
+        response = getCqResponse(userId, id, type, msgList);
         return response;
 
     }
 
 
-    public static CqResponse sendAtMessage(String msg, Long atId, Long id, Long gId, int type) {
+    public static CqResponse sendAtMessage(String msg, Long atId, Long userId, Long id, int type) {
         CqResponse response = null;
         ArrayList<JSONObject> msgList = new ArrayList<>();
         JSONObject object2 = new JSONObject();
@@ -77,21 +82,21 @@ public class CmdUtil {
         object.put("type", "Plain");
         object.put("text", " " + msg.trim());//因为前面有AT，加下空格
         msgList.add(object);
-        response = getCqResponse(id, gId, type, msgList);
+        response = getCqResponse(userId, id, type, msgList);
         return response;
     }
 
-    private static CqResponse getCqResponse(Long id, Long gId, int type, ArrayList<JSONObject> msgList) {
+    private static CqResponse getCqResponse(Long userId, Long id, int type, ArrayList<JSONObject> msgList) {
         CqResponse response = null;
         switch (type) {
             case Constant.MESSAGE_TYPE_PRIVATE:
-                response = MiraiUtil.getInstance().sendMsg(id, gId, msgList, "private");
+                response = MiraiUtil.getInstance().sendMsg(userId, id, msgList, "private");
                 break;
             case Constant.MESSAGE_TYPE_GROUP:
-                response = MiraiUtil.getInstance().sendMsg(id, gId, msgList, "group");
+                response = MiraiUtil.getInstance().sendMsg(userId, id, msgList, "group");
                 break;
             case Constant.MESSAGE_TYPE_DISCUSS:
-                response = MiraiUtil.getInstance().sendMsg(id, gId, msgList, "discuss");
+                response = MiraiUtil.getInstance().sendMsg(userId, id, msgList, "discuss");
                 break;
             default:
                 break;
@@ -99,23 +104,91 @@ public class CmdUtil {
         return response;
     }
 
-    public static CqResponse sendImgMessage(ArrayList<String> urls, Long id, Long gId, int type) {
+    public static CqResponse sendImgMessage(ArrayList<String> urls, Long userId, Long id, int type) {
         CqResponse response = null;
 
         switch (type) {
             case Constant.MESSAGE_TYPE_PRIVATE:
-                response = MiraiUtil.getInstance().sendImgMsg(id, gId, urls, "private");
+                response = MiraiUtil.getInstance().sendImgMsg(userId, id, urls, "private");
                 break;
             case Constant.MESSAGE_TYPE_GROUP:
-                response = MiraiUtil.getInstance().sendImgMsg(id, gId, urls, "group");
+                response = MiraiUtil.getInstance().sendImgMsg(userId, id, urls, "group");
                 break;
             case Constant.MESSAGE_TYPE_DISCUSS:
-                response = MiraiUtil.getInstance().sendImgMsg(id, gId, urls, "discuss");
+                response = MiraiUtil.getInstance().sendImgMsg(userId, id, urls, "discuss");
                 break;
             default:
                 break;
         }
         return response;
+    }
+
+    /**
+     * 执行指令方法
+     */
+    public static void exeCommand(String msg, Long userId, Long id, int type) {
+        Command command = null;
+        int cmdLength = 0;
+        if (StrKit.isBlank(msg)) {
+            return;
+        }
+        if (msg.startsWith(Constant.DEFAULT_PRE)) {
+            msg = msg.substring(1);
+        }
+        String cmd = CmdUtil.getLowerParams(msg);
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com", false, Command.class);
+        for (Class c : classSet) {
+            if (null != command) {
+                logger.info("指令类是：" + command.toString());
+                break;
+            }
+            Class superclass = c.getSuperclass();
+            Field[] fields = superclass.getDeclaredFields();
+            List<String> cmdList = new ArrayList<>();
+            for (Field field : fields) {
+                String colName = field.getName();
+                String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
+                Method method;
+                Object o = null;
+                try {
+                    method = superclass.getDeclaredMethod(methodName);
+                    o = method.invoke(c.newInstance());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if ("alias".equalsIgnoreCase(colName)) {
+                    if (cmdList.isEmpty()) {
+                        cmdList = (List<String>) o;
+                    } else {
+                        cmdList.addAll((List<String>) o);
+                    }
+                }
+                if ("name".equalsIgnoreCase(colName)) {
+                    cmdList.add(o.toString());
+                }
+            }
+            if (StrKit.notBlank(cmd)) {
+                for (String cmds : cmdList) {
+                    if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
+                        if (cmdLength < cmds.length()) {
+                            cmdLength = cmds.length();
+                            if (null == command) {
+                                try {
+                                    command = (Command) c.newInstance();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (null != command) {
+            logger.info("确认指令类是：" + command.toString());
+            command.execute(userId, id, type, cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
+        }
+
     }
 
 
@@ -126,7 +199,7 @@ public class CmdUtil {
      * @param num 截取命令前面长度
      * @return 截取返回 空山新雨后
      */
-    public static String getParams(String cmd, int num) {
+    private static String getParams(String cmd, int num) {
         String param = "";
         if (StrUtils.isNotBlank(cmd)) {
             param = cmd.substring(num).trim();
@@ -142,7 +215,7 @@ public class CmdUtil {
      * @param params 参数（例如 1 100）
      * @return 返回 list
      */
-    public static ArrayList<String> getParamsArray(String params) {
+    private static ArrayList<String> getParamsArray(String params) {
         ArrayList<String> list = new ArrayList<>();
         if (StrKit.notBlank(params)) {
             String[] split = params.split(" ");
@@ -159,10 +232,11 @@ public class CmdUtil {
      * @param msg 参数消息
      * @return 优化好的参数
      */
-    public static String getLowerParams(String msg) {
+    private static String getLowerParams(String msg) {
         Pattern p = Pattern.compile("\\s+");
         Matcher m = p.matcher(msg);
         return m.replaceAll(" ").toLowerCase().trim();
     }
+
 
 }
