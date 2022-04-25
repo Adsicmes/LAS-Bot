@@ -77,6 +77,8 @@ public class LASBot {
             initialStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            logger.warn("启动完成，请勿关闭程序窗口");
         }
         if (StrUtils.isNotEmpty(AppConfigs.BOT_QQ)) {
             logger.info("准备初始化bot,QQ是：" + AppConfigs.BOT_QQ);
