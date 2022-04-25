@@ -14,4 +14,10 @@ public interface BotStrategy {
      * 执行消息
      */
     void exec();
+
+
+    /**
+     * 执行指令方法
+     */
+    void exeCommand(String msg, Long userId, Long id, int type);
 }

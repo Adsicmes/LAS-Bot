@@ -36,25 +36,6 @@ public abstract class Command extends BotMsgHandler {
     }
 
     /**
-     * 空的构造器
-     */
-    public Command(){
-
-    }
-
-    /**
-     * 指令构造器
-     *
-     * @param name       指令名
-     * @param alias      其他指令名
-     */
-    public Command(String name, ArrayList<String> alias) {
-        this.name = name;
-        this.alias = alias;
-    }
-
-
-    /**
      * 指令构造器
      *
      * @param name       指令名
@@ -63,6 +44,20 @@ public abstract class Command extends BotMsgHandler {
     public Command(String name, String... alias) {
         this(name, new ArrayList<>(Arrays.asList(alias)));
     }
+
+
+    /**
+     * 指令构造器
+     *
+     * @param name       指令名
+     * @param alias      其他指令名
+     */
+    private Command(String name, ArrayList<String> alias) {
+        this.name = name;
+        this.alias = alias;
+    }
+
+
 
     /**
      * 执行指令

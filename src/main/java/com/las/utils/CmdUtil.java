@@ -23,6 +23,52 @@ public class CmdUtil {
     private static Logger logger = Logger.getLogger(CmdUtil.class);
 
     /**
+     * 截取命令后面的参数，例如 点歌 空山新雨后
+     *
+     * @param cmd 命令（带参数）
+     * @param num 截取命令前面长度
+     * @return 截取返回 空山新雨后
+     */
+    public static String getParams(String cmd, int num) {
+        String param = "";
+        if (StrUtils.isNotBlank(cmd)) {
+            param = cmd.substring(num).trim();
+        }
+        return param;
+    }
+
+
+
+    /**
+     * 将命令后面的参数返回一个参数集合
+     *
+     * @param params 参数（例如 1 100）
+     * @return 返回 list
+     */
+    public static ArrayList<String> getParamsArray(String params) {
+        ArrayList<String> list = new ArrayList<>();
+        if (StrKit.notBlank(params)) {
+            String[] split = params.split(" ");
+            if (split.length > 0) {
+                Collections.addAll(list, split);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 参数中多个空格转换为一个空格（并且改为小写）
+     *
+     * @param msg 参数消息
+     * @return 优化好的参数
+     */
+    public static String getLowerParams(String msg) {
+        Pattern p = Pattern.compile("\\s+");
+        Matcher m = p.matcher(msg);
+        return m.replaceAll(" ").toLowerCase().trim();
+    }
+
+    /**
      * CQ发送消息
      *
      * @param msg  消息内容
@@ -121,121 +167,6 @@ public class CmdUtil {
                 break;
         }
         return response;
-    }
-
-    /**
-     * 执行指令方法
-     */
-    public static void exeCommand(String msg, Long userId, Long id, int type) {
-        Command command = null;
-        int cmdLength = 0;
-        if (StrKit.isBlank(msg)) {
-            return;
-        }
-        if (msg.startsWith(Constant.DEFAULT_PRE)) {
-            msg = msg.substring(1);
-        }
-        String cmd = CmdUtil.getLowerParams(msg);
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com.las.cmd", false, Command.class);
-        for (Class c : classSet) {
-            if (null != command) {
-                logger.info("指令类是：" + command.toString());
-                break;
-            }
-            Class superclass = c.getSuperclass();
-            Field[] fields = superclass.getDeclaredFields();
-            List<String> cmdList = new ArrayList<>();
-            for (Field field : fields) {
-                String colName = field.getName();
-                String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
-                Method method;
-                Object o = null;
-                try {
-                    method = superclass.getDeclaredMethod(methodName);
-                    o = method.invoke(c.newInstance());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if ("alias".equalsIgnoreCase(colName)) {
-                    if (cmdList.isEmpty()) {
-                        cmdList = (List<String>) o;
-                    } else {
-                        cmdList.addAll((List<String>) o);
-                    }
-                }
-                if ("name".equalsIgnoreCase(colName)) {
-                    cmdList.add(o.toString());
-                }
-            }
-            if (StrKit.notBlank(cmd)) {
-                for (String cmds : cmdList) {
-                    if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
-                        if (cmdLength < cmds.length()) {
-                            cmdLength = cmds.length();
-                            if (null == command) {
-                                try {
-                                    command = (Command) c.newInstance();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (null != command) {
-            logger.info("确认指令类是：" + command.toString());
-            command.execute(userId, id, type, cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
-        }
-
-    }
-
-
-    /**
-     * 截取命令后面的参数，例如 点歌 空山新雨后
-     *
-     * @param cmd 命令（带参数）
-     * @param num 截取命令前面长度
-     * @return 截取返回 空山新雨后
-     */
-    private static String getParams(String cmd, int num) {
-        String param = "";
-        if (StrUtils.isNotBlank(cmd)) {
-            param = cmd.substring(num).trim();
-        }
-        return param;
-    }
-
-
-
-    /**
-     * 将命令后面的参数返回一个参数集合
-     *
-     * @param params 参数（例如 1 100）
-     * @return 返回 list
-     */
-    private static ArrayList<String> getParamsArray(String params) {
-        ArrayList<String> list = new ArrayList<>();
-        if (StrKit.notBlank(params)) {
-            String[] split = params.split(" ");
-            if (split.length > 0) {
-                Collections.addAll(list, split);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * 参数中多个空格转换为一个空格（并且改为小写）
-     *
-     * @param msg 参数消息
-     * @return 优化好的参数
-     */
-    private static String getLowerParams(String msg) {
-        Pattern p = Pattern.compile("\\s+");
-        Matcher m = p.matcher(msg);
-        return m.replaceAll(" ").toLowerCase().trim();
     }
 
 

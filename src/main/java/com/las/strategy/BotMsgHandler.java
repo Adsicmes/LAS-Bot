@@ -4,18 +4,22 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.kit.StrKit;
+import com.las.cmd.Command;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.dao.GroupDao;
 import com.las.dao.UserDao;
 import com.las.model.Group;
 import com.las.model.User;
-import com.las.utils.EmojiUtil;
-import com.las.utils.MiraiUtil;
+import com.las.utils.*;
 import org.apache.log4j.Logger;
 
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
 
@@ -95,11 +99,10 @@ public abstract class BotMsgHandler implements BotStrategy {
     }
 
     /**
-     * 实现接口的处理消息方法(子类也可以去重新实现)
+     * 实现接口的处理消息方法(子类不可以去重新实现)
      */
     @Override
-    public void handleMsg(Map map) {
-        logger.info("bot开始处理消息...");
+    public final void handleMsg(Map map) {
         JSONObject object = JSON.parseObject(JSONObject.toJSONString(map));
         sender = handleSender(object);
         msgChain = handleMsgChain(object);
@@ -163,6 +166,74 @@ public abstract class BotMsgHandler implements BotStrategy {
     }
 
     /**
+     * 执行指令方法(子类不可以去重新实现)
+     */
+    @Override
+    public final void exeCommand(String msg, Long userId, Long id, int type) {
+        Command command = null;
+        int cmdLength = 0;
+        if (StrKit.isBlank(msg)) {
+            return;
+        }
+        if (msg.startsWith(Constant.DEFAULT_PRE)) {
+            msg = msg.substring(1);
+        }
+        String cmd = CmdUtil.getLowerParams(msg);
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com.las.cmd", false, Command.class);
+        for (Class c : classSet) {
+            if (null != command) {
+                break;
+            }
+            Class superclass = c.getSuperclass();
+            Field[] fields = superclass.getDeclaredFields();
+            List<String> cmdList = new ArrayList<>();
+            for (Field field : fields) {
+                String colName = field.getName();
+                String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
+                Method method;
+                Object o = null;
+                try {
+                    method = superclass.getDeclaredMethod(methodName);
+                    o = method.invoke(c.newInstance());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if ("alias".equalsIgnoreCase(colName)) {
+                    if (cmdList.isEmpty()) {
+                        cmdList = (List<String>) o;
+                    } else {
+                        cmdList.addAll((List<String>) o);
+                    }
+                }
+                if ("name".equalsIgnoreCase(colName)) {
+                    cmdList.add(o.toString());
+                }
+            }
+            if (StrKit.notBlank(cmd)) {
+                for (String cmds : cmdList) {
+                    if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
+                        if (cmdLength < cmds.length()) {
+                            cmdLength = cmds.length();
+                            if (null == command) {
+                                try {
+                                    command = (Command) c.newInstance();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (null != command) {
+            logger.info("执行指令是：" + command.toString());
+            command.execute(userId, id, type, cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
+        }
+
+    }
+
+    /**
      * 初始化机器人好友和群
      */
     protected void initBot() {
@@ -200,5 +271,6 @@ public abstract class BotMsgHandler implements BotStrategy {
             getUserDao().saveOrUpdate(user);
         });
     }
+
 
 }

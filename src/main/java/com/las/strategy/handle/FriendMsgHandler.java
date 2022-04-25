@@ -19,7 +19,7 @@ public class FriendMsgHandler extends BotMsgHandler {
         logger.info("得到了msgChain --> " + msgChain.toJSONString());
         String msgData = getMsgData();
         if (StrUtils.isNotBlank(msgData)) {
-            CmdUtil.exeCommand(msgData, getUserId(), getId(), getMsgType());
+            exeCommand(msgData, getUserId(), getId(), getMsgType());
         }
 
     }
