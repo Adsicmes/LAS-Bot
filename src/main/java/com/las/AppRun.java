@@ -8,9 +8,8 @@ import com.las.annotation.BotRun;
         botPort = 8080)
 public class AppRun {
 
-    // 开发者模式
     public static void main(String[] args) {
-        LASBot.run(AppRun.class, true);
+        LASBot.run(AppRun.class);
     }
 
 }

@@ -22,18 +22,6 @@ public class LASBot {
     private static Logger logger = Logger.getLogger(App.class);
 
     public static void run(Class<?> appClass) {
-        run(appClass, false);
-    }
-
-    public static void run(Class<?> appClass, boolean isDebug) {
-        if(isDebug){
-            // 开发模式，每次run删除bot.ini配置文件，以注解为主
-            String path = System.getProperty("user.dir") + File.separator + "bot.ini";
-            File file = new File(path);
-            if(file.exists()){
-                file.delete();
-            }
-        }
         BotRun botRun = appClass.getDeclaredAnnotation(BotRun.class);
         if (botRun != null) {
             String className = appClass.getName();

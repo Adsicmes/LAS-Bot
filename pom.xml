@@ -198,7 +198,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.las.config.App</mainClass>
+                            <mainClass>com.las.AppRun</mainClass>
                         </manifest>
                         <!-- 给清单文件添加键值对(配置文件外置) -->
                         <manifestEntries>
