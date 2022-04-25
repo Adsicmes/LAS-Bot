@@ -64,17 +64,21 @@ public class LASBot {
             InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
             BufferedReader br;
             BufferedWriter bw;
-            br = new BufferedReader(new InputStreamReader(initialStream));
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"), "GBK"));
-            String line;
-            while (null != (line = br.readLine())) {
-                bw.write(changeLine(line, annotation));
-                bw.newLine();
-                bw.flush();
+            //先判断是否存在
+            File file = new File(path);
+            if (!file.exists()) {
+                br = new BufferedReader(new InputStreamReader(initialStream));
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"), "GBK"));
+                String line;
+                while (null != (line = br.readLine())) {
+                    bw.write(changeLine(line, annotation));
+                    bw.newLine();
+                    bw.flush();
+                }
+                bw.close();
+                br.close();
+                initialStream.close();
             }
-            bw.close();
-            br.close();
-            initialStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
