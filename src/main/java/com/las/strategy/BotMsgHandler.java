@@ -104,56 +104,19 @@ public abstract class BotMsgHandler implements BotStrategy {
     @Override
     public final void handleMsg(Map map) {
         JSONObject object = JSON.parseObject(JSONObject.toJSONString(map));
-        sender = handleSender(object);
-        msgChain = handleMsgChain(object);
-        type = handleMsgType(object);
-        handleMsgData();
-        handleUserId();
-    }
-
-    /**
-     * 定义处理sender消息的方法
-     */
-    private JSONObject handleSender(JSONObject jsonObject) {
-        return jsonObject.getJSONObject("sender");
-    }
-
-    /**
-     * 定义处理messageChain消息的方法
-     */
-    private JSONArray handleMsgChain(JSONObject jsonObject) {
-        return jsonObject.getJSONArray("messageChain");
-    }
-
-    /**
-     * 定义处理消息类型的方法
-     */
-    private int handleMsgType(JSONObject jsonObject) {
-        String type = jsonObject.getString("type");
-        switch (type) {
+        sender = object.getJSONObject("sender");
+        msgChain = object.getJSONArray("messageChain");
+        String strType = object.getString("type");
+        switch (strType) {
             case "FriendMessage":
-                return Constant.MESSAGE_TYPE_PRIVATE;
+                type = Constant.MESSAGE_TYPE_PRIVATE;
             case "GroupMessage":
-                return Constant.MESSAGE_TYPE_GROUP;
+                type = Constant.MESSAGE_TYPE_GROUP;
             case "TempMessage":
-                return Constant.MESSAGE_TYPE_DISCUSS;
+                type = Constant.MESSAGE_TYPE_DISCUSS;
             default:
-                return -1;
+                type = -1;
         }
-    }
-
-
-    private void handleUserId() {
-        userId = getSender().getLong("id");
-        JSONObject group = getSender().getJSONObject("group");
-        if (null != group) {
-            id = group.getLong("id");
-        } else {
-            id = userId;
-        }
-    }
-
-    private void handleMsgData() {
         if (CollectionUtil.isNotEmpty(msgChain)) {
             for (int i = 0; i < msgChain.size(); i++) {
                 JSONObject jsonObj = msgChain.getJSONObject(i);
@@ -163,10 +126,18 @@ public abstract class BotMsgHandler implements BotStrategy {
                 }
             }
         }
+        userId = getSender().getLong("id");
+        JSONObject group = getSender().getJSONObject("group");
+        if (null != group) {
+            id = group.getLong("id");
+        } else {
+            id = userId;
+        }
     }
 
+
     /**
-     * 执行指令方法(子类不可以去重新实现)
+     * 实现接口的执行指令方法(子类不可以去重新实现)
      */
     @Override
     public final void exeCommand(String msg, Long userId, Long id, int type) {

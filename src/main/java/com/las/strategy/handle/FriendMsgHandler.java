@@ -14,6 +14,5 @@ public class FriendMsgHandler extends BotMsgHandler {
         if (StrUtils.isNotBlank(msgData)) {
             exeCommand(msgData, getUserId(), getId(), getMsgType());
         }
-
     }
 }
