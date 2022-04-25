@@ -6,7 +6,7 @@ import com.las.annotation.BotRun;
 @BotRun(superQQ = "1091569752", botQQ = "2547170055", keyAuth = "dw0123456789",
         miraiUrl = "http://localhost:5700",
         botServer = "/cq/getMsg",
-        botPort = 8080)
+        botPort = 8888)
 public class App {
 
     public static void main(String[] args) {
