@@ -64,7 +64,7 @@ public class SongCmd extends Command {
                     CmdUtil.sendMessage(msg, userId, id, type);
                 }
             } else {
-                String msg = songName + " 请在指令后面带歌曲名>.<";
+                String msg = "请在指令后面带歌曲名>.<";
                 CmdUtil.sendMessage(msg, userId, id, type);
             }
         } catch (Exception e) {
