@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
+import com.las.annotation.BotCmd;
 import com.las.cmd.Command;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
@@ -150,7 +151,7 @@ public abstract class BotMsgHandler implements BotStrategy {
             msg = msg.substring(1);
         }
         String cmd = CmdUtil.getLowerParams(msg);
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper("com.las.cmd", false, Command.class);
+        Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
         for (Class c : classSet) {
             if (null != command) {
                 break;
@@ -212,7 +213,7 @@ public abstract class BotMsgHandler implements BotStrategy {
         //采取异步
         list.parallelStream().forEach(item -> {
             Group group = getGroupDao().findByGid(item.getLong("id"));
-            if(null == group){
+            if (null == group) {
                 group = new Group();
             }
             //id存在则是做更新
@@ -228,7 +229,7 @@ public abstract class BotMsgHandler implements BotStrategy {
         friendList.parallelStream().forEach(item -> {
             logger.info(item);
             User user = getUserDao().findByUid(item.getLong("id"));
-            if(null == user){
+            if (null == user) {
                 user = new User();
             }
             user.setUserId(item.getLong("id"));
