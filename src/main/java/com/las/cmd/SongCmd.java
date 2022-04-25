@@ -18,7 +18,7 @@ public class SongCmd extends Command {
 
 
     public SongCmd() {
-        super("点歌", "", "");
+        super("点歌");
     }
 
     @Override

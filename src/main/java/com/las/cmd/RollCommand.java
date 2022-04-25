@@ -16,7 +16,7 @@ public class RollCommand extends Command {
 
 
     public RollCommand() {
-        super("roll", "", "");
+        super("roll", "摇一摇");
     }
 
     @Override
