@@ -31,14 +31,14 @@ public class AppConfigs {
 
 
     static {
-        String path = System.getProperty("user.dir") + File.separator + "bot.ini";
-        IniSection iniSection;
+        String envPath = System.getProperty("user.dir") + File.separator + "env.ini";
+        IniSection envIniSection;
         //设置mysql数据账号密码
-        iniSection = getInit(path).getSection("dbmysql");
-        String DRIVER = iniSection.getItem("driver").getValue();
-        String JDBC = iniSection.getItem("jdbc").getValue();
-        String USER = iniSection.getItem("user").getValue();
-        String PWD = iniSection.getItem("passwd").getValue();
+        envIniSection = getInit(envPath).getSection("dbmysql");
+        String DRIVER = envIniSection.getItem("driver").getValue();
+        String JDBC = envIniSection.getItem("jdbc").getValue();
+        String USER = envIniSection.getItem("user").getValue();
+        String PWD = envIniSection.getItem("passwd").getValue();
         logger.debug("数据库连接DRIVER信息：" + DRIVER);
         DATA_SOURCE = new DruidDataSource();
         DATA_SOURCE.setDriverClassName(DRIVER);
@@ -46,6 +46,11 @@ public class AppConfigs {
         DATA_SOURCE.setUsername(USER);
         DATA_SOURCE.setPassword(PWD);
 
+
+        // 分开两个配置，上面的是数据库，下面的是bot配置
+
+        String path = System.getProperty("user.dir") + File.separator + "bot.ini";
+        IniSection iniSection;
         //获取botQQ
         iniSection = getInit(path).getSection("botqq");
         BOT_QQ = iniSection.getItem("qq").getValue();

@@ -38,3 +38,6 @@ out
 bot.ini
 bot.log
 bot.log.1
+
+### env.ini ###
+env.ini

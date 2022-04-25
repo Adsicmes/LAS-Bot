@@ -62,26 +62,8 @@ public class LASBot {
      * 初始化配置文件
      */
     private static void init(BotRun annotation) throws Exception {
-        String path = System.getProperty("user.dir") + File.separator + "bot.ini";
-        logger.debug("当前env配置路径是：" + path);
-        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
-        BufferedReader br;
-        BufferedWriter bw;
-        //先判断是否存在
-        File file = new File(path);
-        if (!file.exists()) {
-            br = new BufferedReader(new InputStreamReader(initialStream));
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini")));
-            String line;
-            while (null != (line = br.readLine())) {
-                bw.write(changeLine(line, annotation));
-                bw.newLine();
-                bw.flush();
-            }
-            bw.close();
-            br.close();
-            initialStream.close();
-        }
+        readEnvFile();
+        readBotFile(annotation);
         UserDao userDao = (UserDao) APP_CONTEXT.getBean("userDao");
         User superUser;
         try {
@@ -92,11 +74,54 @@ public class LASBot {
                 logger.warn("该机器人QQ未添加管理员好友");
             }
         } catch (Exception e) {
-            throw new Exception("数据库连接异常，请检查bot.ini配置");
+            throw new Exception("数据库连接异常，请检查env.ini配置文件");
         }
         if (!StrUtils.isNotBlank(AppConfigs.BOT_QQ)) {
             throw new Exception("botQQ暂未初始化，请检查BotRun注解里面的参数");
         }
+    }
+
+    private static void readEnvFile() throws IOException {
+        String path = System.getProperty("user.dir") + File.separator + "env.ini";
+        logger.debug("当前env配置路径是：" + path);
+        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
+        BufferedReader br;
+        BufferedWriter bw;
+        //先判断是否存在
+        File file = new File(path);
+        if (!file.exists()) {
+            br = new BufferedReader(new InputStreamReader(initialStream));
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("env.ini")));
+            String line;
+            while (null != (line = br.readLine())) {
+                bw.write(line);
+                bw.newLine();
+                bw.flush();
+            }
+            bw.close();
+            br.close();
+            initialStream.close();
+        }
+    }
+
+
+    private static void readBotFile(BotRun annotation) throws IOException {
+        String path = System.getProperty("user.dir") + File.separator + "bot.ini";
+        logger.debug("当前bot配置路径是：" + path);
+        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("bot.ini");
+        BufferedReader br;
+        BufferedWriter bw;
+        br = new BufferedReader(new InputStreamReader(initialStream));
+        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini")));
+        String line;
+        while (null != (line = br.readLine())) {
+            bw.write(changeLine(line, annotation));
+            bw.newLine();
+            bw.flush();
+        }
+        bw.close();
+        br.close();
+        initialStream.close();
     }
 
     /**
