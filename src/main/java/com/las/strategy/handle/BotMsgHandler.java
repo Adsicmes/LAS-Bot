@@ -129,10 +129,9 @@ public abstract class BotMsgHandler implements BotStrategy {
 
 
     /**
-     * 实现接口的执行指令方法(子类不可以去重新实现)
+     * 执行指令方法(权限为缺省：不同包的类不可以去使用)
      */
-    @Override
-    public final void exeCommand(String msg, Long userId, Long id, int type) {
+    void exeCommand(String msg, Long userId, Long id, int type) {
         Command command = null;
         int cmdLength = 0;
         if (StrKit.isBlank(msg)) {
@@ -197,7 +196,7 @@ public abstract class BotMsgHandler implements BotStrategy {
     }
 
     /**
-     * 初始化机器人好友和群
+     * 初始化机器人好友和群(权限为保护：只允许子类去使用)
      */
     protected void initBot() {
         List<JSONObject> list = MiraiUtil.getInstance().getGroupList();
