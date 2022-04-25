@@ -1,12 +1,8 @@
 package com.las.utils.netease;
 
-import com.jfinal.kit.Base64Kit;
 import com.las.utils.AESUtil;
 import com.las.utils.JsonUtils;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -80,7 +76,7 @@ public class NeteaseMusicAPI {
     }
 
     private static Map<String, Object> prepare(Map<String, Object> raw) {
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         String NONCE = "0CoJUm6Qyw8W8jud";
         data.put("params", encrypt(jsonEncode(raw), NONCE));
         String secretKey = "TA3YiYCfY2dDJQgg";
