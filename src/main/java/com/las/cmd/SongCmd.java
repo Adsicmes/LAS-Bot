@@ -63,6 +63,9 @@ public class SongCmd extends Command {
                     String msg = songName + " 找不到该歌曲>.<";
                     CmdUtil.sendMessage(msg, userId, id, type);
                 }
+            } else {
+                String msg = songName + " 请在指令后面带歌曲名>.<";
+                CmdUtil.sendMessage(msg, userId, id, type);
             }
         } catch (Exception e) {
             e.printStackTrace();

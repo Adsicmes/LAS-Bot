@@ -187,4 +187,37 @@ public class MiraiUtil {
         return JsonUtils.getObjectByJson(result, CqResponse.class);
     }
 
+    public void agreeFriend(JSONObject obj) {
+        initSession();
+        Map<String, Object> info = new HashMap<>();
+        info.put("sessionKey", Constant.session);
+        info.put("operate", 0);
+        info.put("eventId", obj.getLongValue("eventId"));
+        info.put("fromId", obj.getLongValue("fromId"));
+        info.put("groupId", obj.getLongValue("groupId"));
+        info.put("message", "Hello");
+        logger.info("同意好友：" + info);
+        String URL = baseURL + "/resp/newFriendRequestEvent";
+        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
+        logger.info("同意结果：" + result);
+
+        releaseSession();
+    }
+
+    public void agreeGroup(JSONObject obj) {
+        initSession();
+        Map<String, Object> info = new HashMap<>();
+        info.put("sessionKey", Constant.session);
+        info.put("eventId", obj.getLongValue("eventId"));
+        info.put("fromId", obj.getLongValue("fromId"));
+        info.put("groupId", obj.getLongValue("groupId"));
+        info.put("operate", 0);
+        info.put("message", "Hi");
+        String URL = baseURL + "/resp/botInvitedJoinGroupRequestEvent";
+        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
+        logger.info("邀请进群：" + result);
+
+        releaseSession();
+    }
+
 }

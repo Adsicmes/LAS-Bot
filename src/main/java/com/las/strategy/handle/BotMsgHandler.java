@@ -30,6 +30,8 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     private static Logger logger = Logger.getLogger(BotMsgHandler.class);
 
+    // 消息完整对象
+    private JSONObject object;
     // 消息类型 0表示私有 1群消息 2讨论组
     private int type = -1;
     // 消息内容
@@ -67,6 +69,10 @@ public abstract class BotMsgHandler implements BotStrategy {
         return id;
     }
 
+    JSONObject getMsgObject() {
+        return object;
+    }
+
     // Dao可以公开给其他类使用
 
     public GroupDao getGroupDao() {
@@ -92,7 +98,7 @@ public abstract class BotMsgHandler implements BotStrategy {
      */
     @Override
     public final void handleMsg(Map map) {
-        JSONObject object = JSON.parseObject(JSONObject.toJSONString(map));
+        object = JSON.parseObject(JSONObject.toJSONString(map));
         JSONObject sender = object.getJSONObject("sender");
         JSONArray msgChain = object.getJSONArray("messageChain");
         String strType = object.getString("type");
@@ -118,12 +124,14 @@ public abstract class BotMsgHandler implements BotStrategy {
                 }
             }
         }
-        userId = sender.getLong("id");
-        JSONObject group = sender.getJSONObject("group");
-        if (null != group) {
-            id = group.getLong("id");
-        } else {
-            id = userId;
+        if (null != sender) {
+            userId = sender.getLong("id");
+            JSONObject group = sender.getJSONObject("group");
+            if (null != group) {
+                id = group.getLong("id");
+            } else {
+                id = userId;
+            }
         }
     }
 
