@@ -71,7 +71,7 @@ public class LASBot {
         File file = new File(path);
         if (!file.exists()) {
             br = new BufferedReader(new InputStreamReader(initialStream));
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"), "GBK"));
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini")));
             String line;
             while (null != (line = br.readLine())) {
                 bw.write(changeLine(line, annotation));
