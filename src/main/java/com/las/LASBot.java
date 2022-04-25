@@ -39,7 +39,7 @@ public class LASBot {
     private static void run(String basePackage) {
         try {
             if (StrUtil.isBlank(basePackage)) {
-                throw new Exception("包名路径找不到，请检查是否带了BotRun注解");
+                throw new Exception("包名路径找不到，请检查是否带了BotRun注解，项目至少在com.xxx包路径下");
             }
             Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(basePackage, false, BotRun.class);
             for (Class<?> aClass : classSet) {
@@ -71,7 +71,8 @@ public class LASBot {
             if (null != superUser) {
                 logger.debug("检查管理员QQ信息：" + superUser.toString());
             } else {
-                logger.warn("该机器人QQ未添加管理员好友");
+                logger.warn("机器人QQ未添加超管，请重置");
+                logger.warn("请使用超管QQ(" + AppConfigs.SUPER_QQ + "),向机器人QQ(" + AppConfigs.BOT_QQ+") 发送指令<重置>");
             }
         } catch (Exception e) {
             throw new Exception("数据库连接异常，请检查env.ini配置文件");
