@@ -1,4 +1,4 @@
-package com.las.strategy;
+package com.las.strategy.handle;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
@@ -13,14 +13,13 @@ import com.las.dao.GroupDao;
 import com.las.dao.UserDao;
 import com.las.model.Group;
 import com.las.model.User;
+import com.las.strategy.BotStrategy;
 import com.las.utils.*;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
 
@@ -31,19 +30,12 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     private static Logger logger = Logger.getLogger(BotMsgHandler.class);
 
-    private JSONObject sender;
-
-    private JSONArray msgChain;
-
     // 消息类型 0表示私有 1群消息 2讨论组
     private int type = -1;
-
     // 消息内容
     private String msgData;
-
     // 用户ID
     private Long userId;
-
     // 组ID
     private Long id;
 
@@ -51,41 +43,35 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     private UserDao userDao;
 
-    public BotMsgHandler() {
+    protected BotMsgHandler() {
         this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
         this.userDao = (UserDao) APP_CONTEXT.getBean("userDao");
     }
 
-    //后续安装下lombok插件，就不用总是写getter方法了，很累...
-    public JSONObject getSender() {
-        return sender;
-    }
 
-    public JSONArray getMsgChain() {
-        return msgChain;
-    }
+    //不推荐安装lombok插件，对应需要的方法才弄getter... 并且权限使用的是缺省
 
-    public int getMsgType() {
+    int getMsgType() {
         return type;
     }
 
-    public String getMsgData() {
+    String getMsgData() {
         return msgData;
     }
 
-    public Long getUserId() {
+    Long getUserId() {
         return userId;
     }
 
-    public Long getId() {
+    Long getId() {
         return id;
     }
 
-    public GroupDao getGroupDao() {
+    GroupDao getGroupDao() {
         return groupDao;
     }
 
-    public UserDao getUserDao() {
+    UserDao getUserDao() {
         return userDao;
     }
 
@@ -105,8 +91,8 @@ public abstract class BotMsgHandler implements BotStrategy {
     @Override
     public final void handleMsg(Map map) {
         JSONObject object = JSON.parseObject(JSONObject.toJSONString(map));
-        sender = object.getJSONObject("sender");
-        msgChain = object.getJSONArray("messageChain");
+        JSONObject sender = object.getJSONObject("sender");
+        JSONArray msgChain = object.getJSONArray("messageChain");
         String strType = object.getString("type");
         switch (strType) {
             case "FriendMessage":
@@ -130,8 +116,8 @@ public abstract class BotMsgHandler implements BotStrategy {
                 }
             }
         }
-        userId = getSender().getLong("id");
-        JSONObject group = getSender().getJSONObject("group");
+        userId = sender.getLong("id");
+        JSONObject group = sender.getJSONObject("group");
         if (null != group) {
             id = group.getLong("id");
         } else {

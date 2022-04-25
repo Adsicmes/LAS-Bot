@@ -1,7 +1,7 @@
 package com.las.cmd;
 
 
-import com.las.strategy.BotMsgHandler;
+import com.las.strategy.handle.BotMsgHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
