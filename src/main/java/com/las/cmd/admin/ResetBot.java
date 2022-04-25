@@ -15,7 +15,7 @@ public class ResetBot extends Command {
 
 
     public ResetBot() {
-        super("重置", "", "");
+        super("重置", "reset");
     }
 
     @Override
