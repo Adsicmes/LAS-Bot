@@ -1,5 +1,6 @@
 package com.las.cmd.admin;
 
+import com.las.annotation.BotCmd;
 import com.las.cmd.Command;
 import com.las.config.AppConfigs;
 import com.las.utils.CmdUtil;
@@ -7,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
+@BotCmd
 public class ResetBot extends Command {
 
     private static Logger logger = Logger.getLogger(ResetBot.class);

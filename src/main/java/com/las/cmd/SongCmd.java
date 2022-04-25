@@ -3,6 +3,7 @@ package com.las.cmd;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
+import com.las.annotation.BotCmd;
 import com.las.utils.CmdUtil;
 import com.las.utils.JsonUtils;
 import com.las.utils.netease.NeteaseMusicAPI;
@@ -10,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
+@BotCmd
 public class SongCmd extends Command {
 
     private static Logger logger = Logger.getLogger(SongCmd.class);

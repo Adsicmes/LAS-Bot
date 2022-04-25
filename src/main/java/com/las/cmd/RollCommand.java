@@ -1,6 +1,7 @@
 package com.las.cmd;
 
 
+import com.las.annotation.BotCmd;
 import com.las.utils.CmdUtil;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Random;
 
+@BotCmd
 public class RollCommand extends Command {
 
     private static Logger logger = Logger.getLogger(RollCommand.class);
