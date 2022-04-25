@@ -111,12 +111,15 @@ public abstract class BotMsgHandler implements BotStrategy {
         switch (strType) {
             case "FriendMessage":
                 type = Constant.MESSAGE_TYPE_PRIVATE;
+                break;
             case "GroupMessage":
                 type = Constant.MESSAGE_TYPE_GROUP;
+                break;
             case "TempMessage":
                 type = Constant.MESSAGE_TYPE_DISCUSS;
+                break;
             default:
-                type = -1;
+                break;
         }
         if (CollectionUtil.isNotEmpty(msgChain)) {
             for (int i = 0; i < msgChain.size(); i++) {
