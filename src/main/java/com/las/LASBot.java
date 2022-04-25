@@ -109,7 +109,7 @@ public class LASBot {
     private static void readBotFile(BotRun annotation) throws IOException {
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.debug("当前bot配置路径是：" + path);
-        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("bot.ini");
+        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("qqbot.ini");
         BufferedReader br;
         BufferedWriter bw;
         br = new BufferedReader(new InputStreamReader(initialStream));
