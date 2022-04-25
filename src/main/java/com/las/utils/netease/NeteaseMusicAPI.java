@@ -1,6 +1,7 @@
 package com.las.utils.netease;
 
 import com.jfinal.kit.Base64Kit;
+import com.las.utils.AESUtil;
 import com.las.utils.JsonUtils;
 
 import javax.crypto.Cipher;
@@ -89,24 +90,24 @@ public class NeteaseMusicAPI {
         return data;
     }
 
-    private static  String jsonEncode(Object object) {
+    private static String jsonEncode(Object object) {
         return JsonUtils.getJsonString(object);
     }
 
-    private static  String encrypt(String content, String password) {
-        try {
-            SecretKeySpec key = new SecretKeySpec(password.getBytes(), "AES");
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");// 创建密码器
-            String VI = "0102030405060708";
-            IvParameterSpec iv = new IvParameterSpec(VI.getBytes());// 创建iv
-            byte[] byteContent = content.getBytes(StandardCharsets.UTF_8);
-            cipher.init(Cipher.ENCRYPT_MODE, key, iv);// 初始化
-            byte[] result = cipher.doFinal(byteContent);
-            return Base64Kit.encode(result); // 加密
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    private static String encrypt(String content, String password) {
+//        try {
+//            SecretKeySpec key = new SecretKeySpec(password.getBytes(), "AES");
+//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");// 创建密码器
+//            String VI = "0102030405060708";
+//            IvParameterSpec iv = new IvParameterSpec(VI.getBytes());// 创建iv
+//            byte[] byteContent = content.getBytes(StandardCharsets.UTF_8);
+//            cipher.init(Cipher.ENCRYPT_MODE, key, iv);// 初始化
+//            byte[] result = cipher.doFinal(byteContent);
+//            return Base64Kit.encode(result); // 加密
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        return AESUtil.encrypt(content, password);
     }
 
     public static String url(String id) {
