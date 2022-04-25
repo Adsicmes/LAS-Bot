@@ -3,13 +3,18 @@ package com.las;
 import cn.hutool.core.util.StrUtil;
 import com.las.annotation.BotRun;
 import com.las.config.AppConfigs;
+import com.las.dao.UserDao;
+import com.las.model.User;
 import com.las.netty.HttpServer;
 import com.las.utils.ClassUtil;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.Set;
+
+import static com.las.config.AppConfigs.APP_CONTEXT;
 
 
 public class LASBot {
@@ -44,13 +49,14 @@ public class LASBot {
                 if (annotation != null) {
                     // 初始化环境
                     init(annotation);
+                    logger.warn("启动完成，请勿关闭程序窗口");
                     // 启动netty
                     new HttpServer(annotation.botPort()).start();
                     break;
                 }
             }
         } catch (Exception e) {
-            logger.error("初始化bot失败,原因：" + e.toString());
+            logger.error("初始化bot失败,原因：" + e.getMessage());
         }
     }
 
@@ -60,35 +66,38 @@ public class LASBot {
     private static void init(BotRun annotation) throws Exception {
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.debug("当前env配置路径是：" + path);
-        try {
-            InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
-            BufferedReader br;
-            BufferedWriter bw;
-            //先判断是否存在
-            File file = new File(path);
-            if (!file.exists()) {
-                br = new BufferedReader(new InputStreamReader(initialStream));
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"), "GBK"));
-                String line;
-                while (null != (line = br.readLine())) {
-                    bw.write(changeLine(line, annotation));
-                    bw.newLine();
-                    bw.flush();
-                }
-                bw.close();
-                br.close();
-                initialStream.close();
+        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
+        BufferedReader br;
+        BufferedWriter bw;
+        //先判断是否存在
+        File file = new File(path);
+        if (!file.exists()) {
+            br = new BufferedReader(new InputStreamReader(initialStream));
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini"), "GBK"));
+            String line;
+            while (null != (line = br.readLine())) {
+                bw.write(changeLine(line, annotation));
+                bw.newLine();
+                bw.flush();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            logger.warn("启动完成，请勿关闭程序窗口");
+            bw.close();
+            br.close();
+            initialStream.close();
         }
-        if (StrUtils.isNotEmpty(AppConfigs.BOT_QQ)) {
-            logger.info("准备初始化bot,QQ是：" + AppConfigs.BOT_QQ);
-        } else {
-            logger.error("botQQ暂未初始化，请检查BotRun注解里面的参数");
-            throw new Exception("botQQ暂未初始化");
+        UserDao userDao = (UserDao) APP_CONTEXT.getBean("userDao");
+        User superUser;
+        try {
+            superUser = userDao.findSuperQQ();
+            if (null != superUser) {
+                logger.debug("检查管理员QQ信息：" + superUser.toString());
+            } else {
+                logger.warn("该机器人QQ未添加管理员好友");
+            }
+        } catch (Exception e) {
+            throw new Exception("数据库连接异常，请检查bot.ini配置");
+        }
+        if (!StrUtils.isNotBlank(AppConfigs.BOT_QQ)) {
+            throw new Exception("botQQ暂未初始化，请检查BotRun注解里面的参数");
         }
     }
 

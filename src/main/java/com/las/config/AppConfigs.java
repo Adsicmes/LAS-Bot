@@ -12,6 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 
 
 public class AppConfigs {
@@ -65,18 +66,6 @@ public class AppConfigs {
 
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
-        UserDao userDao = (UserDao) APP_CONTEXT.getBean("userDao");
-        User superUser = null;
-        try {
-            superUser = userDao.findSuperQQ();
-            if (null != superUser) {
-                logger.debug("检查管理员QQ信息：" + superUser.toString());
-            } else {
-                logger.warn("该机器人QQ未添加管理员好友");
-            }
-        } catch (Exception e) {
-            logger.error("数据库连接异常，请检查bot.ini配置");
-        }
 
     }
 
