@@ -1,5 +1,6 @@
-package com.las;
+package com.las.config;
 
+import com.las.LASBot;
 import com.las.annotation.BotRun;
 
 @BotRun(superQQ = "1091569752", botQQ = "2547170055", keyAuth = "dw0123456789",
@@ -9,7 +10,7 @@ import com.las.annotation.BotRun;
 public class App {
 
     public static void main(String[] args) {
-        LASBot.run(App.class, true);
+        LASBot.run(App.class);
     }
 
 }

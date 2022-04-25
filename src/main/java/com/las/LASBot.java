@@ -2,6 +2,7 @@ package com.las;
 
 import cn.hutool.core.util.StrUtil;
 import com.las.annotation.BotRun;
+import com.las.config.App;
 import com.las.config.AppConfigs;
 import com.las.dao.UserDao;
 import com.las.model.User;
@@ -11,7 +12,6 @@ import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.text.ParseException;
 import java.util.Set;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
@@ -27,7 +27,7 @@ public class LASBot {
 
     public static void run(Class<?> appClass, boolean isDebug) {
         if(isDebug){
-            // 开发着模式，每次run删除bot.ini配置文件，以注解为主
+            // 开发模式，每次run删除bot.ini配置文件，以注解为主
             String path = System.getProperty("user.dir") + File.separator + "bot.ini";
             File file = new File(path);
             if(file.exists()){
