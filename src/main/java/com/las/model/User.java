@@ -68,4 +68,16 @@ public class User {
     public void setBotQQ(Long botQQ) {
         this.botQQ = botQQ;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", nickname='" + nickname + '\'' +
+                ", remark='" + remark + '\'' +
+                ", funPermission=" + funPermission +
+                ", botQQ=" + botQQ +
+                '}';
+    }
 }

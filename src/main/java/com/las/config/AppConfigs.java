@@ -1,6 +1,8 @@
 package com.las.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.las.dao.UserDao;
+import com.las.model.User;
 import org.apache.log4j.Logger;
 import org.dtools.ini.BasicIniFile;
 import org.dtools.ini.IniFile;
@@ -63,6 +65,13 @@ public class AppConfigs {
 
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
+        UserDao userDao = (UserDao) APP_CONTEXT.getBean("userDao");
+        User superUser = userDao.findByUid(Long.parseLong(AppConfigs.SUPER_QQ));
+        if (null != superUser) {
+            logger.debug("检查管理员QQ信息：" + superUser.toString());
+        } else {
+            logger.warn("该机器人QQ未添加管理员好友");
+        }
 
     }
 
