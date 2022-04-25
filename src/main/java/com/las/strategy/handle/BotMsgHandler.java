@@ -67,11 +67,13 @@ public abstract class BotMsgHandler implements BotStrategy {
         return id;
     }
 
-    GroupDao getGroupDao() {
+    // Dao可以公开给其他类使用
+
+    public GroupDao getGroupDao() {
         return groupDao;
     }
 
-    UserDao getUserDao() {
+    public UserDao getUserDao() {
         return userDao;
     }
 
