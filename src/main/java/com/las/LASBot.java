@@ -2,7 +2,6 @@ package com.las;
 
 import cn.hutool.core.util.StrUtil;
 import com.las.annotation.BotRun;
-import com.las.config.App;
 import com.las.config.AppConfigs;
 import com.las.dao.UserDao;
 import com.las.model.User;
@@ -19,7 +18,7 @@ import static com.las.config.AppConfigs.APP_CONTEXT;
 
 public class LASBot {
 
-    private static Logger logger = Logger.getLogger(App.class);
+    private static Logger logger = Logger.getLogger(LASBot.class);
 
     public static void run(Class<?> appClass) {
         BotRun botRun = appClass.getDeclaredAnnotation(BotRun.class);
