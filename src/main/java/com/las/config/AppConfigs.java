@@ -75,7 +75,7 @@ public class AppConfigs {
                 logger.warn("该机器人QQ未添加管理员好友");
             }
         } catch (Exception e) {
-            logger.error("数据库连接异常，请检查配置");
+            logger.error("数据库连接异常，请检查bot.ini配置");
         }
 
     }
