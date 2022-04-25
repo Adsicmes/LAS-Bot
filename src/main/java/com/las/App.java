@@ -9,7 +9,7 @@ import com.las.annotation.BotRun;
 public class App {
 
     public static void main(String[] args) {
-        LASBot.run(App.class);
+        LASBot.run(App.class, true);
     }
 
 }
