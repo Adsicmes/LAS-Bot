@@ -13,6 +13,9 @@
         <!--正式环境配置弄在这里-->
         <profile>
             <id>bot</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <resources>
                     <resource>
@@ -42,9 +45,6 @@
 
         <profile>
             <id>dw</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <build>
                 <resources>
                     <resource>
