@@ -159,6 +159,27 @@
 
         <finalName>lasbot</finalName>
 
+        <plugins>
+            <!-- 打jar包的main方法配置 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.las.AppRun</mainClass>
+                        </manifest>
+                    </archive>
+                    <!--打包的时候忽略classes 路径下的配置文件 -->
+                    <excludes>
+                        <exclude>*.txt</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+
         <resources>
             <resource>
                 <directory>src/main/resources/</directory>
