@@ -19,28 +19,23 @@ public class RollCommand extends Command {
         super("roll", "摇一摇");
     }
 
-    @Override
-    public void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) {
-        try {
-            int min = 1, max = 100;
-            if (args.size() == 1) {
-                if (StrUtils.isNumeric(String.valueOf(args.get(0)))) {
-                    max = Integer.parseInt(args.get(0));
-                }
-            }
-            if (args.size() > 1) {
-                if (StrUtils.isNumeric(String.valueOf(args.get(0))) &&
-                        StrUtils.isNumeric(String.valueOf(args.get(1)))) {
-                    min = Integer.parseInt(args.get(0));
-                    max = Integer.parseInt(args.get(1));
-                }
-            }
-            int randNumber = new Random().nextInt(max - min + 1) + min;
-            CmdUtil.sendMessage(String.format("摇到了:%d", randNumber), userId, id, type);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(super.toString() + "执行时报错，命令内容:" + command);
-        }
-    }
 
+    @Override
+    public void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
+        int min = 1, max = 100;
+        if (args.size() == 1) {
+            if (StrUtils.isNumeric(String.valueOf(args.get(0)))) {
+                max = Integer.parseInt(args.get(0));
+            }
+        }
+        if (args.size() > 1) {
+            if (StrUtils.isNumeric(String.valueOf(args.get(0))) &&
+                    StrUtils.isNumeric(String.valueOf(args.get(1)))) {
+                min = Integer.parseInt(args.get(0));
+                max = Integer.parseInt(args.get(1));
+            }
+        }
+        int randNumber = new Random().nextInt(max - min + 1) + min;
+        CmdUtil.sendMessage(String.format("摇到了:%d", randNumber), userId, id, type);
+    }
 }

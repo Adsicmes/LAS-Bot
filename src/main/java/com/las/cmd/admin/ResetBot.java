@@ -19,7 +19,7 @@ public class ResetBot extends Command {
     }
 
     @Override
-    public void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) {
+    public void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
         long superQQ = Long.parseLong(AppConfigs.SUPER_QQ);
         if (userId != superQQ) {
             CmdUtil.sendMessage("必须是超管才可以重置机器人", userId, id, type);

@@ -68,5 +68,5 @@ public abstract class Command extends BotMsgHandler {
      * @param command 指令 ( 包含指令参数,多个参数中间空格隔开的 )
      * @param args    指令参数
      */
-    public abstract void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args);
+    public abstract void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception;
 }

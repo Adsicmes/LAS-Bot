@@ -17,6 +17,7 @@ import com.las.strategy.BotStrategy;
 import com.las.utils.*;
 import org.apache.log4j.Logger;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -198,7 +199,12 @@ public abstract class BotMsgHandler implements BotStrategy {
         }
         if (null != command) {
             logger.info("执行指令是：" + command.toString());
-            command.execute(userId, id, type, cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
+            try {
+                command.execute(userId, id, type, cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+            }
         }
 
     }
