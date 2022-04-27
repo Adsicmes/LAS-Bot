@@ -153,13 +153,13 @@
             <version>1.46</version>
         </dependency>
 
-
-
     </dependencies>
 
     <build>
         <finalName>lasbot</finalName>
+
         <plugins>
+
             <!-- 将所依赖的第三方jar包打入target下的lib目录 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
