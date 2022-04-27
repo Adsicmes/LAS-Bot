@@ -90,13 +90,21 @@
             <version>1.2.17</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>com.lax</groupId>-->
+            <!--<artifactId>dtools.javaini</artifactId>-->
+            <!--<version>v1.1.00</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${base.lib.path}/org.dtools.javaini-v1.1.00.jar</systemPath>-->
+        <!--</dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.exp-blog/javaini -->
         <dependency>
-            <groupId>com.lax</groupId>
-            <artifactId>dtools.javaini</artifactId>
-            <version>v1.1.00</version>
-            <scope>system</scope>
-            <systemPath>${base.lib.path}/org.dtools.javaini-v1.1.00.jar</systemPath>
+            <groupId>com.exp-blog</groupId>
+            <artifactId>javaini</artifactId>
+            <version>1.1.0</version>
         </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
