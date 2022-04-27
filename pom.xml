@@ -6,7 +6,7 @@
 
     <groupId>com.frz</groupId>
     <artifactId>LAS-Bot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>v1.0</version>
     <packaging>jar</packaging>
 
     <profiles>
@@ -70,12 +70,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <resource.path>${project.basedir}/src/main/resources</resource.path>
-        <base.lib.path>${project.basedir}/src/main/resources/lib</base.lib.path>
     </properties>
 
     <dependencies>
-
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -90,13 +87,6 @@
             <version>1.2.17</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.lax</groupId>-->
-            <!--<artifactId>dtools.javaini</artifactId>-->
-            <!--<version>v1.1.00</version>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${base.lib.path}/org.dtools.javaini-v1.1.00.jar</systemPath>-->
-        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.exp-blog/javaini -->
         <dependency>
@@ -166,54 +156,8 @@
     </dependencies>
 
     <build>
+
         <finalName>lasbot</finalName>
-
-        <plugins>
-
-            <!-- 将所依赖的第三方jar包打入target下的lib目录 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.5</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${base.lib.path}</outputDirectory>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- 打jar包的main方法配置 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.las.AppRun</mainClass>
-                        </manifest>
-                        <!-- 给清单文件添加键值对(配置文件外置) -->
-                        <manifestEntries>
-                            <Class-Path>lib/org.dtools.javaini-v1.1.00.jar</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                    <!--打包的时候忽略classes 路径下的配置文件 -->
-                    <excludes>
-                        <exclude>*.txt</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-
-        </plugins>
 
         <resources>
             <resource>
