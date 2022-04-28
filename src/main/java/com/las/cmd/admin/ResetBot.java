@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
-@BotCmd
+@BotCmd(funName = "超管功能", funWeight = 999)
 public class ResetBot extends Command {
 
     private static Logger logger = Logger.getLogger(ResetBot.class);

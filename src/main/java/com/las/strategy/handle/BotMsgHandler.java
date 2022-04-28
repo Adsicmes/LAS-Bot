@@ -9,9 +9,13 @@ import com.las.annotation.BotCmd;
 import com.las.cmd.Command;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
+import com.las.dao.FunDao;
 import com.las.dao.GroupDao;
+import com.las.dao.GroupFunDao;
 import com.las.dao.UserDao;
+import com.las.model.Fun;
 import com.las.model.Group;
+import com.las.model.GroupFun;
 import com.las.model.User;
 import com.las.strategy.BotStrategy;
 import com.las.utils.*;
@@ -21,6 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
 
@@ -45,6 +50,10 @@ public abstract class BotMsgHandler implements BotStrategy {
     private GroupDao groupDao;
 
     private UserDao userDao;
+
+    private FunDao funDao;
+
+    private GroupFunDao groupFunDao;
 
     protected BotMsgHandler() {
         this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
@@ -82,6 +91,14 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     public UserDao getUserDao() {
         return userDao;
+    }
+
+    public FunDao getFunDao() {
+        return funDao;
+    }
+
+    public GroupFunDao getGroupFunDao() {
+        return groupFunDao;
     }
 
 
@@ -246,6 +263,46 @@ public abstract class BotMsgHandler implements BotStrategy {
             }
             getUserDao().saveOrUpdate(user);
         });
+
+        // 下一步查询所有指令注解上的功能名字和权限数值插入到数据库里
+        Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
+        classSet.stream().parallel().forEach(aClass -> {
+            BotCmd botCmd = aClass.getDeclaredAnnotation(BotCmd.class);
+            String funName = botCmd.funName();
+            int funWeight = botCmd.funWeight();
+            List<Fun> funList = getFunDao().findAll();
+            Fun fun = Optional.ofNullable(funList).orElse(new ArrayList<>()).stream()
+                    .filter(funObj -> funName.equals(funObj.getFunName()) && Long.parseLong(AppConfigs.BOT_QQ) == funObj.getBotQQ())
+                    .findFirst()
+                    .orElseGet(Fun::new);
+            fun.setFunName(funName);
+            fun.setFunweight(funWeight);
+            fun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            getFunDao().saveOrUpdate(fun);
+        });
+
+        // 最后一步，检查群功能数据
+        List<Group> groupList = getGroupDao().findAll();
+        groupList.parallelStream().forEach(group -> {
+            Long groupId = group.getGroupId();
+            List<GroupFun> groupFunList = getGroupFunDao().findListByGid(groupId);
+            List<Fun> funList = getFunDao().findAll();
+            funList.forEach(fun -> {
+                for (GroupFun groupFun : groupFunList) {
+                    // 找到之前存在相同的功能名，则跳过
+                    if (groupFun.getGroupFun().equals(fun.getFunName())) {
+                        return;
+                    }
+                }
+                GroupFun groupFun = new GroupFun();
+                groupFun.setGroupFun(fun.getFunName());
+                groupFun.setGroupId(groupId);
+                groupFun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+                groupFun.setIsEnable(1);
+                getGroupFunDao().saveOrUpdate(groupFun);
+            });
+        });
+
     }
 
 

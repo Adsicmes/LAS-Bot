@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Random;
 
-@BotCmd
+@BotCmd(funName = "随机功能", funWeight = 0)
 public class RollCommand extends Command {
 
     private static Logger logger = Logger.getLogger(RollCommand.class);
