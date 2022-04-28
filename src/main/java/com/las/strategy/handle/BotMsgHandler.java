@@ -58,6 +58,8 @@ public abstract class BotMsgHandler implements BotStrategy {
     protected BotMsgHandler() {
         this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
         this.userDao = (UserDao) APP_CONTEXT.getBean("userDao");
+        this.funDao = (FunDao) APP_CONTEXT.getBean("funDao");
+        this.groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
     }
 
 
@@ -227,6 +229,50 @@ public abstract class BotMsgHandler implements BotStrategy {
     }
 
     /**
+     * 初始化机器人权限(权限为保护：只允许子类去使用)
+     */
+    protected void initBotFun() {
+        // 下一步查询所有指令注解上的功能名字和权限数值插入到数据库里
+        Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
+        classSet.forEach(aClass -> {
+            BotCmd botCmd = aClass.getDeclaredAnnotation(BotCmd.class);
+            String funName = botCmd.funName();
+            int funWeight = botCmd.funWeight();
+            List<Fun> funList = getFunDao().findAll();
+            Fun fun = Optional.ofNullable(funList).orElse(new ArrayList<>()).stream()
+                    .filter(funObj -> funName.equals(funObj.getFunName()) && Long.parseLong(AppConfigs.BOT_QQ) == funObj.getBotQQ())
+                    .findFirst()
+                    .orElseGet(Fun::new);
+            fun.setFunName(funName);
+            fun.setFunweight(funWeight);
+            fun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            getFunDao().saveOrUpdate(fun);
+        });
+
+        // 最后一步，检查群功能数据
+        List<Group> groupList = getGroupDao().findAll();
+        groupList.forEach(group -> {
+            Long groupId = group.getGroupId();
+            List<GroupFun> groupFunList = getGroupFunDao().findListByGid(groupId);
+            List<Fun> funList = getFunDao().findAll();
+            funList.forEach(fun -> {
+                for (GroupFun groupFun : groupFunList) {
+                    // 找到之前存在相同的功能名，则跳过
+                    if (groupFun.getGroupFun().equals(fun.getFunName())) {
+                        return;
+                    }
+                }
+                GroupFun groupFun = new GroupFun();
+                groupFun.setGroupFun(fun.getFunName());
+                groupFun.setGroupId(groupId);
+                groupFun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+                groupFun.setIsEnable(1);
+                getGroupFunDao().saveOrUpdate(groupFun);
+            });
+        });
+    }
+
+    /**
      * 初始化机器人好友和群(权限为保护：只允许子类去使用)
      */
     protected void initBot() {
@@ -264,44 +310,8 @@ public abstract class BotMsgHandler implements BotStrategy {
             getUserDao().saveOrUpdate(user);
         });
 
-        // 下一步查询所有指令注解上的功能名字和权限数值插入到数据库里
-        Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
-        classSet.stream().parallel().forEach(aClass -> {
-            BotCmd botCmd = aClass.getDeclaredAnnotation(BotCmd.class);
-            String funName = botCmd.funName();
-            int funWeight = botCmd.funWeight();
-            List<Fun> funList = getFunDao().findAll();
-            Fun fun = Optional.ofNullable(funList).orElse(new ArrayList<>()).stream()
-                    .filter(funObj -> funName.equals(funObj.getFunName()) && Long.parseLong(AppConfigs.BOT_QQ) == funObj.getBotQQ())
-                    .findFirst()
-                    .orElseGet(Fun::new);
-            fun.setFunName(funName);
-            fun.setFunweight(funWeight);
-            fun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
-            getFunDao().saveOrUpdate(fun);
-        });
-
-        // 最后一步，检查群功能数据
-        List<Group> groupList = getGroupDao().findAll();
-        groupList.parallelStream().forEach(group -> {
-            Long groupId = group.getGroupId();
-            List<GroupFun> groupFunList = getGroupFunDao().findListByGid(groupId);
-            List<Fun> funList = getFunDao().findAll();
-            funList.forEach(fun -> {
-                for (GroupFun groupFun : groupFunList) {
-                    // 找到之前存在相同的功能名，则跳过
-                    if (groupFun.getGroupFun().equals(fun.getFunName())) {
-                        return;
-                    }
-                }
-                GroupFun groupFun = new GroupFun();
-                groupFun.setGroupFun(fun.getFunName());
-                groupFun.setGroupId(groupId);
-                groupFun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
-                groupFun.setIsEnable(1);
-                getGroupFunDao().saveOrUpdate(groupFun);
-            });
-        });
+        // 顺便初始化机器人权限
+        initBotFun();
 
     }
 

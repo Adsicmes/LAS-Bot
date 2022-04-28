@@ -1,6 +1,7 @@
 package com.las.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.las.cmd.admin.ResetFun;
 import com.las.dao.UserDao;
 import com.las.model.User;
 import org.apache.log4j.Logger;
@@ -71,6 +72,14 @@ public class AppConfigs {
 
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
+
+        // 更新机器人权限
+        try {
+            new ResetFun().execute(null, null, null, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("初始化机器人权限失败，原因：" + e.getMessage());
+        }
 
     }
 
