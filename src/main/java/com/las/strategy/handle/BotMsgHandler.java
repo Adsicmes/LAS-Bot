@@ -256,17 +256,18 @@ public abstract class BotMsgHandler implements BotStrategy {
             List<GroupFun> groupFunList = getGroupFunDao().findListByGid(groupId);
             List<Fun> funList = getFunDao().findAll();
             funList.forEach(fun -> {
-                for (GroupFun groupFun : groupFunList) {
-                    // 找到之前存在相同的功能名，则跳过
-                    if (groupFun.getGroupFun().equals(fun.getFunName())) {
-                        return;
-                    }
-                }
                 GroupFun groupFun = new GroupFun();
                 groupFun.setGroupFun(fun.getFunName());
                 groupFun.setGroupId(groupId);
                 groupFun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
                 groupFun.setIsEnable(1);
+                for (GroupFun gf : groupFunList) {
+                    // 找到之前存在相同的功能名，则跳过
+                    if (gf.getGroupFun().equals(fun.getFunName())) {
+                        groupFun.setIsEnable(gf.getIsEnable());
+                        break;
+                    }
+                }
                 getGroupFunDao().saveOrUpdate(groupFun);
             });
         });
