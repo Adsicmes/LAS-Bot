@@ -30,6 +30,9 @@ public class AppConfigs {
     public static ClassPathXmlApplicationContext APP_CONTEXT;
     public static DruidDataSource DATA_SOURCE;
 
+    //微信机器人常量
+    public static String WX_SERVER;
+
 
     static {
         String envPath = System.getProperty("user.dir") + File.separator + "env.ini";
@@ -65,6 +68,10 @@ public class AppConfigs {
         //超级管理员
         iniSection = getInit(path).getSection("superuser");
         SUPER_QQ = iniSection.getItem("superqq").getValue();
+
+        //微信机器服务
+        iniSection = getInit(path).getSection("wxserver");
+        WX_SERVER = iniSection.getItem("wxserverurl").getValue();
 
         // 根据路径地址构建文件
         File html = new File(System.getProperty("user.dir"), WEB_PATH);

@@ -6,9 +6,11 @@ import com.las.config.AppConfigs;
 import com.las.dao.UserDao;
 import com.las.model.User;
 import com.las.netty.HttpServer;
+import com.las.service.WeChatPushService;
 import com.las.utils.ClassUtil;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
+import org.java_websocket.enums.ReadyState;
 
 import java.io.*;
 import java.util.Set;
@@ -48,8 +50,22 @@ public class LASBot {
                     // 初始化环境
                     init(annotation);
                     logger.warn("启动完成，请勿关闭程序窗口");
-                    // 启动netty
-                    new HttpServer(annotation.botPort()).start();
+                    new Thread(() -> {
+                        // 启动netty
+                        HttpServer httpServer = new HttpServer(annotation.botPort());
+                        try {
+                            httpServer.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            logger.warn("启动QQ机器人失败！原因：" + e.getMessage());
+                        }
+                    }).start();
+                    WeChatPushService client = new WeChatPushService(AppConfigs.WX_SERVER);
+                    client.connect();
+                    while (!client.getReadyState().equals(ReadyState.OPEN)) {
+                        Thread.sleep(500);
+                        logger.debug("正在连接微信机器人服务...");
+                    }
                     break;
                 }
             }
@@ -131,6 +147,7 @@ public class LASBot {
         content = content.replaceAll("MIRAI_URL_PARAM", botRun.miraiUrl());
         content = content.replaceAll("BOT_SERVER_PARAM", botRun.botServer());
         content = content.replaceAll("WEB_PATH_PARAM", botRun.webpath());
+        content = content.replaceAll("WX_SERVER_PARAM", botRun.wxServerUrl());
         return content;
     }
 
