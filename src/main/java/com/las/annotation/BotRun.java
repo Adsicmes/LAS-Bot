@@ -9,18 +9,28 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BotRun {
 
+    // 静态资源路径
+    String webpath() default "target/classes/static";
+
+    // 超管QQ
     String superQQ();
 
+    // 机器人QQ
     String botQQ();
 
+    // mirai设置的密钥
     String keyAuth();
 
-    String miraiUrl();
-
-    String botServer();
-
+    // 本项目服务端口
     int botPort();
 
-    String webpath() default "target/classes/static";
+    // mirai服务url和端口
+    String miraiUrl() default "http://localhost:5700";
+
+    // mirai对接http接口
+    String botServer() default "/cq/getMsg";
+
+    // 微信机器人服务url和端口（websocket）
+    String wxServerUrl() default "ws://127.0.0.1:5555";
 
 }

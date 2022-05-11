@@ -9,9 +9,13 @@ import com.las.annotation.BotCmd;
 import com.las.cmd.Command;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
+import com.las.dao.FunDao;
 import com.las.dao.GroupDao;
+import com.las.dao.GroupFunDao;
 import com.las.dao.UserDao;
+import com.las.model.Fun;
 import com.las.model.Group;
+import com.las.model.GroupFun;
 import com.las.model.User;
 import com.las.strategy.BotStrategy;
 import com.las.utils.*;
@@ -21,6 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
 
@@ -46,9 +51,15 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     private UserDao userDao;
 
+    private FunDao funDao;
+
+    private GroupFunDao groupFunDao;
+
     protected BotMsgHandler() {
         this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
         this.userDao = (UserDao) APP_CONTEXT.getBean("userDao");
+        this.funDao = (FunDao) APP_CONTEXT.getBean("funDao");
+        this.groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
     }
 
 
@@ -82,6 +93,14 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     public UserDao getUserDao() {
         return userDao;
+    }
+
+    public FunDao getFunDao() {
+        return funDao;
+    }
+
+    public GroupFunDao getGroupFunDao() {
+        return groupFunDao;
     }
 
 
@@ -210,6 +229,51 @@ public abstract class BotMsgHandler implements BotStrategy {
     }
 
     /**
+     * 初始化机器人权限(权限为保护：只允许子类去使用)
+     */
+    protected void initBotFun() {
+        // 下一步查询所有指令注解上的功能名字和权限数值插入到数据库里
+        Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
+        classSet.forEach(aClass -> {
+            BotCmd botCmd = aClass.getDeclaredAnnotation(BotCmd.class);
+            String funName = botCmd.funName();
+            int funWeight = botCmd.funWeight();
+            List<Fun> funList = getFunDao().findAll();
+            Fun fun = Optional.ofNullable(funList).orElse(new ArrayList<>()).stream()
+                    .filter(funObj -> funName.equals(funObj.getFunName()) && Long.parseLong(AppConfigs.BOT_QQ) == funObj.getBotQQ())
+                    .findFirst()
+                    .orElseGet(Fun::new);
+            fun.setFunName(funName);
+            fun.setFunweight(funWeight);
+            fun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            getFunDao().saveOrUpdate(fun);
+        });
+
+        // 最后一步，检查群功能数据
+        List<Group> groupList = getGroupDao().findAll();
+        groupList.forEach(group -> {
+            Long groupId = group.getGroupId();
+            List<GroupFun> groupFunList = getGroupFunDao().findListByGid(groupId);
+            List<Fun> funList = getFunDao().findAll();
+            funList.forEach(fun -> {
+                GroupFun groupFun = new GroupFun();
+                groupFun.setGroupFun(fun.getFunName());
+                groupFun.setGroupId(groupId);
+                groupFun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+                groupFun.setIsEnable(1);
+                for (GroupFun gf : groupFunList) {
+                    // 找到之前存在相同的功能名，则跳过
+                    if (gf.getGroupFun().equals(fun.getFunName())) {
+                        groupFun.setIsEnable(gf.getIsEnable());
+                        break;
+                    }
+                }
+                getGroupFunDao().saveOrUpdate(groupFun);
+            });
+        });
+    }
+
+    /**
      * 初始化机器人好友和群(权限为保护：只允许子类去使用)
      */
     protected void initBot() {
@@ -246,6 +310,10 @@ public abstract class BotMsgHandler implements BotStrategy {
             }
             getUserDao().saveOrUpdate(user);
         });
+
+        // 顺便初始化机器人权限
+        initBotFun();
+
     }
 
 

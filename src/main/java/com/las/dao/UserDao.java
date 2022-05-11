@@ -32,7 +32,7 @@ public class UserDao extends BaseDao<User> {
      * @param uid 用户QQ
      * @return User
      */
-    public User findByUid(long uid) {
+    public User findByUid(Long uid) {
         String sql = "select * from `user` where user_id = ?";
         User user = null;
         try {

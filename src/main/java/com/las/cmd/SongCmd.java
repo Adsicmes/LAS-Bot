@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
-@BotCmd
+@BotCmd(funName = "点歌功能", funWeight = 1)
 public class SongCmd extends Command {
 
     private static Logger logger = Logger.getLogger(SongCmd.class);

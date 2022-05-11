@@ -1,8 +1,8 @@
 package com.las.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.las.dao.UserDao;
-import com.las.model.User;
+import com.las.cmd.admin.ResetFun;
+import com.las.service.WeChatPushService;
 import org.apache.log4j.Logger;
 import org.dtools.ini.BasicIniFile;
 import org.dtools.ini.IniFile;
@@ -12,7 +12,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 
 
 public class AppConfigs {
@@ -28,6 +27,10 @@ public class AppConfigs {
     public static String WEB_PATH;
     public static ClassPathXmlApplicationContext APP_CONTEXT;
     public static DruidDataSource DATA_SOURCE;
+
+    //微信机器人常量
+    public static String WX_SERVER_URL;
+    public static WeChatPushService WX_PUSH_SERVER;
 
 
     static {
@@ -65,12 +68,24 @@ public class AppConfigs {
         iniSection = getInit(path).getSection("superuser");
         SUPER_QQ = iniSection.getItem("superqq").getValue();
 
+        //微信机器服务
+        iniSection = getInit(path).getSection("wxserver");
+        WX_SERVER_URL = iniSection.getItem("wxserverurl").getValue();
+
         // 根据路径地址构建文件
         File html = new File(System.getProperty("user.dir"), WEB_PATH);
         logger.debug("根据路径地址构建文件信息：" + html.getAbsolutePath());
 
         //最后一步，初始化spring容器
         APP_CONTEXT = new ClassPathXmlApplicationContext("spring-context.xml");
+
+        // 更新机器人权限
+        try {
+            new ResetFun().execute(null, null, null, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("初始化机器人权限失败，原因：" + e.getMessage());
+        }
 
     }
 
