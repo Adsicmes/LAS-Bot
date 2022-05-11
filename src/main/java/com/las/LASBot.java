@@ -70,6 +70,7 @@ public class LASBot {
                                 Thread.sleep(500);
                                 logger.debug("正在连接微信机器人服务...");
                             }
+                            logger.warn("启动WX机器人成功");
                             AppConfigs.WX_PUSH_SERVER = client;
                         } catch (URISyntaxException | InterruptedException e) {
                             e.printStackTrace();
