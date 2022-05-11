@@ -28,7 +28,7 @@ public class WeChatPushService extends WebSocketClient {
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        log.info("关闭微信服务");
+        log.info("微信服务已关闭");
     }
 
     @Override

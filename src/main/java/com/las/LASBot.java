@@ -64,12 +64,13 @@ public class LASBot {
                     new Thread(() -> {
                         // 启动WX服务
                         try {
-                            WeChatPushService client = new WeChatPushService(AppConfigs.WX_SERVER);
+                            WeChatPushService client = new WeChatPushService(AppConfigs.WX_SERVER_URL);
                             client.connect();
                             while (!client.getReadyState().equals(ReadyState.OPEN)) {
                                 Thread.sleep(500);
                                 logger.debug("正在连接微信机器人服务...");
                             }
+                            AppConfigs.WX_PUSH_SERVER = client;
                         } catch (URISyntaxException | InterruptedException e) {
                             e.printStackTrace();
                             logger.warn("启动WX机器人失败！原因：" + e.getMessage());

@@ -2,8 +2,7 @@ package com.las.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.las.cmd.admin.ResetFun;
-import com.las.dao.UserDao;
-import com.las.model.User;
+import com.las.service.WeChatPushService;
 import org.apache.log4j.Logger;
 import org.dtools.ini.BasicIniFile;
 import org.dtools.ini.IniFile;
@@ -13,7 +12,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 
 
 public class AppConfigs {
@@ -31,7 +29,8 @@ public class AppConfigs {
     public static DruidDataSource DATA_SOURCE;
 
     //微信机器人常量
-    public static String WX_SERVER;
+    public static String WX_SERVER_URL;
+    public static WeChatPushService WX_PUSH_SERVER;
 
 
     static {
@@ -71,7 +70,7 @@ public class AppConfigs {
 
         //微信机器服务
         iniSection = getInit(path).getSection("wxserver");
-        WX_SERVER = iniSection.getItem("wxserverurl").getValue();
+        WX_SERVER_URL = iniSection.getItem("wxserverurl").getValue();
 
         // 根据路径地址构建文件
         File html = new File(System.getProperty("user.dir"), WEB_PATH);
