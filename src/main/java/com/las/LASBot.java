@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.java_websocket.enums.ReadyState;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
@@ -51,7 +52,7 @@ public class LASBot {
                     init(annotation);
                     logger.warn("启动完成，请勿关闭程序窗口");
                     new Thread(() -> {
-                        // 启动netty
+                        // 启动QQ服务
                         HttpServer httpServer = new HttpServer(annotation.botPort());
                         try {
                             httpServer.start();
@@ -60,12 +61,20 @@ public class LASBot {
                             logger.warn("启动QQ机器人失败！原因：" + e.getMessage());
                         }
                     }).start();
-                    WeChatPushService client = new WeChatPushService(AppConfigs.WX_SERVER);
-                    client.connect();
-                    while (!client.getReadyState().equals(ReadyState.OPEN)) {
-                        Thread.sleep(500);
-                        logger.debug("正在连接微信机器人服务...");
-                    }
+                    new Thread(() -> {
+                        // 启动WX服务
+                        try {
+                            WeChatPushService client = new WeChatPushService(AppConfigs.WX_SERVER);
+                            client.connect();
+                            while (!client.getReadyState().equals(ReadyState.OPEN)) {
+                                Thread.sleep(500);
+                                logger.debug("正在连接微信机器人服务...");
+                            }
+                        } catch (URISyntaxException | InterruptedException e) {
+                            e.printStackTrace();
+                            logger.warn("启动WX机器人失败！原因：" + e.getMessage());
+                        }
+                    }).start();
                     break;
                 }
             }
