@@ -66,7 +66,7 @@ public class WeChatPushService extends WebSocketClient {
         try {
             send(json);
         } catch (Exception e) {
-            //这块我本来用于发送微信失败补偿邮件
+            logger.error("发送WX信息失败，原因：" + e.getMessage());
         }
     }
 }
