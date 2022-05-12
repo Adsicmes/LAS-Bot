@@ -25,6 +25,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
@@ -168,7 +170,7 @@ public abstract class BotMsgHandler implements BotStrategy {
         if (msg.startsWith(Constant.DEFAULT_PRE)) {
             msg = msg.substring(1);
         }
-        String cmd = CmdUtil.getLowerParams(msg);
+        String cmd = getLowerParams(msg);
         Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
         for (Class c : classSet) {
             if (null != command) {
@@ -219,7 +221,7 @@ public abstract class BotMsgHandler implements BotStrategy {
         if (null != command) {
             logger.info("执行指令是：" + command.toString());
             try {
-                command.execute(userId, id, type, cmd, CmdUtil.getParamsArray(CmdUtil.getParams(cmd, cmdLength)));
+                command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
@@ -314,6 +316,52 @@ public abstract class BotMsgHandler implements BotStrategy {
         // 顺便初始化机器人权限
         initBotFun();
 
+    }
+
+    /**
+     * 截取命令后面的参数，例如 点歌 空山新雨后
+     *
+     * @param cmd 命令（带参数）
+     * @param num 截取命令前面长度
+     * @return 截取返回 空山新雨后
+     */
+    private String getParams(String cmd, int num) {
+        String param = "";
+        if (StrUtils.isNotBlank(cmd)) {
+            param = cmd.substring(num).trim();
+        }
+        return param;
+    }
+
+
+
+    /**
+     * 将命令后面的参数返回一个参数集合
+     *
+     * @param params 参数（例如 1 100）
+     * @return 返回 list
+     */
+    private ArrayList<String> getParamsArray(String params) {
+        ArrayList<String> list = new ArrayList<>();
+        if (StrKit.notBlank(params)) {
+            String[] split = params.split(" ");
+            if (split.length > 0) {
+                Collections.addAll(list, split);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 参数中多个空格转换为一个空格（并且改为小写）
+     *
+     * @param msg 参数消息
+     * @return 优化好的参数
+     */
+    private String getLowerParams(String msg) {
+        Pattern p = Pattern.compile("\\s+");
+        Matcher m = p.matcher(msg);
+        return m.replaceAll(" ").toLowerCase().trim();
     }
 
 

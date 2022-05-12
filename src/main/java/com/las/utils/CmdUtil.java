@@ -18,52 +18,6 @@ public class CmdUtil {
     private static Logger logger = Logger.getLogger(CmdUtil.class);
 
     /**
-     * 截取命令后面的参数，例如 点歌 空山新雨后
-     *
-     * @param cmd 命令（带参数）
-     * @param num 截取命令前面长度
-     * @return 截取返回 空山新雨后
-     */
-    public static String getParams(String cmd, int num) {
-        String param = "";
-        if (StrUtils.isNotBlank(cmd)) {
-            param = cmd.substring(num).trim();
-        }
-        return param;
-    }
-
-
-
-    /**
-     * 将命令后面的参数返回一个参数集合
-     *
-     * @param params 参数（例如 1 100）
-     * @return 返回 list
-     */
-    public static ArrayList<String> getParamsArray(String params) {
-        ArrayList<String> list = new ArrayList<>();
-        if (StrKit.notBlank(params)) {
-            String[] split = params.split(" ");
-            if (split.length > 0) {
-                Collections.addAll(list, split);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * 参数中多个空格转换为一个空格（并且改为小写）
-     *
-     * @param msg 参数消息
-     * @return 优化好的参数
-     */
-    public static String getLowerParams(String msg) {
-        Pattern p = Pattern.compile("\\s+");
-        Matcher m = p.matcher(msg);
-        return m.replaceAll(" ").toLowerCase().trim();
-    }
-
-    /**
      * CQ发送消息
      *
      * @param msg  消息内容

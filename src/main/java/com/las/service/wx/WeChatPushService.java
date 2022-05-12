@@ -30,12 +30,12 @@ public class WeChatPushService extends WebSocketClient {
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        logger.warn("微信服务已关闭");
+        logger.info("微信服务已关闭");
     }
 
     @Override
     public void onError(Exception e) {
-        logger.error("WX服务异常");
+        logger.info("WX服务异常");
     }
 
     public void sendMsg(String wxid, String text) {
