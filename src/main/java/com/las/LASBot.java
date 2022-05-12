@@ -5,15 +5,14 @@ import com.las.annotation.BotRun;
 import com.las.config.AppConfigs;
 import com.las.dao.UserDao;
 import com.las.model.User;
-import com.las.netty.HttpServer;
-import com.las.service.WeChatPushService;
+import com.las.service.qqbot.netty.HttpServer;
+import com.las.service.wx.WeChatPushService;
 import com.las.utils.ClassUtil;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
 import org.java_websocket.enums.ReadyState;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.util.Set;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;

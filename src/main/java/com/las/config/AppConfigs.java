@@ -2,7 +2,7 @@ package com.las.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.las.cmd.admin.ResetFun;
-import com.las.service.WeChatPushService;
+import com.las.service.wx.WeChatPushService;
 import org.apache.log4j.Logger;
 import org.dtools.ini.BasicIniFile;
 import org.dtools.ini.IniFile;

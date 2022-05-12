@@ -1,7 +1,7 @@
-package com.las.netty;
+package com.las.service.qqbot.netty;
 
-import com.las.netty.adapter.BotServerHandler;
-import com.las.netty.adapter.WebServerHandleAdapter;
+import com.las.service.qqbot.netty.adapter.BotServerHandler;
+import com.las.service.qqbot.netty.adapter.WebServerHandleAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

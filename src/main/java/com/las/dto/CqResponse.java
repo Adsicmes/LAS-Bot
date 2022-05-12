@@ -1,4 +1,4 @@
-package com.las.pojo;
+package com.las.dto;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
-package com.las.service;
+package com.las.service.wx;
 
 import com.alibaba.fastjson.JSONObject;
-import com.las.service.dto.WeChatMsgDTO;
+import com.las.dto.WeChatMsgDTO;
 import org.apache.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;

@@ -1,7 +1,4 @@
-package com.las.service.dto;
-
-import com.alibaba.fastjson.JSON;
-
+package com.las.dto;
 
 public class WeChatMsgDTO {
 

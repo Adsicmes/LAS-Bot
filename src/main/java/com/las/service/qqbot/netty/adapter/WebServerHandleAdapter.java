@@ -1,4 +1,4 @@
-package com.las.netty.adapter;
+package com.las.service.qqbot.netty.adapter;
 
 import com.las.config.AppConfigs;
 import io.netty.channel.*;

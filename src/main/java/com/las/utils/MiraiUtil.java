@@ -1,11 +1,10 @@
 package com.las.utils;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
-import com.las.pojo.CqResponse;
+import com.las.dto.CqResponse;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.las.netty.adapter;
+package com.las.service.qqbot.netty.adapter;
 
 
 import cn.hutool.core.util.StrUtil;
@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.las.config.AppConfigs;
 import com.las.enums.MsgCallBackEnum;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
