@@ -1,9 +1,8 @@
 package com.las.strategy.wxhandle;
 
-import com.las.strategy.handle.BotMsgHandler;
 import org.apache.log4j.Logger;
 
-public class WxFriendMsgHandler extends BotMsgHandler {
+public class WxFriendMsgHandler extends WxBotMsgHandler {
 
     private static Logger logger = Logger.getLogger(WxFriendMsgHandler.class);
 

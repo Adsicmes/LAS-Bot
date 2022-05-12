@@ -13,7 +13,6 @@ public abstract class WxBotMsgHandler implements BotStrategy {
     private static Logger logger = Logger.getLogger(WxBotMsgHandler.class);
 
 
-
     /**
      * 实现接口的执行消息方法(子类可以去重新实现)
      */
