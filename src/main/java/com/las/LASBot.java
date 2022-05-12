@@ -62,19 +62,40 @@ public class LASBot {
                         }
                     }).start();
                     new Thread(() -> {
-                        // 启动WX服务
-                        try {
-                            WeChatPushService client = new WeChatPushService(AppConfigs.WX_SERVER_URL);
-                            client.connect();
-                            while (!client.getReadyState().equals(ReadyState.OPEN)) {
-                                Thread.sleep(500);
-                                logger.debug("正在连接微信机器人服务...");
+                        while (true) {
+                            try {
+                                Thread.sleep(2000);
+                                WeChatPushService client;
+                                if (null == AppConfigs.WX_PUSH_SERVER) {
+                                    // 启动WX服务
+                                    client = new WeChatPushService(AppConfigs.WX_SERVER_URL);
+                                    client.connect();
+                                    while (!client.getReadyState().equals(ReadyState.OPEN)) {
+                                        Thread.sleep(500);
+                                        logger.debug("正在连接微信机器人服务...");
+                                    }
+                                    logger.warn("启动WX机器人成功");
+                                    AppConfigs.WX_PUSH_SERVER = client;
+                                } else {
+                                    client = AppConfigs.WX_PUSH_SERVER;
+                                    // 启动成功一次之后，若微信客户端挂了，需要不断监听连接状态
+                                    ReadyState readyState = client.getReadyState();
+                                    // 后续这个改为debug
+                                    logger.info("微信服务当前状态：" + readyState.toString());
+                                    // 若不是OPEN，需要重新连接
+                                    if (!client.getReadyState().equals(ReadyState.OPEN)) {
+                                        client.reconnect();
+                                        while (!client.getReadyState().equals(ReadyState.OPEN)) {
+                                            Thread.sleep(500);
+                                            logger.debug("正在重新连接微信机器人服务...");
+                                        }
+                                        logger.warn("重新启动WX机器人成功");
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                logger.warn("启动WX机器人失败！原因：" + e.getMessage());
                             }
-                            logger.warn("启动WX机器人成功");
-                            AppConfigs.WX_PUSH_SERVER = client;
-                        } catch (URISyntaxException | InterruptedException e) {
-                            e.printStackTrace();
-                            logger.warn("启动WX机器人失败！原因：" + e.getMessage());
                         }
                     }).start();
                     break;
@@ -99,7 +120,7 @@ public class LASBot {
                 logger.debug("检查管理员QQ信息：" + superUser.toString());
             } else {
                 logger.warn("机器人QQ未添加超管，请重置");
-                logger.warn("请使用超管QQ(" + AppConfigs.SUPER_QQ + "),向机器人QQ(" + AppConfigs.BOT_QQ+") 发送指令<重置>");
+                logger.warn("请使用超管QQ(" + AppConfigs.SUPER_QQ + "),向机器人QQ(" + AppConfigs.BOT_QQ + ") 发送指令<重置>");
             }
         } catch (Exception e) {
             throw new Exception("数据库连接异常，请检查env.ini配置文件");
