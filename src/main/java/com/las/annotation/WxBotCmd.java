@@ -7,11 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BotCmd {
-
-    String funName();
-
-    int funWeight();
+public @interface WxBotCmd {
 
     /**
      * 是否根据指令匹配，默认true，有部分指令不需要，可以改为false
