@@ -32,7 +32,7 @@ public @interface BotRun {
     /**
      * 本项目服务端口
      */
-    int botPort();
+    int botPort() default 8080;
 
     /**
      * mirai服务url和端口
