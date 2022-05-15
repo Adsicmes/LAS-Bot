@@ -68,28 +68,21 @@ public class LASBot {
                                 if (null == AppConfigs.WX_PUSH_SERVER) {
                                     // 启动WX服务
                                     client = new WeChatPushService(AppConfigs.WX_SERVER_URL);
-                                    ReadyState readyState = client.getReadyState();
-                                    logger.info("微信服务当前状态：" + readyState.toString());
-                                    if (!client.getReadyState().equals(ReadyState.OPEN)) {
-                                        client.connect();
-                                        logger.info("正在连接微信机器人服务...");
-                                        Thread.sleep(2000);
-                                    } else {
-                                        logger.warn("启动WX机器人成功");
-                                        AppConfigs.WX_PUSH_SERVER = client;
+                                    client.connect();
+                                    while (!client.getReadyState().equals(ReadyState.OPEN)) {
+                                        Thread.sleep(500);
+                                        logger.debug("正在连接微信机器人服务...");
                                     }
+                                    logger.warn("启动WX机器人成功");
+                                    AppConfigs.WX_PUSH_SERVER = client;
                                 } else {
                                     client = AppConfigs.WX_PUSH_SERVER;
                                     // 启动成功一次之后，若微信客户端挂了，需要不断监听连接状态
-                                    ReadyState readyState = client.getReadyState();
-                                    logger.info("微信服务当前状态：" + readyState.toString());
                                     // 若不是OPEN，需要重新连接
                                     if (!client.getReadyState().equals(ReadyState.OPEN)) {
                                         client.reconnect();
                                         logger.info("正在重新连接微信机器人服务...");
                                         Thread.sleep(2000);
-                                    } else {
-                                        logger.warn("重新启动WX机器人成功");
                                     }
                                 }
                             } catch (Exception e) {
