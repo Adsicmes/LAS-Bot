@@ -9,12 +9,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BotCmd {
 
+    /**
+     * 功能名称
+     */
     String funName();
 
+    /**
+     * 功能权限
+     */
     int funWeight();
 
     /**
-     * 是否根据指令匹配，默认true，有部分指令不需要，可以改为false
+     * 是否根据指令匹配，默认true，有部分指令不需要，例如鉴定色图指令
      */
     boolean isMatch() default true;
 

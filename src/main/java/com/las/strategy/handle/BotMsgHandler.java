@@ -174,7 +174,17 @@ public abstract class BotMsgHandler implements BotStrategy {
         Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
         for (Class c : classSet) {
             if (null != command) {
-                break;
+                // 把非匹配指令的跳过
+                BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
+                if (null != botCmd) {
+                    if (botCmd.isMatch()) {
+                        break;
+                    } else {
+                        //匹配到非指令的，需要重新查找指令的
+                        //logger.info("匹配非指令：" + command.toString());
+                        command = null;
+                    }
+                }
             }
             Class superclass = c.getSuperclass();
             Field[] fields = superclass.getDeclaredFields();
@@ -221,12 +231,31 @@ public abstract class BotMsgHandler implements BotStrategy {
         if (null != command) {
             logger.info("执行指令是：" + command.toString());
             try {
+                // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
                 command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
             }
         }
+        // 需要查找非匹配指令的
+        Set<Class<?>> notCmdSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
+        for (Class<?> aClass : notCmdSet) {
+            BotCmd annotation = aClass.getDeclaredAnnotation(BotCmd.class);
+            if (null != annotation && !annotation.isMatch()) {
+                // 只要找到一个非指令的，直接执行。
+                try {
+                    Command notCommand = (Command) aClass.newInstance();
+                    logger.info("执行非匹配指令是：" + notCommand.toString());
+                    // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
+                    notCommand.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
+                }
+            }
+        }
+
 
     }
 
@@ -332,7 +361,6 @@ public abstract class BotMsgHandler implements BotStrategy {
         }
         return param;
     }
-
 
 
     /**
