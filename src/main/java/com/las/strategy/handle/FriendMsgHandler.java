@@ -1,6 +1,5 @@
 package com.las.strategy.handle;
 
-import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
 
 public class FriendMsgHandler extends BotMsgHandler {
@@ -10,8 +9,6 @@ public class FriendMsgHandler extends BotMsgHandler {
     @Override
     public void exec() {
         String msgData = getMsgData();
-        if (StrUtils.isNotBlank(msgData)) {
-            exeCommand(msgData, getUserId(), getId(), getMsgType());
-        }
+        exeCommand(msgData, getUserId(), getId(), getMsgType());
     }
 }

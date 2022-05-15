@@ -11,16 +11,10 @@ public class GroupMsgHandler extends BotMsgHandler {
     @Override
     public void exec() {
         String msgData = getMsgData();
-        if (StrUtils.isNotBlank(msgData)) {
-            if (msgData.startsWith(Constant.DEFAULT_PRE)) {
-                logger.info("匹配到群消息前缀是#符号，开始执行指令");
-                //执行指令
-                exeCommand(msgData, getUserId(), getId(), getMsgType());
-            } else {
-                //直接执行指令（后续可以弄数据库配置决定）
-                exeCommand(msgData, getUserId(), getId(), getMsgType());
-            }
-        }
+        //直接执行指令
+        exeCommand(msgData, getUserId(), getId(), getMsgType());
+
+        //后续有一些拉黑功能逻辑在慢慢完善
     }
 
 

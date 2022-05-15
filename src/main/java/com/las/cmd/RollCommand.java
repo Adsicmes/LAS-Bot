@@ -22,7 +22,8 @@ public class RollCommand extends Command {
 
     @Override
     public void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
-        int min = 1, max = 100;
+        int min = 1;
+        int max = 100;
         if (args.size() == 1) {
             if (StrUtils.isNumeric(String.valueOf(args.get(0)))) {
                 max = Integer.parseInt(args.get(0));
@@ -38,4 +39,5 @@ public class RollCommand extends Command {
         int randNumber = new Random().nextInt(max - min + 1) + min;
         CmdUtil.sendMessage(String.format("摇到了:%d", randNumber), userId, id, type);
     }
+
 }

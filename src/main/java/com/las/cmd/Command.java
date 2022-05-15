@@ -1,6 +1,7 @@
 package com.las.cmd;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.las.strategy.handle.BotMsgHandler;
 
 import java.util.ArrayList;
@@ -38,8 +39,8 @@ public abstract class Command extends BotMsgHandler {
     /**
      * 指令构造器
      *
-     * @param name       指令名
-     * @param alias      其他指令名
+     * @param name  指令名
+     * @param alias 其他指令名
      */
     public Command(String name, String... alias) {
         this(name, new ArrayList<>(Arrays.asList(alias)));
@@ -49,14 +50,13 @@ public abstract class Command extends BotMsgHandler {
     /**
      * 指令构造器
      *
-     * @param name       指令名
-     * @param alias      其他指令名
+     * @param name  指令名
+     * @param alias 其他指令名
      */
     private Command(String name, ArrayList<String> alias) {
         this.name = name;
         this.alias = alias;
     }
-
 
 
     /**
@@ -69,4 +69,18 @@ public abstract class Command extends BotMsgHandler {
      * @param args    指令参数
      */
     public abstract void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception;
+
+    /**
+     * 执行非匹配指令（所有参数用上）
+     *
+     * @param msgObj  完整消息对象
+     * @param userId  封装用户ID信息
+     * @param id      封装的ID（用户ID or 群ID or 讨论组ID）
+     * @param type    封装消息类型
+     * @param command 指令 ( 包含指令参数,多个参数中间空格隔开的 )
+     * @param args    指令参数
+     */
+    public void execute(JSONObject msgObj, Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception{
+
+    }
 }

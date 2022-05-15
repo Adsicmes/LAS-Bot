@@ -49,6 +49,10 @@ public abstract class BotMsgHandler implements BotStrategy {
     // 组ID
     private Long id;
 
+    private JSONObject sender;
+
+    private JSONArray msgChain;
+
     private GroupDao groupDao;
 
     private UserDao userDao;
@@ -64,8 +68,6 @@ public abstract class BotMsgHandler implements BotStrategy {
         this.groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
     }
 
-
-    //不推荐安装lombok插件，对应需要的方法才弄getter... 并且权限使用的是缺省
 
     int getMsgType() {
         return type;
@@ -87,7 +89,13 @@ public abstract class BotMsgHandler implements BotStrategy {
         return object;
     }
 
-    // Dao可以公开给其他类使用
+    JSONObject getSender() {
+        return sender;
+    }
+
+    JSONArray getMsgChain() {
+        return msgChain;
+    }
 
     public GroupDao getGroupDao() {
         return groupDao;
@@ -121,8 +129,8 @@ public abstract class BotMsgHandler implements BotStrategy {
     @Override
     public final void handleMsg(Map map) {
         object = JSON.parseObject(JSONObject.toJSONString(map));
-        JSONObject sender = object.getJSONObject("sender");
-        JSONArray msgChain = object.getJSONArray("messageChain");
+        sender = object.getJSONObject("sender");
+        msgChain = object.getJSONArray("messageChain");
         String strType = object.getString("type");
         switch (strType) {
             case "FriendMessage":
@@ -163,81 +171,85 @@ public abstract class BotMsgHandler implements BotStrategy {
      */
     void exeCommand(String msg, Long userId, Long id, int type) {
         Command command = null;
+        String cmd = null;
         int cmdLength = 0;
-        if (StrKit.isBlank(msg)) {
-            return;
-        }
-        if (msg.startsWith(Constant.DEFAULT_PRE)) {
-            msg = msg.substring(1);
-        }
-        String cmd = getLowerParams(msg);
-        Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
-        for (Class c : classSet) {
-            if (null != command) {
-                // 把非匹配指令的跳过
-                BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
-                if (null != botCmd) {
-                    if (botCmd.isMatch()) {
-                        break;
-                    } else {
-                        //匹配到非指令的，需要重新查找指令的
-                        //logger.info("匹配非指令：" + command.toString());
-                        command = null;
+        // 需要找匹配指令的
+        if (!StrKit.isBlank(msg)) {
+            if (msg.startsWith(Constant.DEFAULT_PRE)) {
+                msg = msg.substring(1);
+            } else {
+                // 如果没有带前缀，后续读群配置，看是否根据群需要带
+            }
+            cmd = getLowerParams(msg);
+            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
+            for (Class c : classSet) {
+                if (null != command) {
+                    // 把非匹配指令的跳过
+                    BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
+                    if (null != botCmd) {
+                        if (botCmd.isMatch()) {
+                            break;
+                        } else {
+                            //匹配到非指令的，需要重新查找指令的
+                            //logger.info("匹配非指令：" + command.toString());
+                            command = null;
+                        }
                     }
                 }
-            }
-            Class superclass = c.getSuperclass();
-            Field[] fields = superclass.getDeclaredFields();
-            List<String> cmdList = new ArrayList<>();
-            for (Field field : fields) {
-                String colName = field.getName();
-                String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
-                Method method;
-                Object o = null;
-                try {
-                    method = superclass.getDeclaredMethod(methodName);
-                    o = method.invoke(c.newInstance());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if ("alias".equalsIgnoreCase(colName)) {
-                    if (cmdList.isEmpty()) {
-                        cmdList = (List<String>) o;
-                    } else {
-                        cmdList.addAll((List<String>) o);
+                Class superclass = c.getSuperclass();
+                Field[] fields = superclass.getDeclaredFields();
+                List<String> cmdList = new ArrayList<>();
+                for (Field field : fields) {
+                    String colName = field.getName();
+                    String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
+                    Method method;
+                    Object o = null;
+                    try {
+                        method = superclass.getDeclaredMethod(methodName);
+                        o = method.invoke(c.newInstance());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if ("alias".equalsIgnoreCase(colName)) {
+                        if (cmdList.isEmpty()) {
+                            cmdList = (List<String>) o;
+                        } else {
+                            cmdList.addAll((List<String>) o);
+                        }
+                    }
+                    if ("name".equalsIgnoreCase(colName)) {
+                        cmdList.add(o.toString());
                     }
                 }
-                if ("name".equalsIgnoreCase(colName)) {
-                    cmdList.add(o.toString());
-                }
-            }
-            if (StrKit.notBlank(cmd)) {
-                for (String cmds : cmdList) {
-                    if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
-                        if (cmdLength < cmds.length()) {
-                            cmdLength = cmds.length();
-                            if (null == command) {
-                                try {
-                                    command = (Command) c.newInstance();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                if (StrKit.notBlank(cmd)) {
+                    for (String cmds : cmdList) {
+                        if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
+                            if (cmdLength < cmds.length()) {
+                                cmdLength = cmds.length();
+                                if (null == command) {
+                                    try {
+                                        command = (Command) c.newInstance();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-        if (null != command) {
-            logger.info("执行指令是：" + command.toString());
-            try {
-                // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
-                command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+            if (null != command) {
+                logger.info("执行指令是：" + command.toString());
+                try {
+                    // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
+                    command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+                }
             }
         }
+
         // 需要查找非匹配指令的
         Set<Class<?>> notCmdSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
         for (Class<?> aClass : notCmdSet) {
@@ -248,7 +260,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                     Command notCommand = (Command) aClass.newInstance();
                     logger.info("执行非匹配指令是：" + notCommand.toString());
                     // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
-                    notCommand.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                    notCommand.execute(object, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
@@ -295,8 +307,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                 for (GroupFun gf : groupFunList) {
                     // 找到之前存在相同的功能名，则跳过
                     if (gf.getGroupFun().equals(fun.getFunName())) {
-                        groupFun.setIsEnable(gf.getIsEnable());
-                        break;
+                        return;
                     }
                 }
                 getGroupFunDao().saveOrUpdate(groupFun);
