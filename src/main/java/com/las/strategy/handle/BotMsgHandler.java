@@ -1,6 +1,7 @@
 package com.las.strategy.handle;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -9,14 +10,8 @@ import com.las.annotation.BotCmd;
 import com.las.cmd.Command;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
-import com.las.dao.FunDao;
-import com.las.dao.GroupDao;
-import com.las.dao.GroupFunDao;
-import com.las.dao.UserDao;
-import com.las.model.Fun;
-import com.las.model.Group;
-import com.las.model.GroupFun;
-import com.las.model.User;
+import com.las.dao.*;
+import com.las.model.*;
 import com.las.strategy.BotStrategy;
 import com.las.utils.*;
 import org.apache.log4j.Logger;
@@ -61,11 +56,14 @@ public abstract class BotMsgHandler implements BotStrategy {
 
     private GroupFunDao groupFunDao;
 
+    private GroupExtDao groupExtDao;
+
     protected BotMsgHandler() {
         this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
         this.userDao = (UserDao) APP_CONTEXT.getBean("userDao");
         this.funDao = (FunDao) APP_CONTEXT.getBean("funDao");
         this.groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
+        this.groupExtDao = (GroupExtDao) APP_CONTEXT.getBean("groupExtDao");
     }
 
 
@@ -113,6 +111,9 @@ public abstract class BotMsgHandler implements BotStrategy {
         return groupFunDao;
     }
 
+    public GroupExtDao getGroupExtDao() {
+        return groupExtDao;
+    }
 
     /**
      * 实现接口的执行消息方法(子类也可以去重新实现)
@@ -175,10 +176,20 @@ public abstract class BotMsgHandler implements BotStrategy {
         int cmdLength = 0;
         // 需要找匹配指令的
         if (!StrKit.isBlank(msg)) {
-            if (msg.startsWith(Constant.DEFAULT_PRE)) {
-                msg = msg.substring(1);
+            // 读群配置，看是否根据群需要带
+            if (type == Constant.MESSAGE_TYPE_GROUP) {
+                GroupExt groupExt = getGroupExtDao().findByGid(id);
+                if (!StrUtil.isBlank(groupExt.getAttribute2())
+                        && msg.startsWith(groupExt.getAttribute2())) {
+                    msg = msg.substring(groupExt.getAttribute2().length());
+                } else {
+                    // 为空，或者为空字符串，说明群前缀未设置，不允许触发后面指令方法
+                    return;
+                }
             } else {
-                // 如果没有带前缀，后续读群配置，看是否根据群需要带
+                if (msg.startsWith(Constant.DEFAULT_PRE)) {
+                    msg = msg.substring(1);
+                }
             }
             cmd = getLowerParams(msg);
             Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
@@ -240,12 +251,31 @@ public abstract class BotMsgHandler implements BotStrategy {
             }
             if (null != command) {
                 logger.info("执行指令是：" + command.toString());
-                try {
-                    // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
-                    command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+                boolean isExecute = true;
+                // 找到指令之后，查找群是否开启，以及用户权限等问题
+                BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
+                if (null != botCmd) {
+                    String funName = botCmd.funName();
+                    if (type == Constant.MESSAGE_TYPE_GROUP) {
+                        List<GroupFun> groupFuns = getGroupFunDao().findListByGid(id);
+                        List<GroupFun> collect = groupFuns.stream().filter(groupFun -> funName.equals(groupFun.getGroupFun()) && groupFun.getIsEnable() == 1).collect(Collectors.toList());
+                        if (CollectionUtil.isEmpty(collect)) {
+                            isExecute = false;
+                            // 说明没找到此功能有启动的数据，返回错误信息
+                            CmdUtil.sendMessage("此群未开启该功能：" + funName + "，请联系管理员开启", userId, id, type);
+                        }
+                    }
+                    // 下一步查询用户权限，用户可能是临时会话和群员，User表没有需要实施插入，并且备注
+
+                }
+                if (isExecute) {
+                    try {
+                        // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
+                        command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+                    }
                 }
             }
         }
@@ -332,6 +362,17 @@ public abstract class BotMsgHandler implements BotStrategy {
             group.setGroupRole(item.getString("permission"));
             group.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
             getGroupDao().saveOrUpdate(group);
+
+            GroupExt groupExt = getGroupExtDao().findByGid(item.getLong("id"));
+            if (null == groupExt) {
+                groupExt = new GroupExt();
+                groupExt.setAttribute1("欢迎小可爱进群>.<");
+                groupExt.setAttribute2("#");
+            }
+            groupExt.setGroupId(item.getLong("id"));
+            groupExt.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            getGroupExtDao().saveOrUpdate(groupExt);
+
         });
 
         //下一步查询机器人QQ所有的好友列表

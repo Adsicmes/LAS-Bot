@@ -20,7 +20,7 @@ public class GroupExt {
     private String attribute1;
 
     /**
-     * 扩展属性
+     * 扩展属性2,前缀符号默认带#
      */
     private String attribute2;
 
