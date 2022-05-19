@@ -255,22 +255,10 @@ public abstract class BotMsgHandler implements BotStrategy {
                 // 找到指令之后，查找群是否开启，以及用户权限等问题
                 BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
                 if (null != botCmd) {
-                    String funName = botCmd.funName();
-                    if (type == Constant.MESSAGE_TYPE_GROUP) {
-                        List<GroupFun> groupFuns = getGroupFunDao().findListByGid(id);
-                        List<GroupFun> collect = groupFuns.stream().filter(groupFun -> funName.equals(groupFun.getGroupFun()) && groupFun.getIsEnable() == 1).collect(Collectors.toList());
-                        if (CollectionUtil.isEmpty(collect)) {
-                            isExecute = false;
-                            // 说明没找到此功能有启动的数据，返回错误信息
-                            CmdUtil.sendMessage("此群未开启该功能：" + funName + "，请联系管理员开启", userId, id, type);
-                        }
-                    }
-                    // 下一步查询用户权限，用户可能是临时会话和群员，User表没有需要实施插入，并且备注
-
+                    isExecute = checkExe(userId, id, type, botCmd);
                 }
                 if (isExecute) {
                     try {
-                        // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
                         command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -285,20 +273,72 @@ public abstract class BotMsgHandler implements BotStrategy {
         for (Class<?> aClass : notCmdSet) {
             BotCmd annotation = aClass.getDeclaredAnnotation(BotCmd.class);
             if (null != annotation && !annotation.isMatch()) {
-                // 只要找到一个非指令的，直接执行。
-                try {
-                    Command notCommand = (Command) aClass.newInstance();
-                    logger.info("执行非匹配指令是：" + notCommand.toString());
-                    // 今后这里需要考虑群、用户权限的功能（目前暂时不管控）
-                    notCommand.execute(object, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
+                // 只要找到一个非指令的，直接执行。并且检查好权限
+                boolean isExecute = checkExe(userId, id, type, annotation);
+                if (isExecute) {
+                    try {
+                        Command notCommand = (Command) aClass.newInstance();
+                        logger.info("执行非匹配指令是：" + notCommand.toString());
+                        notCommand.execute(object, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
+                    }
                 }
             }
         }
 
 
+    }
+
+    /**
+     * 检查机器人权限是否可执行
+     */
+    private boolean checkExe(Long userId, Long id, int type, BotCmd botCmd) {
+        boolean isExecute = true;
+        String funName = botCmd.funName();
+        if (type == Constant.MESSAGE_TYPE_GROUP) {
+            List<GroupFun> groupFuns = getGroupFunDao().findListByGid(id);
+            List<GroupFun> collect = groupFuns.stream().filter(groupFun -> funName.equals(groupFun.getGroupFun()) && groupFun.getIsEnable() == 1).collect(Collectors.toList());
+            if (CollectionUtil.isEmpty(collect)) {
+                isExecute = false;
+                // 说明没找到此功能有启动的数据，返回错误信息（非匹配指令不需要）
+                if (botCmd.isMatch()) {
+                    CmdUtil.sendMessage("此群未开启该功能：" + funName + "，请联系管理员开启", userId, id, type);
+                }
+            }
+        }
+        if (isExecute) {
+            // 下一步查询用户权限，用户可能是临时会话和群员，User表没有需要实施插入，并且备注
+            int funWeight = botCmd.funWeight();
+            User user = getUserDao().findByUid(userId);
+            if (null == user) {
+                // 用户是来自群or会话消息
+                user = new User();
+                user.setUserId(userId);
+                user.setRemark("来自群或会话组[" + id + "]");
+            }
+            user.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            if (null == user.getFunPermission()) {
+                //说明该用户是第一次？默认设置权限0
+                user.setFunPermission(Constant.DEFAULT_PERMISSION);
+            }
+            if (null == user.getUsedCount()) {
+                // 进来此方法就是有使用过一次
+                user.setUsedCount(1);
+            } else {
+                user.setUsedCount(user.getUsedCount() + 1);
+            }
+            getUserDao().saveOrUpdate(user);
+            if(user.getFunPermission() < funWeight){
+                isExecute = false;
+                // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
+                if (botCmd.isMatch()) {
+                    CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
+                }
+            }
+        }
+        return isExecute;
     }
 
     /**
@@ -378,7 +418,6 @@ public abstract class BotMsgHandler implements BotStrategy {
         //下一步查询机器人QQ所有的好友列表
         List<JSONObject> friendList = MiraiUtil.getInstance().getFriendList();
         friendList.parallelStream().forEach(item -> {
-            logger.info(item);
             User user = getUserDao().findByUid(item.getLong("id"));
             if (null == user) {
                 user = new User();
@@ -390,6 +429,9 @@ public abstract class BotMsgHandler implements BotStrategy {
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
                 user.setFunPermission(Constant.DEFAULT_PERMISSION);
+            }
+            if (null == user.getUsedCount()) {
+                user.setUsedCount(0);
             }
             getUserDao().saveOrUpdate(user);
         });

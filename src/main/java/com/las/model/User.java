@@ -21,6 +21,9 @@ public class User {
     @Column("bot_qq")
     private Long botQQ;
 
+    @Column("used_count")
+    private Integer usedCount;
+
     public Long getId() {
         return id;
     }
@@ -69,15 +72,11 @@ public class User {
         this.botQQ = botQQ;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", nickname='" + nickname + '\'' +
-                ", remark='" + remark + '\'' +
-                ", funPermission=" + funPermission +
-                ", botQQ=" + botQQ +
-                '}';
+    public Integer getUsedCount() {
+        return usedCount;
+    }
+
+    public void setUsedCount(Integer usedCount) {
+        this.usedCount = usedCount;
     }
 }
