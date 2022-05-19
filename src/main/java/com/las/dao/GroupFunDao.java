@@ -1,5 +1,6 @@
 package com.las.dao;
 
+import com.las.config.AppConfigs;
 import com.las.dao.base.BaseDao;
 import com.las.model.Group;
 import com.las.model.GroupFun;
@@ -20,10 +21,10 @@ public class GroupFunDao extends BaseDao<GroupFun> {
 
 
     public List<GroupFun> findListByGid(Long gid) {
-        String sql = "select * from `group_fun` where is_enable = 1 and group_id = ?";
+        String sql = "select * from `group_fun` where is_enable = 1 and group_id = ? and bot_qq = ?";
         List<GroupFun> groupFunList = new ArrayList<>();
         try {
-            groupFunList = getRunner().query(sql, new BeanListHandler<>(GroupFun.class, getProcessor()), gid);
+            groupFunList = getRunner().query(sql, new BeanListHandler<>(GroupFun.class, getProcessor()), gid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
             e.printStackTrace();
         }

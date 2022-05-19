@@ -21,8 +21,8 @@ public class UserDao extends BaseDao<User> {
      * @return User
      */
     public User findSuperQQ() throws Exception {
-        String sql = "select * from `user` where user_id = ?";
-        return getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), Long.parseLong(AppConfigs.SUPER_QQ));
+        String sql = "select * from `user` where user_id = ? and bot_qq = ?";
+        return getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), Long.parseLong(AppConfigs.SUPER_QQ), Long.parseLong(AppConfigs.BOT_QQ));
     }
 
 
@@ -33,10 +33,10 @@ public class UserDao extends BaseDao<User> {
      * @return User
      */
     public User findByUid(Long uid) {
-        String sql = "select * from `user` where user_id = ?";
+        String sql = "select * from `user` where user_id = ? and bot_qq = ?";
         User user = null;
         try {
-            user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid);
+            user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
             e.printStackTrace();
         }

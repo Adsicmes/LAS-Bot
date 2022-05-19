@@ -25,10 +25,10 @@ public class GroupDao extends BaseDao<Group> {
      * @return Group
      */
     public Group findByGid(Long gid) {
-        String sql = "select * from `group` where group_id = ?";
+        String sql = "select * from `group` where group_id = ? and bot_qq = ?";
         Group group = null;
         try {
-            group = getRunner().query(sql, new BeanHandler<>(Group.class, getProcessor()), gid);
+            group = getRunner().query(sql, new BeanHandler<>(Group.class, getProcessor()), gid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -40,7 +40,7 @@ public class GroupDao extends BaseDao<Group> {
         String sql = "select * from `group` where bot_qq = ?";
         List<Group> groupList = new ArrayList<>();
         try {
-            groupList = getRunner().query(sql, new BeanListHandler<>(Group.class, getProcessor()), AppConfigs.BOT_QQ);
+            groupList = getRunner().query(sql, new BeanListHandler<>(Group.class, getProcessor()), Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
             e.printStackTrace();
         }
