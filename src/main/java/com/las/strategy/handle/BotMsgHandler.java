@@ -183,8 +183,14 @@ public abstract class BotMsgHandler implements BotStrategy {
                         && msg.startsWith(groupExt.getAttribute2())) {
                     msg = msg.substring(groupExt.getAttribute2().length());
                 } else {
-                    // 为空，或者为空字符串，说明群前缀未设置，不允许触发后面指令方法
-                    return;
+                    if (null == groupExt.getAttribute2()) {
+                        // 为空，说明群前缀未设置，不允许触发后面指令方法
+                        return;
+                    } else if ("".equals(groupExt.getAttribute2())) {
+                        if (msg.startsWith(Constant.DEFAULT_PRE)) {
+                            msg = msg.substring(1);
+                        }
+                    }
                 }
             } else {
                 if (msg.startsWith(Constant.DEFAULT_PRE)) {
@@ -330,7 +336,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                 user.setUsedCount(user.getUsedCount() + 1);
             }
             getUserDao().saveOrUpdate(user);
-            if(user.getFunPermission() < funWeight){
+            if (user.getFunPermission() < funWeight) {
                 isExecute = false;
                 // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
                 if (botCmd.isMatch()) {
