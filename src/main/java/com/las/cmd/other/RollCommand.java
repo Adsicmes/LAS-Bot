@@ -1,7 +1,8 @@
-package com.las.cmd;
+package com.las.cmd.other;
 
 
 import com.las.annotation.BotCmd;
+import com.las.cmd.Command;
 import com.las.utils.CmdUtil;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;

@@ -1,9 +1,10 @@
-package com.las.cmd;
+package com.las.cmd.other;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
 import com.las.annotation.BotCmd;
+import com.las.cmd.Command;
 import com.las.utils.CmdUtil;
 import com.las.utils.JsonUtils;
 import com.las.utils.netease.NeteaseMusicAPI;
