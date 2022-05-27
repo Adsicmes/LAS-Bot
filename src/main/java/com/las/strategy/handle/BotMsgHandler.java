@@ -335,12 +335,12 @@ public abstract class BotMsgHandler implements BotStrategy {
             } else {
                 user.setUsedCount(user.getUsedCount() + 1);
             }
-            getUserDao().saveOrUpdate(user);
             if (user.getFunPermission() < funWeight) {
                 isExecute = false;
                 // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
                 if (botCmd.isMatch()) {
                     CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
+                    getUserDao().saveOrUpdate(user);
                 }
             }
         }
