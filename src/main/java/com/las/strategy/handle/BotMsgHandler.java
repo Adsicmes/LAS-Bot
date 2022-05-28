@@ -183,6 +183,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                         && msg.startsWith(groupExt.getAttribute2())) {
                     msg = msg.substring(groupExt.getAttribute2().length());
                 } else {
+                    // 这后面的逻辑有些复杂，细细品味，后面看总结注释 ↓
                     if (null == groupExt.getAttribute2()) {
                         // 为空，说明群前缀未设置，不允许触发后面指令方法
                         return;
@@ -190,7 +191,19 @@ public abstract class BotMsgHandler implements BotStrategy {
                         if (msg.startsWith(Constant.DEFAULT_PRE)) {
                             msg = msg.substring(1);
                         }
+                    } else {
+                        // 设置了其他的前缀符号，需要判断是不是
+                        if (msg.startsWith(groupExt.getAttribute2())) {
+                            msg = msg.substring(1);
+                        } else {
+                            // 否则也不允许触发后面的指令方法
+                            return;
+                        }
                     }
+                    // 总结：运行情况如下
+                    // 1、群配置没有设置（一般不可能，机器人初始化默认会在扩展属性2设置#）
+                    // 2、设置了除开#之外的符号，例如设置-符号，在群里必须使用-符号
+                    // 3、设置空字符串，说明可以带#也可以不带，两种均可触发指令
                 }
             } else {
                 if (msg.startsWith(Constant.DEFAULT_PRE)) {
