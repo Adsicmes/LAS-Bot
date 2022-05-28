@@ -314,10 +314,11 @@ public abstract class BotMsgHandler implements BotStrategy {
                 }
             }
         }
+        User user = null;
         if (isExecute) {
             // 下一步查询用户权限，用户可能是临时会话和群员，User表没有需要实施插入，并且备注
             int funWeight = botCmd.funWeight();
-            User user = getUserDao().findByUid(userId);
+            user = getUserDao().findByUid(userId);
             if (null == user) {
                 // 用户是来自群or会话消息
                 user = new User();
@@ -335,7 +336,6 @@ public abstract class BotMsgHandler implements BotStrategy {
             } else {
                 user.setUsedCount(user.getUsedCount() + 1);
             }
-            getUserDao().saveOrUpdate(user);
             if (user.getFunPermission() < funWeight) {
                 isExecute = false;
                 // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
@@ -343,6 +343,9 @@ public abstract class BotMsgHandler implements BotStrategy {
                     CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
                 }
             }
+        }
+        if (isExecute) {
+            getUserDao().saveOrUpdate(user);
         }
         return isExecute;
     }
