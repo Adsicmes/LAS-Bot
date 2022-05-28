@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@BotCmd(funName = "鉴定色图", funWeight = 0, isMatch = false)
+@BotCmd(funName = "鉴定色图", isMatch = false)
 public class ImgllegalCmd extends NotCommand {
 
     private static Logger logger = Logger.getLogger(ImgllegalCmd.class);
