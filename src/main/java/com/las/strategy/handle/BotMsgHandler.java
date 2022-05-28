@@ -349,11 +349,15 @@ public abstract class BotMsgHandler implements BotStrategy {
             } else {
                 user.setUsedCount(user.getUsedCount() + 1);
             }
-            if (user.getFunPermission() < funWeight) {
-                isExecute = false;
-                // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
-                if (botCmd.isMatch()) {
-                    CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
+            if (AppConfigs.SUPER_QQ.equals(userId.toString())) {
+                user.setFunPermission(Constant.SUPER_PERMISSION);
+            } else {
+                if (user.getFunPermission() < funWeight) {
+                    isExecute = false;
+                    // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
+                    if (botCmd.isMatch()) {
+                        CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
+                    }
                 }
             }
         }
@@ -448,10 +452,6 @@ public abstract class BotMsgHandler implements BotStrategy {
             user.setNickname(EmojiUtil.emojiChange(item.getString("nickname")));
             user.setRemark(EmojiUtil.emojiChange(item.getString("remark")));
             user.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
-            // 初始化好友数据，检测到超管QQ，默认设置最大权限值
-            if(item.getString("id").equals(AppConfigs.SUPER_QQ)){
-                user.setFunPermission(Constant.SUPER_PERMISSION);
-            }
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
                 user.setFunPermission(Constant.DEFAULT_PERMISSION);
