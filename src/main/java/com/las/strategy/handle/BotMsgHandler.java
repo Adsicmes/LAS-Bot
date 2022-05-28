@@ -448,6 +448,10 @@ public abstract class BotMsgHandler implements BotStrategy {
             user.setNickname(EmojiUtil.emojiChange(item.getString("nickname")));
             user.setRemark(EmojiUtil.emojiChange(item.getString("remark")));
             user.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            // 初始化好友数据，检测到超管QQ，默认设置最大权限值
+            if(item.getString("id").equals(AppConfigs.SUPER_QQ)){
+                user.setFunPermission(Constant.SUPER_PERMISSION);
+            }
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
                 user.setFunPermission(Constant.DEFAULT_PERMISSION);

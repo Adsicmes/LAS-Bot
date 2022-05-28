@@ -11,6 +11,10 @@ public class Constant {
      * QQ用户默认权限
      */
     public static final int DEFAULT_PERMISSION = 0;
+    /**
+     * 超管QQ默认权限
+     */
+    public static final int SUPER_PERMISSION = 999;
 
     /**
      * CQ消息类型
