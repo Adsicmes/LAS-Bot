@@ -344,7 +344,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                 }
             }
         }
-        if (isExecute) {
+        if (isExecute && botCmd.isMatch()) {
             getUserDao().saveOrUpdate(user);
         }
         return isExecute;
