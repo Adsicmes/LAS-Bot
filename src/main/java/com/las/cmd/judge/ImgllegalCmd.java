@@ -22,7 +22,6 @@ public class ImgllegalCmd extends NotCommand {
 
     @Override
     public void execute(JSONObject obj, Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
-        logger.info("鉴定色图开始...");
         JSONArray msgChain = obj.getJSONArray("messageChain");
         if (CollectionUtil.isNotEmpty(msgChain)) {
             for (int i = 0; i < msgChain.size(); i++) {
