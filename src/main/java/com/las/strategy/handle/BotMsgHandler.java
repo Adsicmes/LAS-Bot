@@ -323,7 +323,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                 isExecute = false;
                 // 说明没找到此功能有启动的数据，返回错误信息（非匹配指令不需要）
                 if (botCmd.isMatch()) {
-                    CmdUtil.sendMessage("此群未开启该功能：" + funName + "，请联系管理员开启", userId, id, type);
+                    logger.warn("该群：" + id + "，未开启功能：" + funName + "，请联系管理员开启");
                 }
             }
         }
@@ -356,7 +356,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                     isExecute = false;
                     // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
                     if (botCmd.isMatch()) {
-                        CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
+                        logger.warn("用户：" + userId + " 权限不足，请联系管理员");
                     }
                 }
             }
