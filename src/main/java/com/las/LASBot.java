@@ -81,7 +81,7 @@ public class LASBot {
                                     // 若不是OPEN，需要重新连接
                                     if (!client.getReadyState().equals(ReadyState.OPEN)) {
                                         client.reconnect();
-                                        logger.info("正在重新连接微信机器人服务...");
+                                        logger.debug("正在重新连接微信机器人服务...");
                                         Thread.sleep(2000);
                                     }
                                 }

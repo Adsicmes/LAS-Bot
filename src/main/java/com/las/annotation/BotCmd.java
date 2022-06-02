@@ -17,7 +17,7 @@ public @interface BotCmd {
     /**
      * 功能权限
      */
-    int funWeight();
+    int funWeight() default 0;
 
     /**
      * 是否根据指令匹配，默认true，有部分指令不需要，例如鉴定色图指令

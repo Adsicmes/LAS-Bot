@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
-@BotCmd(funName = "点歌功能", funWeight = 1)
+@BotCmd(funName = "点歌功能")
 public class SongCmd extends Command {
 
     private static Logger logger = Logger.getLogger(SongCmd.class);

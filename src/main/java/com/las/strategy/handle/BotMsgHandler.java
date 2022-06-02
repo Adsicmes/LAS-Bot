@@ -183,6 +183,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                         && msg.startsWith(groupExt.getAttribute2())) {
                     msg = msg.substring(groupExt.getAttribute2().length());
                 } else {
+                    // 这后面的逻辑有些复杂，细细品味，后面看总结注释 ↓
                     if (null == groupExt.getAttribute2()) {
                         // 为空，说明群前缀未设置，不允许触发后面指令方法
                         return;
@@ -190,7 +191,19 @@ public abstract class BotMsgHandler implements BotStrategy {
                         if (msg.startsWith(Constant.DEFAULT_PRE)) {
                             msg = msg.substring(1);
                         }
+                    } else {
+                        // 设置了其他的前缀符号，需要判断是不是
+                        if (msg.startsWith(groupExt.getAttribute2())) {
+                            msg = msg.substring(1);
+                        } else {
+                            // 否则也不允许触发后面的指令方法
+                            return;
+                        }
                     }
+                    // 总结：运行情况如下
+                    // 1、群配置没有设置（一般不可能，机器人初始化默认会在扩展属性2设置#）
+                    // 2、设置了除开#之外的符号，例如设置-符号，在群里必须使用-符号
+                    // 3、设置空字符串，说明可以带#也可以不带，两种均可触发指令
                 }
             } else {
                 if (msg.startsWith(Constant.DEFAULT_PRE)) {
@@ -310,14 +323,15 @@ public abstract class BotMsgHandler implements BotStrategy {
                 isExecute = false;
                 // 说明没找到此功能有启动的数据，返回错误信息（非匹配指令不需要）
                 if (botCmd.isMatch()) {
-                    CmdUtil.sendMessage("此群未开启该功能：" + funName + "，请联系管理员开启", userId, id, type);
+                    logger.warn("该群：" + id + "，未开启功能：" + funName + "，请联系管理员开启");
                 }
             }
         }
+        User user = null;
         if (isExecute) {
             // 下一步查询用户权限，用户可能是临时会话和群员，User表没有需要实施插入，并且备注
             int funWeight = botCmd.funWeight();
-            User user = getUserDao().findByUid(userId);
+            user = getUserDao().findByUid(userId);
             if (null == user) {
                 // 用户是来自群or会话消息
                 user = new User();
@@ -335,14 +349,20 @@ public abstract class BotMsgHandler implements BotStrategy {
             } else {
                 user.setUsedCount(user.getUsedCount() + 1);
             }
-            if (user.getFunPermission() < funWeight) {
-                isExecute = false;
-                // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
-                if (botCmd.isMatch()) {
-                    CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
-                    getUserDao().saveOrUpdate(user);
+            if (AppConfigs.SUPER_QQ.equals(userId.toString())) {
+                user.setFunPermission(Constant.SUPER_PERMISSION);
+            } else {
+                if (user.getFunPermission() < funWeight) {
+                    isExecute = false;
+                    // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
+                    if (botCmd.isMatch()) {
+                        logger.warn("用户：" + userId + " 权限不足，请联系管理员");
+                    }
                 }
             }
+        }
+        if (isExecute && botCmd.isMatch()) {
+            getUserDao().saveOrUpdate(user);
         }
         return isExecute;
     }

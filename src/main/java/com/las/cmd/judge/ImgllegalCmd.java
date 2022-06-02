@@ -15,14 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@BotCmd(funName = "鉴定色图", funWeight = 0, isMatch = false)
+@BotCmd(funName = "鉴定色图", isMatch = false)
 public class ImgllegalCmd extends NotCommand {
 
     private static Logger logger = Logger.getLogger(ImgllegalCmd.class);
 
     @Override
     public void execute(JSONObject obj, Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
-        logger.info("鉴定色图开始...");
         JSONArray msgChain = obj.getJSONArray("messageChain");
         if (CollectionUtil.isNotEmpty(msgChain)) {
             for (int i = 0; i < msgChain.size(); i++) {
