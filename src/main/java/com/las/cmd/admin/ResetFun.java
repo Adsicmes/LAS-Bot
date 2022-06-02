@@ -15,7 +15,7 @@ public class ResetFun extends Command {
 
 
     public ResetFun() {
-        super("权限更新", "funUp");
+        super("功能更新", "funUp");
     }
 
     @Override
