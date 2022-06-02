@@ -46,6 +46,7 @@ public class ResetWeight extends Command {
                         qqUser.setFunPermission(Integer.parseInt(weight));
                         getUserDao().saveOrUpdate(qqUser);
                     }
+                    CmdUtil.sendMessage("更新成功", userId, id, type);
                 }
             }
         }
