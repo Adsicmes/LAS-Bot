@@ -352,11 +352,23 @@ public abstract class BotMsgHandler implements BotStrategy {
             if (AppConfigs.SUPER_QQ.equals(userId.toString())) {
                 user.setFunPermission(Constant.SUPER_PERMISSION);
             } else {
-                if (user.getFunPermission() < funWeight) {
-                    isExecute = false;
-                    // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
-                    if (botCmd.isMatch()) {
-                        logger.warn("用户：" + userId + " 权限不足，请联系管理员");
+                if (funWeight < 996) {
+                    if (user.getFunPermission() < funWeight) {
+                        isExecute = false;
+                        // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
+                        if (botCmd.isMatch()) {
+                            logger.warn("用户：" + userId + " 权限不足，请联系管理员");
+                        }
+                    }
+                } else {
+                    // 管理员的功能需要查找管理员初始用户
+                    User groupUser = getUserDao().findGroupUser(userId);
+                    if (null == groupUser || groupUser.getFunPermission() < funWeight) {
+                        isExecute = false;
+                        // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
+                        if (botCmd.isMatch()) {
+                            logger.warn("群管：" + userId + " 权限不足，请联系超管");
+                        }
                     }
                 }
             }

@@ -23,7 +23,7 @@ public class ResetFun extends Command {
         if (null != userId) {
             long superQQ = Long.parseLong(AppConfigs.SUPER_QQ);
             if (userId != superQQ) {
-                CmdUtil.sendMessage("必须是超管才可以更新机器人权限", userId, id, type);
+                CmdUtil.sendMessage("必须是超管才可以更新机器人功能", userId, id, type);
             } else {
                 initBotFun();
                 CmdUtil.sendMessage("更新成功", userId, id, type);
