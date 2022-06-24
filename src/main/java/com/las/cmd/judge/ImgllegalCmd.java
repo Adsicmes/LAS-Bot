@@ -15,7 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@BotCmd(funName = "鉴定色图", isMatch = false)
+//
+//@BotCmd(funName = "鉴定色图", isMatch = false)
+
+/**
+ * 非匹配指令该类不作为默认的，由开发者用户自己定义，此类作为参考
+ *
+ */
 public class ImgllegalCmd extends NotCommand {
 
     private static Logger logger = Logger.getLogger(ImgllegalCmd.class);
@@ -45,6 +51,7 @@ public class ImgllegalCmd extends NotCommand {
         String finalUrl = preFix + "//" + str;
         logger.info("该图url：" + finalUrl);
 
+        // 后续要用线程池，每次new Thread 开销很大
         new Thread(() -> {
             Map<String, String> info = new HashMap<>();
             info.put("grant_type", "client_credentials");

@@ -3,6 +3,7 @@ package com.las.cmd.admin;
 
 import com.las.annotation.BotCmd;
 import com.las.cmd.Command;
+import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.model.User;
 import com.las.utils.CmdUtil;
@@ -27,7 +28,8 @@ public class ResetWeight extends Command {
             long superQQ = Long.parseLong(AppConfigs.SUPER_QQ);
             if (userId != superQQ) {
                 CmdUtil.sendMessage("必须是超管才可以更新机器人权限", userId, id, type);
-            } else {
+            } else if (Constant.MESSAGE_TYPE_GROUP == type) {
+                // 必须是在群里使用
                 if (args.size() == 2) {
                     // 必须只传两个参数，例如 权限赋能 用户QQ号 权限值
                     String qq = args.get(0);
@@ -40,7 +42,8 @@ public class ResetWeight extends Command {
                             if (null == qqUser) {
                                 // 数据库不存在，直接创建并且一定要设置备注
                                 qqUser = new User();
-                                qqUser.setRemark("初次初始化权限赋能");
+                                // 备注后面还需要带群ID
+                                qqUser.setRemark("初次初始化权限赋能"+id);
                             }
                         } else if (command.startsWith("权限更新") && Integer.parseInt(weight) < 996) {
                             // 权限更新 是给用户设置权限 1~995
