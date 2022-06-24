@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * @author dullwolf
  */
-@BotCmd(funName = "点歌功能")
+//@BotCmd(funName = "点歌功能")
 public class SongCmd extends BaseCommand {
 
     private static Logger logger = Logger.getLogger(SongCmd.class);

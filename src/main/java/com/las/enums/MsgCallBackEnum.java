@@ -2,10 +2,7 @@ package com.las.enums;
 
 import com.las.annotation.BotEvent;
 import com.las.common.Constant;
-import com.las.strategy.handle.AbstractBotMsgHandler;
-import com.las.strategy.handle.BotInvitedJoinGroupRequestsMsgHandler;
-import com.las.strategy.handle.MemberJoinMsgHandler;
-import com.las.strategy.handle.NewFriendRequestsMsgHandler;
+import com.las.strategy.handle.*;
 import com.las.utils.ClassUtil;
 
 import java.util.Set;
@@ -19,7 +16,7 @@ public enum MsgCallBackEnum {
 
     // 消息事件
     // 群消息
-    GROUP_MSG("GroupMessage", Constant.NONE),
+    GROUP_MSG("GroupMessage", FriendMsgHandler.class.getName()),
     // 好友消息
     FRIEND_MSG("FriendMessage", Constant.NONE),
     //临时消息
