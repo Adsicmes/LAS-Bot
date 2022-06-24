@@ -18,9 +18,9 @@ import java.util.Map;
 /**
  * 非匹配指令该类不作为默认的，由开发者用户自己定义，此类作为参考
  */
-public class ImgllegalCmd extends BaseNonCommand {
+public class ImgCmd extends BaseNonCommand {
 
-    private static Logger logger = Logger.getLogger(ImgllegalCmd.class);
+    private static Logger logger = Logger.getLogger(ImgCmd.class);
 
     @Override
     public void execute(JSONObject obj, Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
