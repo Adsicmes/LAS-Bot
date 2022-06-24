@@ -7,7 +7,7 @@
     <dependency>
         <groupId>com.github.Adsicmes</groupId>
         <artifactId>LAS-Bot</artifactId>
-        <version>v1.2</version>
+        <version>v1.2.1</version>
     </dependency>
 </dependencies>
 ```
@@ -29,7 +29,7 @@
 public class App {
 
     public static void main(String[] args) {
-        LASBot.run(App.class);
+        Bot.run(App.class);
     }
 
 }
