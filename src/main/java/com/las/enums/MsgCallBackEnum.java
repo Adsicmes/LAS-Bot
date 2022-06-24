@@ -1,9 +1,10 @@
 package com.las.enums;
 
-import com.las.annotation.BotCmd;
 import com.las.annotation.BotEvent;
 import com.las.common.Constant;
-import com.las.strategy.handle.*;
+import com.las.strategy.handle.BotInvitedJoinGroupRequestsMsgHandler;
+import com.las.strategy.handle.MemberJoinMsgHandler;
+import com.las.strategy.handle.NewFriendRequestsMsgHandler;
 import com.las.utils.ClassUtil;
 
 import java.util.Set;
@@ -132,29 +133,24 @@ public enum MsgCallBackEnum {
     }
 
     public static String getClassNameByEvent(String eventName) {
-        boolean isScan = false;
+        String className = null;
         for (MsgCallBackEnum msgCallBackStrategyEnum : MsgCallBackEnum.values()) {
             if (msgCallBackStrategyEnum.eventName.equals(eventName)) {
-                String className = msgCallBackStrategyEnum.getClassName();
+                className = msgCallBackStrategyEnum.getClassName();
                 if (!Constant.NONE.equals(className)) {
-                    return className;
-                } else {
-                    // 扫描开发者项目带BotEvent注解的
-                    isScan = true;
                     break;
                 }
             }
         }
-        if (isScan) {
-            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotEvent.class);
-            for (Class<?> c : classSet) {
-                BotEvent botEvent = c.getDeclaredAnnotation(BotEvent.class);
-                if (botEvent.eventName().equals(eventName)) {
-                    return c.getClass().getName();
-                }
+        // 若用户自己有事件，扫描用户定义的
+        Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotEvent.class);
+        for (Class<?> c : classSet) {
+            BotEvent botEvent = c.getDeclaredAnnotation(BotEvent.class);
+            if (botEvent.eventName().equals(eventName)) {
+                className = c.getClass().getName();
             }
         }
-        return null;
+        return className;
     }
 
 }

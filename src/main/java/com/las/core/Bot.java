@@ -20,9 +20,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * @author dullwolf
  */
-public class LasBot {
+public class Bot {
 
-    private static Logger logger = Logger.getLogger(LasBot.class);
+    private static Logger logger = Logger.getLogger(Bot.class);
 
     public static void run(Class<?> appClass) {
         BotRun botRun = appClass.getDeclaredAnnotation(BotRun.class);
@@ -54,7 +54,9 @@ public class LasBot {
                     logger.warn("启动完成，请勿关闭程序窗口");
                     ThreadPoolExecutor executor = ThreadPoolUtil.getPool();
                     executor.execute(() -> initBotService(annotation));
-                    executor.execute(LasBot::initWxBotService);
+                    if (annotation.isEnableWxBot()) {
+                        executor.execute(Bot::initWxBotService);
+                    }
                     break;
                 }
             }
@@ -65,6 +67,7 @@ public class LasBot {
 
     /**
      * 启动QQ机器人服务
+     *
      * @param annotation 注解参数
      */
     private static void initBotService(BotRun annotation) {

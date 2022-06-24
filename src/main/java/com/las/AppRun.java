@@ -1,7 +1,7 @@
 package com.las;
 
 import com.las.annotation.BotRun;
-import com.las.core.LasBot;
+import com.las.core.Bot;
 
 /**
  * @author dullwolf
@@ -10,7 +10,7 @@ import com.las.core.LasBot;
 public class AppRun {
 
     public static void main(String[] args) {
-        LasBot.run(AppRun.class);
+        Bot.run(AppRun.class);
     }
 
 }
