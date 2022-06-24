@@ -1,9 +1,6 @@
 package com.las.dto.music;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
-import java.util.List;
 
 /**
  * 使用爬虫工具爬163网易音乐返回的DTO
