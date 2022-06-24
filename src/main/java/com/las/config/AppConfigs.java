@@ -34,7 +34,6 @@ public class AppConfigs {
         // 分开两个配置，数据库环境初始化、bot配置初始化
         initEnv();
         initBot();
-
     }
 
     private static void initBot() {

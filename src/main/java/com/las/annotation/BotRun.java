@@ -52,4 +52,9 @@ public @interface BotRun {
      */
     String wxServerUrl() default "ws://127.0.0.1:5555";
 
+    /**
+     * 默认不启动微信机器人
+     */
+    boolean isEnableWxBot() default false;
+
 }
