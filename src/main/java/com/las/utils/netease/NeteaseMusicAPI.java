@@ -1,7 +1,9 @@
 package com.las.utils.netease;
 
+import com.las.service.qqbot.netty.adapter.BotServerHandler;
 import com.las.utils.AESUtil;
 import com.las.utils.JsonUtils;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,6 +18,8 @@ import java.util.Map;
 
 
 public class NeteaseMusicAPI {
+
+    private static Logger logger = Logger.getLogger(NeteaseMusicAPI.class);
 
     private static String connection(String url, Map<String, Object> data)
             throws Exception {
@@ -62,7 +66,8 @@ public class NeteaseMusicAPI {
                     response.append(lines);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                logger.error("出错ERROR：" + e.getMessage(),e);
             } finally {
                 if (reader != null) {
                     reader.close();
@@ -116,7 +121,8 @@ public class NeteaseMusicAPI {
         try {
             return connection(url, prepare(map));
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return null;
     }
@@ -131,7 +137,8 @@ public class NeteaseMusicAPI {
         try {
             return connection(url, prepare(map));
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return null;
     }
@@ -151,7 +158,8 @@ public class NeteaseMusicAPI {
         try {
             return connection(url, prepare(map));
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return null;
     }

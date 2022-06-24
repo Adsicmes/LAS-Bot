@@ -3,13 +3,17 @@ package com.las.dao;
 import com.las.config.AppConfigs;
 import com.las.dao.base.BaseDao;
 import com.las.model.User;
+import com.las.service.qqbot.netty.adapter.BotServerHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
 @Component
 public class UserDao extends BaseDao<User> {
+
+    private static Logger logger = Logger.getLogger(UserDao.class);
 
     public UserDao() {
         super(User.class);
@@ -41,7 +45,8 @@ public class UserDao extends BaseDao<User> {
         try {
             user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return user;
     }
@@ -59,7 +64,8 @@ public class UserDao extends BaseDao<User> {
         try {
             user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return user;
     }

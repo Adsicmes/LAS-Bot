@@ -1,6 +1,8 @@
 package com.las.utils;
 
 import com.jfinal.kit.Base64Kit;
+import com.las.service.qqbot.netty.adapter.BotServerHandler;
+import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -10,6 +12,9 @@ import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 
 public class AESUtil {
+
+    private static Logger logger = Logger.getLogger(AESUtil.class);
+
     private static final String CHARSET_NAME = "UTF-8";
     private static final String AES_NAME = "AES";
     // 加密模式
@@ -37,7 +42,8 @@ public class AESUtil {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, paramSpec);
             result = cipher.doFinal(content.getBytes(CHARSET_NAME));
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return Base64Kit.encode(result);
     }
@@ -57,7 +63,8 @@ public class AESUtil {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, paramSpec);
             result = cipher.doFinal(content.getBytes(CHARSET_NAME));
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return Base64Kit.encode(result);
     }
@@ -76,7 +83,8 @@ public class AESUtil {
             cipher.init(Cipher.DECRYPT_MODE, keySpec, paramSpec);
             return new String(cipher.doFinal(Base64Kit.decode(content)), CHARSET_NAME);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return "";
     }

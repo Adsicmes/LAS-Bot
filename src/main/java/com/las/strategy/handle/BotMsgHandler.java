@@ -238,7 +238,8 @@ public abstract class BotMsgHandler implements BotStrategy {
                         method = superclass.getDeclaredMethod(methodName);
                         o = method.invoke(c.newInstance());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
+                        logger.error("出错ERROR：" + e.getMessage(),e);
                     }
                     if ("alias".equalsIgnoreCase(colName)) {
                         if (cmdList.isEmpty()) {
@@ -260,7 +261,8 @@ public abstract class BotMsgHandler implements BotStrategy {
                                     try {
                                         command = (Command) c.newInstance();
                                     } catch (Exception e) {
-                                        e.printStackTrace();
+                                        //e.printStackTrace();
+                                        logger.error("出错ERROR：" + e.getMessage(),e);
                                     }
                                 }
                             }
@@ -280,7 +282,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                     try {
                         command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                         logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
                     }
                 }
@@ -300,7 +302,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                         logger.info("执行非匹配指令是：" + notCommand.toString());
                         notCommand.execute(object, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                         logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
                     }
                 }

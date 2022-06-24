@@ -83,8 +83,8 @@ public class AppConfigs {
         try {
             new ResetFun().execute(null, null, null, null, null);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("初始化机器人权限失败，原因：" + e.getMessage());
+            //e.printStackTrace();
+            logger.error("初始化机器人权限失败，原因：" + e.getMessage(), e);
         }
 
     }
@@ -101,7 +101,8 @@ public class AppConfigs {
         try {
             red.read();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return iniFile;
     }

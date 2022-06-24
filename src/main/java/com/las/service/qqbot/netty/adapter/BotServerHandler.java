@@ -73,7 +73,8 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                             Method exec = aClass.getMethod("exec");
                             exec.invoke(obj);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            //e.printStackTrace();
+                            logger.error("出错ERROR：" + e.getMessage(),e);
                         }
                     }
                 }

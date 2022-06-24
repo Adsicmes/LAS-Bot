@@ -3,8 +3,10 @@ package com.las.dao;
 import com.las.config.AppConfigs;
 import com.las.dao.base.BaseDao;
 import com.las.model.Group;
+import com.las.service.qqbot.netty.adapter.BotServerHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Component
 public class GroupDao extends BaseDao<Group> {
+
+    private static Logger logger = Logger.getLogger(GroupDao.class);
 
     public GroupDao() {
         super(Group.class);
@@ -30,7 +34,8 @@ public class GroupDao extends BaseDao<Group> {
         try {
             group = getRunner().query(sql, new BeanHandler<>(Group.class, getProcessor()), gid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return group;
     }
@@ -42,7 +47,8 @@ public class GroupDao extends BaseDao<Group> {
         try {
             groupList = getRunner().query(sql, new BeanListHandler<>(Group.class, getProcessor()), Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return groupList;
     }

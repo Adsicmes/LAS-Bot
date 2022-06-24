@@ -56,7 +56,7 @@ public class LASBot {
                         try {
                             httpServer.start();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            //e.printStackTrace();
                             logger.warn("启动QQ机器人失败！原因：" + e.getMessage());
                         }
                     }).start();
@@ -86,7 +86,7 @@ public class LASBot {
                                     }
                                 }
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
                                 logger.warn("启动WX机器人失败！原因：" + e.getMessage());
                             }
                         }

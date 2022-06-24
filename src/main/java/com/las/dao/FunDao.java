@@ -3,7 +3,9 @@ package com.las.dao;
 import com.las.config.AppConfigs;
 import com.las.dao.base.BaseDao;
 import com.las.model.Fun;
+import com.las.service.qqbot.netty.adapter.BotServerHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Component
 public class FunDao extends BaseDao<Fun> {
+
+    private static Logger logger = Logger.getLogger(FunDao.class);
 
     public FunDao() {
         super(Fun.class);
@@ -26,7 +30,8 @@ public class FunDao extends BaseDao<Fun> {
         try {
             funList = getRunner().query(sql, new BeanListHandler<>(Fun.class, getProcessor()), AppConfigs.BOT_QQ);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return funList;
     }

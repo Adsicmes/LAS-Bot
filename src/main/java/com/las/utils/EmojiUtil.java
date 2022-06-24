@@ -1,9 +1,13 @@
 package com.las.utils;
 
+import org.apache.log4j.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmojiUtil {
+
+    private static Logger logger = Logger.getLogger(EmojiUtil.class);
 
     private final static String unicodeReg = "[" + "\u4E00-\u9FBF" + // ：CJK
             // 统一表意符号
@@ -183,7 +187,8 @@ public class EmojiUtil {
             }
             return sb.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return "";
     }

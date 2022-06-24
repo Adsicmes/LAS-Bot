@@ -48,7 +48,7 @@ public class WeChatPushService extends WebSocketClient {
                 Method exec = aClass.getMethod("exec");
                 exec.invoke(obj);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 logger.error("执行微信事件类型报错，原因：" + e.toString());
             }
         }
