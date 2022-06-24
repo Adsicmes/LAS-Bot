@@ -1,7 +1,8 @@
-package com.las.config;
+package com.las.core;
 
 import cn.hutool.core.util.StrUtil;
 import com.las.annotation.BotRun;
+import com.las.config.AppConfigs;
 import com.las.dao.UserDao;
 import com.las.model.User;
 import com.las.service.qqbot.netty.HttpServer;

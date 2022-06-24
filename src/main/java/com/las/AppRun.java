@@ -1,7 +1,7 @@
 package com.las;
 
 import com.las.annotation.BotRun;
-import com.las.config.LasBot;
+import com.las.core.LasBot;
 
 /**
  * @author dullwolf
