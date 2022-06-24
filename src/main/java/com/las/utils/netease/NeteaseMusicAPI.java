@@ -1,6 +1,6 @@
 package com.las.utils.netease;
 
-import com.las.utils.AESUtil;
+import com.las.utils.AesUtil;
 import com.las.utils.JsonUtils;
 import org.apache.log4j.Logger;
 
@@ -108,7 +108,7 @@ public class NeteaseMusicAPI {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        return AESUtil.encrypt(content, password);
+        return AesUtil.encrypt(content, password);
     }
 
     public static String url(String id) {
