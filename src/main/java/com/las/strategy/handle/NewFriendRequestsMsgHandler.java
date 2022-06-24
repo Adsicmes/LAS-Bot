@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 /**
  * @author dullwolf
  */
-public class NewFriendRequestsMsgHandler extends BotMsgHandler {
+public class NewFriendRequestsMsgHandler extends AbstractBotMsgHandler {
 
     private static Logger logger = Logger.getLogger(NewFriendRequestsMsgHandler.class);
 

@@ -1,7 +1,12 @@
 package com.las.enums;
 
+import com.las.annotation.BotCmd;
+import com.las.annotation.BotEvent;
 import com.las.common.Constant;
 import com.las.strategy.handle.*;
+import com.las.utils.ClassUtil;
+
+import java.util.Set;
 
 /**
  * @author dullwolf
@@ -117,7 +122,7 @@ public enum MsgCallBackEnum {
     private String eventName;
     private String className;
 
-    MsgCallBackEnum(String eventName,String className) {
+    MsgCallBackEnum(String eventName, String className) {
         this.eventName = eventName;
         this.className = className;
     }
@@ -127,9 +132,26 @@ public enum MsgCallBackEnum {
     }
 
     public static String getClassNameByEvent(String eventName) {
+        boolean isScan = false;
         for (MsgCallBackEnum msgCallBackStrategyEnum : MsgCallBackEnum.values()) {
             if (msgCallBackStrategyEnum.eventName.equals(eventName)) {
-                return msgCallBackStrategyEnum.getClassName();
+                String className = msgCallBackStrategyEnum.getClassName();
+                if (!Constant.NONE.equals(className)) {
+                    return className;
+                } else {
+                    // 扫描开发者项目带BotEvent注解的
+                    isScan = true;
+                    break;
+                }
+            }
+        }
+        if (isScan) {
+            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotEvent.class);
+            for (Class<?> c : classSet) {
+                BotEvent botEvent = c.getDeclaredAnnotation(BotEvent.class);
+                if (botEvent.eventName().equals(eventName)) {
+                    return c.getClass().getName();
+                }
             }
         }
         return null;

@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 /**
  * @author dullwolf
  */
-public class WxFriendMsgHandler extends WxBotMsgHandler {
+public class WxFriendMsgHandler extends AbstractWxBotMsgHandler {
 
     private static Logger logger = Logger.getLogger(WxFriendMsgHandler.class);
 

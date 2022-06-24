@@ -2,7 +2,7 @@ package com.las.cmd;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.las.strategy.handle.BotMsgHandler;
+import com.las.strategy.handle.AbstractBotMsgHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 /**
  * @author dullwolf
  */
-public abstract class BaseCommand extends BotMsgHandler {
+public abstract class BaseCommand extends AbstractBotMsgHandler {
 
     /**
      * 指令名

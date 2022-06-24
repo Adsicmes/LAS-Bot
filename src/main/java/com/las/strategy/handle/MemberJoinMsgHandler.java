@@ -9,7 +9,7 @@ import com.las.utils.StrUtils;
 /**
  * @author dullwolf
  */
-public class MemberJoinMsgHandler extends BotMsgHandler {
+public class MemberJoinMsgHandler extends AbstractBotMsgHandler {
 
     @Override
     public void exec() {

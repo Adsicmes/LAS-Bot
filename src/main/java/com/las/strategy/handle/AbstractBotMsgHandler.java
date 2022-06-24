@@ -23,11 +23,12 @@ import java.util.stream.Collectors;
 
 /**
  * 该抽象类的作用就是实现各种处理
+ *
  * @author dullwolf
  */
-public class BotMsgHandler implements BotStrategy {
+public abstract class AbstractBotMsgHandler implements BotStrategy {
 
-    private static Logger logger = Logger.getLogger(BotMsgHandler.class);
+    private static Logger logger = Logger.getLogger(AbstractBotMsgHandler.class);
 
     /**
      * QQ消息完整对象
@@ -51,7 +52,7 @@ public class BotMsgHandler implements BotStrategy {
 
     private GroupExtDao groupExtDao;
 
-    protected BotMsgHandler() {
+    protected AbstractBotMsgHandler() {
         this.groupDao = new GroupDao();
         this.userDao = new UserDao();
         this.funDao = new FunDao();
@@ -79,14 +80,6 @@ public class BotMsgHandler implements BotStrategy {
         return groupExtDao;
     }
 
-    /**
-     * 实现接口的执行消息方法(子类也可以去重新实现)
-     */
-    @Override
-    public void exec() {
-        logger.info("bot开始执行默认消息...");
-        //此方法可以由子类重写方法去做对应的事件
-    }
 
     /**
      * 实现接口的处理消息方法(子类不可以去重新实现)
@@ -98,48 +91,17 @@ public class BotMsgHandler implements BotStrategy {
 
 
     /**
-     * 执行指令方法(权限为缺省：不同包的类不可以去使用)
+     * 执行指令方法
      */
-    @SuppressWarnings("unchecked")
-    void exeCommand(String msg, Long userId, Long id, int type) {
+    protected void exeCommand(String msg, Long userId, Long id, int type) {
         BaseCommand command = null;
         String cmd = null;
         int cmdLength = 0;
         // 需要找匹配指令的
         if (!StrKit.isBlank(msg)) {
-            // 读群配置，看是否根据群需要带
-            if (type == Constant.MESSAGE_TYPE_GROUP) {
-                GroupExt groupExt = getGroupExtDao().findByGid(id);
-                if (!StrUtil.isBlank(groupExt.getAttribute2())
-                        && msg.startsWith(groupExt.getAttribute2())) {
-                    msg = msg.substring(groupExt.getAttribute2().length());
-                } else {
-                    // 这后面的逻辑有些复杂，细细品味，后面看总结注释 ↓
-                    if (null == groupExt.getAttribute2()) {
-                        // 为空，说明群前缀未设置，不允许触发后面指令方法
-                        return;
-                    } else if ("".equals(groupExt.getAttribute2())) {
-                        if (msg.startsWith(Constant.DEFAULT_PRE)) {
-                            msg = msg.substring(1);
-                        }
-                    } else {
-                        // 设置了其他的前缀符号，需要判断是不是
-                        if (msg.startsWith(groupExt.getAttribute2())) {
-                            msg = msg.substring(1);
-                        } else {
-                            // 否则也不允许触发后面的指令方法
-                            return;
-                        }
-                    }
-                    // 总结：运行情况如下
-                    // 1、群配置没有设置（一般不可能，机器人初始化默认会在扩展属性2设置#）
-                    // 2、设置了除开#之外的符号，例如设置-符号，在群里必须使用-符号
-                    // 3、设置空字符串，说明可以带#也可以不带，两种均可触发指令
-                }
-            } else {
-                if (msg.startsWith(Constant.DEFAULT_PRE)) {
-                    msg = msg.substring(1);
-                }
+            msg = readPrefix(msg, id, type);
+            if (msg == null) {
+                return;
             }
             cmd = getLowerParams(msg);
             Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
@@ -180,7 +142,7 @@ public class BotMsgHandler implements BotStrategy {
                 }
                 if (StrKit.notBlank(cmd)) {
                     for (String oneCmd : cmdList) {
-                        if (StrUtils.notBlank(oneCmd) && (cmd.toUpperCase().startsWith(oneCmd) || cmd.toLowerCase().startsWith(oneCmd))) {
+                        if (!StrKit.isBlank(oneCmd) && (cmd.toUpperCase().startsWith(oneCmd) || cmd.toLowerCase().startsWith(oneCmd))) {
                             if (cmdLength < oneCmd.length()) {
                                 cmdLength = oneCmd.length();
                                 if (null == command) {
@@ -212,7 +174,6 @@ public class BotMsgHandler implements BotStrategy {
                 }
             }
         }
-
         // 需要查找非匹配指令的
         Set<Class<?>> notCmdSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
         for (Class<?> aClass : notCmdSet) {
@@ -233,6 +194,46 @@ public class BotMsgHandler implements BotStrategy {
         }
 
 
+    }
+
+    /**
+     * 读群配置，看是否根据群需要带前缀
+     */
+    private String readPrefix(String msg, Long id, int type) {
+        if (type == Constant.MESSAGE_TYPE_GROUP) {
+            GroupExt groupExt = getGroupExtDao().findByGid(id);
+            if (!StrUtil.isBlank(groupExt.getAttribute2())
+                    && msg.startsWith(groupExt.getAttribute2())) {
+                msg = msg.substring(groupExt.getAttribute2().length());
+            } else {
+                // 这后面的逻辑有些复杂，细细品味，后面看总结注释 ↓
+                if (null == groupExt.getAttribute2()) {
+                    // 为空，说明群前缀未设置，不允许触发后面指令方法
+                    return null;
+                } else if ("".equals(groupExt.getAttribute2())) {
+                    if (msg.startsWith(Constant.DEFAULT_PRE)) {
+                        msg = msg.substring(1);
+                    }
+                } else {
+                    // 设置了其他的前缀符号，需要判断是不是
+                    if (msg.startsWith(groupExt.getAttribute2())) {
+                        msg = msg.substring(1);
+                    } else {
+                        // 否则也不允许触发后面的指令方法
+                        return null;
+                    }
+                }
+                // 总结：运行情况如下
+                // 1、群配置没有设置（一般不可能，机器人初始化默认会在扩展属性2设置#）
+                // 2、设置了除开#之外的符号，例如设置-符号，在群里必须使用-符号
+                // 3、设置空字符串，说明可以带#也可以不带，两种均可触发指令
+            }
+        } else {
+            if (msg.startsWith(Constant.DEFAULT_PRE)) {
+                msg = msg.substring(1);
+            }
+        }
+        return msg;
     }
 
     /**

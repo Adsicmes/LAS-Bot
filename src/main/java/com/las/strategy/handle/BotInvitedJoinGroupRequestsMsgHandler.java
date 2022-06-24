@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 /**
  * @author dullwolf
  */
-public class BotInvitedJoinGroupRequestsMsgHandler extends BotMsgHandler {
+public class BotInvitedJoinGroupRequestsMsgHandler extends AbstractBotMsgHandler {
 
     private static Logger logger = Logger.getLogger(BotInvitedJoinGroupRequestsMsgHandler.class);
 
