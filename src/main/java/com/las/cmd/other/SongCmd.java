@@ -6,6 +6,8 @@ import com.jfinal.kit.StrKit;
 import com.las.annotation.BotCmd;
 import com.las.cmd.BaseCommand;
 import com.las.common.Constant;
+import com.las.dto.music.Music163AlDTO;
+import com.las.dto.music.Music163DTO;
 import com.las.utils.CmdUtil;
 import com.las.utils.JsonUtils;
 import com.las.utils.NetEaseMusicUtil;
@@ -58,7 +60,14 @@ public class SongCmd extends BaseCommand {
                     if (!array.isEmpty()) {
                         //默认就取第一首歌
                         JSONObject song = JsonUtils.getJsonObject(array.get(0));
-                        CmdUtil.send163MusicMessage(song, userId, id, type);
+                        Music163DTO dto = new Music163DTO();
+                        dto.setId(song.getString("id"));
+                        dto.setAr(song.getJSONArray("ar"));
+                        dto.setName(song.getString("name"));
+                        Music163AlDTO alDTO = new Music163AlDTO();
+                        alDTO.setPicUrl(song.getJSONObject("al").getString("picUrl"));
+                        dto.setAl(alDTO);
+                        CmdUtil.send163MusicMessage(dto, userId, id, type);
                     }
                 } else {
                     String msg = songName + " 找不到该歌曲>.<";

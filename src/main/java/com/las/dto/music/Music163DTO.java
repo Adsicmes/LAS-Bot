@@ -1,5 +1,6 @@
 package com.las.dto.music;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class Music163DTO {
     /**
      * 作曲者集合
      */
-    private List<JSONObject> ar;
+    private JSONArray ar;
 
     /**
      * 歌曲名
@@ -31,19 +32,35 @@ public class Music163DTO {
     private Music163AlDTO al;
 
 
-    public List<JSONObject> getAr() {
+    public JSONArray getAr() {
         return ar;
+    }
+
+    public void setAr(JSONArray ar) {
+        this.ar = ar;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Music163AlDTO getAl() {
         return al;
+    }
+
+    public void setAl(Music163AlDTO al) {
+        this.al = al;
     }
 }

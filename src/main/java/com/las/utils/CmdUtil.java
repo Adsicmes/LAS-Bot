@@ -1,6 +1,7 @@
 package com.las.utils;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.las.common.Constant;
 import com.las.dto.CqResponse;
@@ -65,10 +66,10 @@ public class CmdUtil {
     public static CqResponse send163MusicMessage(Music163DTO songObj, Long userId, Long id, int type) {
         CqResponse response;
         JSONObject info = new JSONObject();
-        List<JSONObject> authors = songObj.getAr();
+        JSONArray authors = songObj.getAr();
         if (authors.size() > 0) {
             //默认取第一个作者
-            JSONObject author = authors.get(0);
+            JSONObject author = authors.getJSONObject(0);
             String name = author.getString("name");
             info.put("summary", name);
         }
