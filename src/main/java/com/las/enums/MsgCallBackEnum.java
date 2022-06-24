@@ -16,7 +16,7 @@ public enum MsgCallBackEnum {
 
     // 消息事件
     // 群消息
-    GROUP_MSG("GroupMessage", Constant.NONE),
+    GROUP_MSG("GroupMessage", GroupMsgHandler.class.getName()),
     // 好友消息
     FRIEND_MSG("FriendMessage", FriendMsgHandler.class.getName()),
     //临时消息
