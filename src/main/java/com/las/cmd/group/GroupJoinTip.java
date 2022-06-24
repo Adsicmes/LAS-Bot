@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class GroupJoinTip extends BaseCommand {
 
     public GroupJoinTip() {
-        super("群欢迎设置", "groupTip","gt");
+        super(Constant.MIN_PRIORITY,"群欢迎设置", "groupTip","gt");
     }
 
     @Override

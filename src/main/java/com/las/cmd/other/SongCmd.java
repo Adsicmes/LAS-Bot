@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
 import com.las.annotation.BotCmd;
 import com.las.cmd.BaseCommand;
+import com.las.common.Constant;
 import com.las.utils.CmdUtil;
 import com.las.utils.JsonUtils;
 import com.las.utils.NetEaseMusicUtil;
@@ -22,7 +23,7 @@ public class SongCmd extends BaseCommand {
 
 
     public SongCmd() {
-        super("点歌");
+        super(Constant.MIN_PRIORITY,"点歌");
     }
 
     @Override

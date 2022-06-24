@@ -22,7 +22,7 @@ public class ResetWeight extends BaseCommand {
 
 
     public ResetWeight() {
-        super("权限赋能", "权限更新");
+        super(Constant.MAX_PRIORITY,"权限赋能", "权限更新");
     }
 
     @Override

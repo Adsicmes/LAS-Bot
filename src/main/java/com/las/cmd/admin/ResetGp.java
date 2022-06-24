@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ResetGp extends BaseCommand {
 
     public ResetGp() {
-        super("群设置", "GP");
+        super(Constant.MAX_PRIORITY,"群设置", "GP");
     }
 
     @Override

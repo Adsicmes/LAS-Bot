@@ -3,6 +3,7 @@ package com.las.cmd.other;
 
 import com.las.annotation.BotCmd;
 import com.las.cmd.BaseCommand;
+import com.las.common.Constant;
 import com.las.utils.CmdUtil;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
@@ -20,7 +21,7 @@ public class RollCommand extends BaseCommand {
 
 
     public RollCommand() {
-        super("roll", "摇一摇");
+        super(Constant.MIN_PRIORITY,"roll", "摇一摇");
     }
 
 

@@ -2,6 +2,7 @@ package com.las.cmd.admin;
 
 import com.las.annotation.BotCmd;
 import com.las.cmd.BaseCommand;
+import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.utils.CmdUtil;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class ResetBot extends BaseCommand {
 
     public ResetBot() {
-        super("重置", "reset");
+        super(Constant.MAX_PRIORITY,"重置", "reset");
     }
 
     @Override

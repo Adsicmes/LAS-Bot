@@ -2,6 +2,7 @@ package com.las.cmd;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.las.common.Constant;
 import com.las.strategy.handle.AbstractBotMsgHandler;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public abstract class BaseCommand extends AbstractBotMsgHandler {
      * @param alias 其他指令名
      */
     public BaseCommand(String name, String... alias) {
-        this(0, name, new ArrayList<>(Arrays.asList(alias)));
+        this(Constant.DEFAULT_PRIORITY, name, new ArrayList<>(Arrays.asList(alias)));
     }
 
     /**

@@ -35,6 +35,13 @@ public class Constant {
     public static final int MESSAGE_TYPE_DISCUSS = 2;
 
     /**
+     * 指令执行优先级
+     */
+    public static final int DEFAULT_PRIORITY = 10;
+    public static final int MIN_PRIORITY = 0;
+    public static final int MAX_PRIORITY = 999;
+
+    /**
      * 消息前缀
      */
     public static final String DEFAULT_PRE = "#";
