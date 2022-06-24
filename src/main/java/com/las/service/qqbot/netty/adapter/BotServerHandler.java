@@ -3,6 +3,7 @@ package com.las.service.qqbot.netty.adapter;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.enums.MsgCallBackEnum;
 import io.netty.buffer.ByteBuf;
@@ -17,6 +18,7 @@ import io.netty.handler.codec.http.multipart.MemoryAttribute;
 import io.netty.util.CharsetUtil;
 import org.apache.log4j.Logger;
 
+import java.io.Console;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -56,7 +58,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 String type = params.get("type").toString();
                 logger.info("事件类型是：" + type);
                 String className = MsgCallBackEnum.getClassNameByEvent(type);
-                if (null != className) {
+                if (null != className && !Constant.NONE.equals(className)) {
                     //不为空，说明找到了对应的处理类
                     logger.debug(className);
                     if (StrUtil.isBlank(AppConfigs.botQQ) && StrUtil.isBlank(AppConfigs.keyAuth)) {

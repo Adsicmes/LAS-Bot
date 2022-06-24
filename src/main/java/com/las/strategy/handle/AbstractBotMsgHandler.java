@@ -94,6 +94,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      * 执行指令方法
      */
     protected void exeCommand(String msg, Long userId, Long id, int type) {
+        List<BaseCommand> commands = new ArrayList<>();
         BaseCommand command = null;
         String cmd = null;
         int cmdLength = 0;
@@ -148,6 +149,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                                 if (null == command) {
                                     try {
                                         command = (BaseCommand) c.newInstance();
+                                        commands.add(command);
                                     } catch (Exception e) {
                                         logger.error("出错ERROR：" + e.getMessage(), e);
                                     }
@@ -157,19 +159,24 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                     }
                 }
             }
-            if (null != command) {
-                logger.info("执行指令是：" + command.toString());
-                boolean isExecute = true;
-                // 找到指令之后，查找群是否开启，以及用户权限等问题
-                BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
-                if (null != botCmd) {
-                    isExecute = checkExe(userId, id, type, botCmd);
-                }
-                if (isExecute) {
-                    try {
-                        command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
-                    } catch (Exception e) {
-                        logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+            if (CollectionUtil.isNotEmpty(commands)) {
+                // 因为可能有开发者用户覆盖内置机器人点歌功能，可以按顺序排优先级高的
+                Optional<BaseCommand> baseCommand = commands.stream().max(Comparator.comparing(BaseCommand::getPriority));
+                if(baseCommand.isPresent()){
+                    BaseCommand finalBaseCommand = baseCommand.get();
+                    logger.info("最终执行指令是：" + finalBaseCommand.toString());
+                    boolean isExecute = true;
+                    // 找到指令之后，查找群是否开启，以及用户权限等问题
+                    BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
+                    if (null != botCmd) {
+                        isExecute = checkExe(userId, id, type, botCmd);
+                    }
+                    if (isExecute) {
+                        try {
+                            command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                        } catch (Exception e) {
+                            logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+                        }
                     }
                 }
             }
