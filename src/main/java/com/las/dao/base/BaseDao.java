@@ -22,7 +22,6 @@ public class BaseDao<T> {
     private Class<T> aClass;
     private String tableName;
     private String idKey;
-    //开启驼峰映射
     private RowProcessor processor = new BasicRowProcessor(new GenerousBeanProcessor());
 
     public BaseDao(Class<T> aClass) {
@@ -33,28 +32,14 @@ public class BaseDao<T> {
         }
     }
 
-    public QueryRunner getRunner() {
+    protected QueryRunner getRunner() {
         return new QueryRunner(AppConfigs.dataSource);
     }
 
-    public RowProcessor getProcessor() {
+    protected RowProcessor getProcessor() {
         return processor;
     }
 
-    /**
-     * 根据ID查找
-     * @param id 数据库主键ID
-     */
-    public T findById(Object id) {
-        String sql = "select * from " + tableName + " where " + idKey + " = ?";
-        T bean = null;
-        try {
-            bean = getRunner().query(sql, new BeanHandler<>(aClass, processor), id);
-        } catch (SQLException e) {
-            logger.error("出错ERROR：" + e.getMessage(),e);
-        }
-        return bean;
-    }
 
     /**
      * 更新或者插入
@@ -115,6 +100,7 @@ public class BaseDao<T> {
 
     /**
      * 检查ID是否在数据库存在
+     *
      */
     private Object checkIdExist(T obj, Field[] fields) throws Exception {
         Object id = null;
@@ -133,6 +119,17 @@ public class BaseDao<T> {
             return id;
         }
         return null;
+    }
+
+    private T findById(Object id) {
+        String sql = "select * from " + tableName + " where " + idKey + " = ?";
+        T bean = null;
+        try {
+            bean = getRunner().query(sql, new BeanHandler<>(aClass, processor), id);
+        } catch (SQLException e) {
+            logger.error("出错ERROR：" + e.getMessage(),e);
+        }
+        return bean;
     }
 
 

@@ -34,7 +34,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     private static Logger logger = Logger.getLogger(BotServerHandler.class);
 
-    /*
+    /**
      * 处理请求
      */
     @Override

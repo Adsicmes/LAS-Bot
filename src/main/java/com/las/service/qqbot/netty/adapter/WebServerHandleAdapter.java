@@ -16,8 +16,6 @@ import java.io.RandomAccessFile;
 public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private static Logger logger = Logger.getLogger(BotServerHandler.class);
-
-    // 资源所在路径
     private static final String location;
 
     // 404文件页面地址
