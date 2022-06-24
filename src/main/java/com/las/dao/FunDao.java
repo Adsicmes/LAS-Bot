@@ -3,10 +3,8 @@ package com.las.dao;
 import com.las.config.AppConfigs;
 import com.las.dao.base.BaseDao;
 import com.las.model.Fun;
-import com.las.service.qqbot.netty.adapter.BotServerHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ public class FunDao extends BaseDao<Fun> {
         String sql = "select * from `fun` where bot_qq = ?";
         List<Fun> funList = new ArrayList<>();
         try {
-            funList = getRunner().query(sql, new BeanListHandler<>(Fun.class, getProcessor()), AppConfigs.BOT_QQ);
+            funList = getRunner().query(sql, new BeanListHandler<>(Fun.class, getProcessor()), AppConfigs.botQQ);
         } catch (SQLException e) {
             logger.error("出错ERROR：" + e.getMessage(), e);
         }

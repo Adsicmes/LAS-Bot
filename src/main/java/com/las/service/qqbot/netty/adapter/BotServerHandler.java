@@ -48,7 +48,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         } else if (fullHttpRequest.method() == HttpMethod.POST) {
             String uri = fullHttpRequest.uri();
             logger.info(uri);
-            if (uri.equals(AppConfigs.QQ_BOT_SERVER)) {
+            if (uri.equals(AppConfigs.qqBotServer)) {
                 Map<String, Object> params = getPostParamsFromChannel(fullHttpRequest);
                 String content = JSONObject.toJSONString(params);
                 logger.info(content);
@@ -59,7 +59,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 if (null != className) {
                     //不为空，说明找到了对应的处理类
                     logger.debug(className);
-                    if (StrUtil.isBlank(AppConfigs.BOT_QQ) && StrUtil.isBlank(AppConfigs.KEY_AUTH)) {
+                    if (StrUtil.isBlank(AppConfigs.botQQ) && StrUtil.isBlank(AppConfigs.keyAuth)) {
                         logger.error("botQQ暂未初始化，无法执行bot事件");
                     } else {
                         try {

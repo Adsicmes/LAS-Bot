@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class Constant {
 
     /**
-     * mirai消息临时会话
+     * 消息临时会话
      */
     public static volatile String session;
 

@@ -3,15 +3,11 @@ package com.las.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jfinal.kit.StrKit;
 import com.las.common.Constant;
 import com.las.dto.CqResponse;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author dullwolf
@@ -88,13 +84,13 @@ public class CmdUtil {
         CqResponse response = null;
         switch (type) {
             case Constant.MESSAGE_TYPE_PRIVATE:
-                response = MiraiUtil.getInstance().sendMsg(userId, id, msgList, "private");
+                response = MiRaiUtil.getInstance().sendMsg(userId, id, msgList, "private");
                 break;
             case Constant.MESSAGE_TYPE_GROUP:
-                response = MiraiUtil.getInstance().sendMsg(userId, id, msgList, "group");
+                response = MiRaiUtil.getInstance().sendMsg(userId, id, msgList, "group");
                 break;
             case Constant.MESSAGE_TYPE_DISCUSS:
-                response = MiraiUtil.getInstance().sendMsg(userId, id, msgList, "discuss");
+                response = MiRaiUtil.getInstance().sendMsg(userId, id, msgList, "discuss");
                 break;
             default:
                 break;
@@ -107,13 +103,13 @@ public class CmdUtil {
 
         switch (type) {
             case Constant.MESSAGE_TYPE_PRIVATE:
-                response = MiraiUtil.getInstance().sendImgMsg(userId, id, urls, "private");
+                response = MiRaiUtil.getInstance().sendImgMsg(userId, id, urls, "private");
                 break;
             case Constant.MESSAGE_TYPE_GROUP:
-                response = MiraiUtil.getInstance().sendImgMsg(userId, id, urls, "group");
+                response = MiRaiUtil.getInstance().sendImgMsg(userId, id, urls, "group");
                 break;
             case Constant.MESSAGE_TYPE_DISCUSS:
-                response = MiraiUtil.getInstance().sendImgMsg(userId, id, urls, "discuss");
+                response = MiRaiUtil.getInstance().sendImgMsg(userId, id, urls, "discuss");
                 break;
             default:
                 break;

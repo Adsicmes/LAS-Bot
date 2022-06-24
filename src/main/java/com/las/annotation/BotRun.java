@@ -15,7 +15,7 @@ public @interface BotRun {
     /**
      * 静态资源路径
      */
-    String webpath() default "target/classes/static";
+    String webPath() default "target/classes/static";
 
     /**
      * 超管QQ
@@ -40,7 +40,7 @@ public @interface BotRun {
     /**
      * mirai服务url和端口
      */
-    String miraiUrl() default "http://localhost:5700";
+    String miRaiUrl() default "http://localhost:5700";
 
     /**
      * mirai对接http接口

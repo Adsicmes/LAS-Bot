@@ -4,10 +4,8 @@ import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.dao.base.BaseDao;
 import com.las.model.User;
-import com.las.service.qqbot.netty.adapter.BotServerHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
@@ -29,7 +27,7 @@ public class UserDao extends BaseDao<User> {
      */
     public User findSuperQQ() throws Exception {
         String sql = "select * from `user` where user_id = ? and bot_qq = ?";
-        return getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), Long.parseLong(AppConfigs.SUPER_QQ), Long.parseLong(AppConfigs.BOT_QQ));
+        return getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), Long.parseLong(AppConfigs.superQQ), Long.parseLong(AppConfigs.botQQ));
     }
 
 
@@ -46,7 +44,7 @@ public class UserDao extends BaseDao<User> {
         String sql = "select * from `user` where user_id = ? and bot_qq = ? and remark not like concat(?,'%')";
         User user = null;
         try {
-            user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid, Long.parseLong(AppConfigs.BOT_QQ), Constant.INIT_PERMISSION);
+            user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid, Long.parseLong(AppConfigs.botQQ), Constant.INIT_PERMISSION);
         } catch (SQLException e) {
             logger.error("出错ERROR：" + e.getMessage(), e);
         }
@@ -63,7 +61,7 @@ public class UserDao extends BaseDao<User> {
         String sql = "select * from `user` where user_id = ? and bot_qq = ? and remark = ?";
         User user = null;
         try {
-            user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid, Long.parseLong(AppConfigs.BOT_QQ), Constant.INIT_PERMISSION + gId);
+            user = getRunner().query(sql, new BeanHandler<>(User.class, getProcessor()), uid, Long.parseLong(AppConfigs.botQQ), Constant.INIT_PERMISSION + gId);
         } catch (SQLException e) {
             logger.error("出错ERROR：" + e.getMessage(), e);
         }

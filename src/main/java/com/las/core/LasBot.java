@@ -17,8 +17,6 @@ import java.io.*;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.las.config.AppConfigs.APP_CONTEXT;
-
 /**
  * @author dullwolf
  */
@@ -87,18 +85,18 @@ public class LasBot {
             try {
                 Thread.sleep(2000);
                 WeChatPushService client;
-                if (null == AppConfigs.WX_PUSH_SERVER) {
+                if (null == AppConfigs.wxPushService) {
                     // 启动WX服务
-                    client = new WeChatPushService(AppConfigs.WX_SERVER_URL);
+                    client = new WeChatPushService(AppConfigs.wxServerUrl);
                     client.connect();
                     while (!client.getReadyState().equals(ReadyState.OPEN)) {
                         Thread.sleep(500);
                         logger.debug("正在连接微信机器人服务...");
                     }
                     logger.warn("启动WX机器人成功");
-                    AppConfigs.WX_PUSH_SERVER = client;
+                    AppConfigs.wxPushService = client;
                 } else {
-                    client = AppConfigs.WX_PUSH_SERVER;
+                    client = AppConfigs.wxPushService;
                     // 启动成功一次之后，若微信客户端挂了，需要不断监听连接状态
                     // 若不是OPEN，需要重新连接
                     if (!client.getReadyState().equals(ReadyState.OPEN)) {
@@ -119,7 +117,7 @@ public class LasBot {
     private static void init(BotRun annotation) throws Exception {
         readEnvFile();
         readBotFile(annotation);
-        UserDao userDao = (UserDao) APP_CONTEXT.getBean("userDao");
+        UserDao userDao = new UserDao();
         User superUser;
         try {
             superUser = userDao.findSuperQQ();
@@ -127,12 +125,12 @@ public class LasBot {
                 logger.debug("检查管理员QQ信息：" + superUser.toString());
             } else {
                 logger.warn("机器人QQ未添加超管，请重置");
-                logger.warn("请使用超管QQ(" + AppConfigs.SUPER_QQ + "),向机器人QQ(" + AppConfigs.BOT_QQ + ") 发送指令<重置>");
+                logger.warn("请使用超管QQ(" + AppConfigs.superQQ + "),向机器人QQ(" + AppConfigs.botQQ + ") 发送指令<重置>");
             }
         } catch (Exception e) {
             throw new Exception("数据库连接异常，请检查env.ini配置文件");
         }
-        if (!StrUtils.isNotBlank(AppConfigs.BOT_QQ)) {
+        if (!StrUtils.isNotBlank(AppConfigs.botQQ)) {
             throw new Exception("botQQ暂未初始化，请检查BotRun注解里面的参数");
         }
     }
@@ -183,9 +181,9 @@ public class LasBot {
         content = content.replaceAll("SUPER_QQ_PARAM", botRun.superQQ());
         content = content.replaceAll("BOT_QQ_PARAM", botRun.botQQ());
         content = content.replaceAll("QQ_AUTH_PARAM", botRun.keyAuth());
-        content = content.replaceAll("MIRAI_URL_PARAM", botRun.miraiUrl());
+        content = content.replaceAll("MIRAI_URL_PARAM", botRun.miRaiUrl());
         content = content.replaceAll("BOT_SERVER_PARAM", botRun.botServer());
-        content = content.replaceAll("WEB_PATH_PARAM", botRun.webpath());
+        content = content.replaceAll("WEB_PATH_PARAM", botRun.webPath());
         content = content.replaceAll("WX_SERVER_PARAM", botRun.wxServerUrl());
         return content;
     }

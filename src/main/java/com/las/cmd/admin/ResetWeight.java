@@ -28,7 +28,7 @@ public class ResetWeight extends BaseCommand {
     @Override
     public void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
         if (null != userId) {
-            if (!userId.equals(Long.parseLong(AppConfigs.SUPER_QQ))) {
+            if (!userId.equals(Long.parseLong(AppConfigs.superQQ))) {
                 CmdUtil.sendMessage("必须是超管才可以更新机器人权限", userId, id, type);
             } else if (Constant.MESSAGE_TYPE_GROUP == type) {
                 // 必须是在群里使用
@@ -55,7 +55,7 @@ public class ResetWeight extends BaseCommand {
                             }
                         }
                         if (null != qqUser) {
-                            qqUser.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+                            qqUser.setBotQQ(Long.parseLong(AppConfigs.botQQ));
                             qqUser.setUserId(Long.parseLong(qq));
                             qqUser.setFunPermission(Integer.parseInt(weight));
                             getUserDao().saveOrUpdate(qqUser);

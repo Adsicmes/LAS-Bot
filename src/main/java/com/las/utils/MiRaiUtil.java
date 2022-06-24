@@ -15,13 +15,13 @@ import java.util.Map;
 /**
  * @author dullwolf
  */
-public class MiraiUtil {
+public class MiRaiUtil {
 
-    private static Logger logger = Logger.getLogger(MiraiUtil.class);
+    private static Logger logger = Logger.getLogger(MiRaiUtil.class);
 
-    private static String baseURL = AppConfigs.MIRAT_API_URL;
-    private static String qq = AppConfigs.BOT_QQ;
-    private static String qqAuth = AppConfigs.KEY_AUTH;
+    private static String baseURL = AppConfigs.miRaiApiUrl;
+    private static String qq = AppConfigs.botQQ;
+    private static String qqAuth = AppConfigs.keyAuth;
 
     private void releaseSession() {
         //之后需要释放session
@@ -43,14 +43,14 @@ public class MiraiUtil {
         HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
     }
 
-    private MiraiUtil() {
+    private MiRaiUtil() {
         logger.info("初始化ing...");
     }
 
-    public static ThreadLocal<MiraiUtil> instance = ThreadLocal.withInitial(MiraiUtil::new);
+    public static ThreadLocal<MiRaiUtil> instance = ThreadLocal.withInitial(MiRaiUtil::new);
 
-    public static MiraiUtil getInstance() {
-        MiraiUtil context = instance.get();
+    public static MiRaiUtil getInstance() {
+        MiRaiUtil context = instance.get();
         if (null == context) {
             logger.info("实例被删了...准备重新初始化...");
             context = init();
@@ -58,8 +58,8 @@ public class MiraiUtil {
         return context;
     }
 
-    private static MiraiUtil init() {
-        MiraiUtil context = new MiraiUtil();
+    private static MiRaiUtil init() {
+        MiRaiUtil context = new MiRaiUtil();
         instance.set(context);
         return context;
     }

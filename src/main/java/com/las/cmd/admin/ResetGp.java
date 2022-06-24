@@ -22,7 +22,7 @@ public class ResetGp extends BaseCommand {
 
     @Override
     public void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception {
-        if (!userId.equals(Long.parseLong(AppConfigs.SUPER_QQ))) {
+        if (!userId.equals(Long.parseLong(AppConfigs.superQQ))) {
             CmdUtil.sendMessage("必须是超管才可以设置群配置", userId, id, type);
         } else {
             if (Constant.MESSAGE_TYPE_GROUP == type) {

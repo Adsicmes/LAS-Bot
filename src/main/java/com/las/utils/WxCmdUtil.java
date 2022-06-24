@@ -17,7 +17,7 @@ public class WxCmdUtil {
 
     private static void sendMsg(String json) {
         try {
-            AppConfigs.WX_PUSH_SERVER.send(json);
+            AppConfigs.wxPushService.send(json);
         } catch (Exception e) {
             logger.error("发送WX信息失败，原因：" + e.getMessage());
         }

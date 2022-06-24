@@ -25,7 +25,7 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
 
     static {
         // 构建资源所在路径，此处参数可优化为使用配置文件传入
-        location = AppConfigs.WEB_PATH;
+        location = AppConfigs.webPath;
     }
 
 
@@ -38,7 +38,7 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
             return;
         }
         // 设置bot服务
-        if (AppConfigs.QQ_BOT_SERVER.equals(uri)) {
+        if (AppConfigs.qqBotServer.equals(uri)) {
             ctx.fireChannelRead(request);
             return;
         }
@@ -47,12 +47,10 @@ public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttp
         // 路径带有问号需要过滤
         path = path.split("\\?")[0];
         File html = new File(System.getProperty("user.dir"), path);
-        //logger.debug("页面资源路径；" + html.getAbsolutePath());
 
-        // 状态为1xx的话，继续请求
-        if (HttpUtil.is100ContinueExpected(request)) {
-            send100Continue(ctx);
-        }
+//        if (HttpUtil.is100ContinueExpected(request)) {
+//            send100Continue(ctx);
+//        }
 
 
         RandomAccessFile file = new RandomAccessFile(html, "r");

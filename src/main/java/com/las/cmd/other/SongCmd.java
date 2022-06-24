@@ -55,7 +55,8 @@ public class SongCmd extends BaseCommand {
                 if (null != obj.get("songs")) {
                     JSONArray array = obj.getJSONArray("songs");
                     if (!array.isEmpty()) {
-                        JSONObject song = JsonUtils.getJsonObject(array.get(0));//默认就取第一首歌
+                        //默认就取第一首歌
+                        JSONObject song = JsonUtils.getJsonObject(array.get(0));
                         CmdUtil.send163MusicMessage(song, userId, id, type);
                     }
                 } else {

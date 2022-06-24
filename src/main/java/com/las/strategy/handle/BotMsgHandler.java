@@ -19,7 +19,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -264,7 +263,7 @@ public class BotMsgHandler implements BotStrategy {
                 user.setUserId(userId);
                 user.setRemark("来自群或会话组[" + id + "]");
             }
-            user.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            user.setBotQQ(Long.parseLong(AppConfigs.botQQ));
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
                 user.setFunPermission(Constant.DEFAULT_PERMISSION);
@@ -275,7 +274,7 @@ public class BotMsgHandler implements BotStrategy {
             } else {
                 user.setUsedCount(user.getUsedCount() + 1);
             }
-            if (AppConfigs.SUPER_QQ.equals(userId.toString())) {
+            if (AppConfigs.superQQ.equals(userId.toString())) {
                 user.setFunPermission(Constant.SUPER_PERMISSION);
             } else {
                 if (funWeight < Constant.ADMIN_PERMISSION) {
@@ -317,12 +316,12 @@ public class BotMsgHandler implements BotStrategy {
             int funWeight = botCmd.funWeight();
             List<Fun> funList = getFunDao().findAll();
             Fun fun = Optional.ofNullable(funList).orElse(new ArrayList<>()).stream()
-                    .filter(funObj -> funName.equals(funObj.getFunName()) && Long.parseLong(AppConfigs.BOT_QQ) == funObj.getBotQQ())
+                    .filter(funObj -> funName.equals(funObj.getFunName()) && Long.parseLong(AppConfigs.botQQ) == funObj.getBotQQ())
                     .findFirst()
                     .orElseGet(Fun::new);
             fun.setFunName(funName);
             fun.setFunweight(funWeight);
-            fun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            fun.setBotQQ(Long.parseLong(AppConfigs.botQQ));
             getFunDao().saveOrUpdate(fun);
         });
 
@@ -336,7 +335,7 @@ public class BotMsgHandler implements BotStrategy {
                 GroupFun groupFun = new GroupFun();
                 groupFun.setGroupFun(fun.getFunName());
                 groupFun.setGroupId(groupId);
-                groupFun.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+                groupFun.setBotQQ(Long.parseLong(AppConfigs.botQQ));
                 groupFun.setIsEnable(1);
                 for (GroupFun gf : groupFunList) {
                     // 找到之前存在相同的功能名，则跳过
@@ -353,7 +352,7 @@ public class BotMsgHandler implements BotStrategy {
      * 初始化机器人好友和群(权限为保护：只允许子类去使用)
      */
     protected void initBot() {
-        List<JSONObject> list = MiraiUtil.getInstance().getGroupList();
+        List<JSONObject> list = MiRaiUtil.getInstance().getGroupList();
         //采取异步
         list.parallelStream().forEach(item -> {
             Group group = getGroupDao().findByGid(item.getLong("id"));
@@ -364,7 +363,7 @@ public class BotMsgHandler implements BotStrategy {
             group.setName(item.getString("name"));
             group.setGroupId(item.getLong("id"));
             group.setGroupRole(item.getString("permission"));
-            group.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            group.setBotQQ(Long.parseLong(AppConfigs.botQQ));
             getGroupDao().saveOrUpdate(group);
 
             GroupExt groupExt = getGroupExtDao().findByGid(item.getLong("id"));
@@ -374,13 +373,13 @@ public class BotMsgHandler implements BotStrategy {
                 groupExt.setAttribute2("#");
             }
             groupExt.setGroupId(item.getLong("id"));
-            groupExt.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            groupExt.setBotQQ(Long.parseLong(AppConfigs.botQQ));
             getGroupExtDao().saveOrUpdate(groupExt);
 
         });
 
         //下一步查询机器人QQ所有的好友列表
-        List<JSONObject> friendList = MiraiUtil.getInstance().getFriendList();
+        List<JSONObject> friendList = MiRaiUtil.getInstance().getFriendList();
         friendList.parallelStream().forEach(item -> {
             User user = getUserDao().findByUid(item.getLong("id"));
             if (null == user) {
@@ -389,7 +388,7 @@ public class BotMsgHandler implements BotStrategy {
             user.setUserId(item.getLong("id"));
             user.setNickname(EmojiUtil.emojiChange(item.getString("nickname")));
             user.setRemark(EmojiUtil.emojiChange(item.getString("remark")));
-            user.setBotQQ(Long.parseLong(AppConfigs.BOT_QQ));
+            user.setBotQQ(Long.parseLong(AppConfigs.botQQ));
             if (null == user.getFunPermission()) {
                 //说明该用户是第一次？默认设置权限0
                 user.setFunPermission(Constant.DEFAULT_PERMISSION);

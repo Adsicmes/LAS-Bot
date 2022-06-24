@@ -34,7 +34,7 @@ public class BaseDao<T> {
     }
 
     public QueryRunner getRunner() {
-        return new QueryRunner(AppConfigs.DATA_SOURCE);
+        return new QueryRunner(AppConfigs.dataSource);
     }
 
     public RowProcessor getProcessor() {
