@@ -2,6 +2,7 @@ package com.las.enums;
 
 import com.las.annotation.BotEvent;
 import com.las.common.Constant;
+import com.las.strategy.handle.AbstractBotMsgHandler;
 import com.las.strategy.handle.BotInvitedJoinGroupRequestsMsgHandler;
 import com.las.strategy.handle.MemberJoinMsgHandler;
 import com.las.strategy.handle.NewFriendRequestsMsgHandler;
@@ -128,6 +129,10 @@ public enum MsgCallBackEnum {
         this.className = className;
     }
 
+    public String getEventName() {
+        return eventName;
+    }
+
     public String getClassName() {
         return className;
     }
@@ -146,8 +151,13 @@ public enum MsgCallBackEnum {
         Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotEvent.class);
         for (Class<?> c : classSet) {
             BotEvent botEvent = c.getDeclaredAnnotation(BotEvent.class);
-            if (botEvent.eventName().equals(eventName)) {
-                className = c.getClass().getName();
+            if (botEvent.event().getEventName().equals(eventName)) {
+                Class<?> superclass = c.getSuperclass();
+                String superClassName = superclass.getName();
+                String botMsgClassName = AbstractBotMsgHandler.class.getName();
+                if(superClassName.equals(botMsgClassName)){
+                    className = c.getName();
+                }
             }
         }
         return className;

@@ -3,6 +3,7 @@ package com.las.strategy.handle;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
 import com.las.annotation.BotCmd;
@@ -36,12 +37,26 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
     private JSONObject cqObj;
 
     /**
-     * 提供getter
+     * 消息类型 0表示私有 1群消息 2讨论组
      */
-    JSONObject getCqObj() {
-        return cqObj;
-    }
+    private int type;
 
+    /**
+     * 消息内容
+     */
+    private String msgData;
+
+    /**
+     * 用户ID
+     */
+    private Long userId;
+
+    /**
+     * 组ID
+     */
+    private Long id;
+
+    // 下面是dao，后续打算手写IOC，提升性能
     private GroupDao groupDao;
 
     private UserDao userDao;
@@ -58,6 +73,29 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
         this.funDao = new FunDao();
         this.groupFunDao = new GroupFunDao();
         this.groupExtDao = new GroupExtDao();
+    }
+
+    /**
+     * 提供getter
+     */
+    protected JSONObject getCqObj() {
+        return cqObj;
+    }
+
+    protected int getType() {
+        return type;
+    }
+
+    protected String getMsgData() {
+        return msgData;
+    }
+
+    protected Long getUserId() {
+        return userId;
+    }
+
+    protected Long getId() {
+        return id;
     }
 
     protected GroupDao getGroupDao() {
@@ -87,6 +125,40 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
     @Override
     public final void handleMsg(Map map) {
         cqObj = JSON.parseObject(JSONObject.toJSONString(map));
+        JSONObject sender = cqObj.getJSONObject("sender");
+        JSONArray msgChain = cqObj.getJSONArray("messageChain");
+        String strType = cqObj.getString("type");
+        switch (strType) {
+            case "FriendMessage":
+                type = Constant.MESSAGE_TYPE_PRIVATE;
+                break;
+            case "GroupMessage":
+                type = Constant.MESSAGE_TYPE_GROUP;
+                break;
+            case "TempMessage":
+                type = Constant.MESSAGE_TYPE_DISCUSS;
+                break;
+            default:
+                break;
+        }
+        if (CollectionUtil.isNotEmpty(msgChain)) {
+            for (int i = 0; i < msgChain.size(); i++) {
+                JSONObject jsonObj = msgChain.getJSONObject(i);
+                if ("Plain".equals(jsonObj.getString("type"))) {
+                    msgData = jsonObj.getString("text");
+                    break;
+                }
+            }
+        }
+        if (null != sender) {
+            userId = sender.getLong("id");
+            JSONObject group = sender.getJSONObject("group");
+            if (null != group) {
+                id = group.getLong("id");
+            } else {
+                id = userId;
+            }
+        }
     }
 
 
