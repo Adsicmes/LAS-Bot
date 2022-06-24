@@ -1,5 +1,8 @@
 package com.las.common;
 
+/**
+ * @author SIE
+ */
 public class Constant {
 
     /**
@@ -27,4 +30,17 @@ public class Constant {
      * 消息前缀
      */
     public static final String DEFAULT_PRE = "#";
+
+    /**
+     * 空定义
+     */
+    public static final String KONG = "空";
+    public static final String NONE = "NONE";
+
+    /**
+     * 权限赋能
+     */
+    public static final String PERMISSION_UPDATE = "权限更新";
+    public static final String PERMISSION_ENABLE = "权限赋能";
+    public static final String INIT_PERMISSION = "初次初始化权限赋能";
 }

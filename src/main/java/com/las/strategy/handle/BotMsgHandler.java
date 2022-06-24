@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
 import com.las.annotation.BotCmd;
-import com.las.cmd.Command;
+import com.las.cmd.BaseCommand;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.dao.*;
@@ -16,7 +16,6 @@ import com.las.strategy.BotStrategy;
 import com.las.utils.*;
 import org.apache.log4j.Logger;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -171,7 +170,7 @@ public abstract class BotMsgHandler implements BotStrategy {
      * 执行指令方法(权限为缺省：不同包的类不可以去使用)
      */
     void exeCommand(String msg, Long userId, Long id, int type) {
-        Command command = null;
+        BaseCommand command = null;
         String cmd = null;
         int cmdLength = 0;
         // 需要找匹配指令的
@@ -259,7 +258,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                                 cmdLength = cmds.length();
                                 if (null == command) {
                                     try {
-                                        command = (Command) c.newInstance();
+                                        command = (BaseCommand) c.newInstance();
                                     } catch (Exception e) {
                                         //e.printStackTrace();
                                         logger.error("出错ERROR：" + e.getMessage(),e);
@@ -298,7 +297,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                 boolean isExecute = checkExe(userId, id, type, annotation);
                 if (isExecute) {
                     try {
-                        Command notCommand = (Command) aClass.newInstance();
+                        BaseCommand notCommand = (BaseCommand) aClass.newInstance();
                         logger.info("执行非匹配指令是：" + notCommand.toString());
                         notCommand.execute(object, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                     } catch (Exception e) {

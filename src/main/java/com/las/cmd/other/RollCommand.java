@@ -2,7 +2,7 @@ package com.las.cmd.other;
 
 
 import com.las.annotation.BotCmd;
-import com.las.cmd.Command;
+import com.las.cmd.BaseCommand;
 import com.las.utils.CmdUtil;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
@@ -10,8 +10,11 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * @author dullwolf
+ */
 @BotCmd(funName = "随机功能")
-public class RollCommand extends Command {
+public class RollCommand extends BaseCommand {
 
     private static Logger logger = Logger.getLogger(RollCommand.class);
 

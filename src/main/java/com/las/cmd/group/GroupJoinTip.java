@@ -1,7 +1,7 @@
 package com.las.cmd.group;
 
 import com.las.annotation.BotCmd;
-import com.las.cmd.Command;
+import com.las.cmd.BaseCommand;
 import com.las.common.Constant;
 import com.las.model.GroupExt;
 import com.las.utils.CmdUtil;
@@ -9,8 +9,11 @@ import com.las.utils.StrUtils;
 
 import java.util.ArrayList;
 
+/**
+ * @author dullwolf
+ */
 @BotCmd(funName = "管理员功能", funWeight = 996)
-public class GroupJoinTip extends Command {
+public class GroupJoinTip extends BaseCommand {
 
     public GroupJoinTip() {
         super("群欢迎设置", "groupTip","gt");
@@ -29,7 +32,7 @@ public class GroupJoinTip extends Command {
                 tip = sb.toString();
             }
             if (StrUtils.isNotEmpty(tip)) {
-                if ("空".equals(tip.trim()) || "None".equalsIgnoreCase(tip.trim())) {
+                if (Constant.KONG.equals(tip.trim()) || Constant.NONE.equalsIgnoreCase(tip.trim())) {
                     tip = "";
                 }
                 GroupExt groupExt = getGroupExtDao().findByGid(id);

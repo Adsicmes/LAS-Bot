@@ -1,0 +1,69 @@
+package com.las.cmd;
+
+
+import com.alibaba.fastjson.JSONObject;
+import com.las.strategy.handle.BotMsgHandler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+
+/**
+ * @author dullwolf
+ */
+public abstract class BaseCommand extends BotMsgHandler {
+
+    /**
+     * 指令名
+     *
+     */
+    private String name;
+
+    /**
+     * 其他指向这个指令的指令名
+     *
+     */
+    private ArrayList<String> alias;
+
+    /**
+     * 指令构造器
+     *
+     * @param name  指令名
+     * @param alias 其他指令名
+     */
+    public BaseCommand(String name, String... alias) {
+        this(name, new ArrayList<>(Arrays.asList(alias)));
+    }
+
+    private BaseCommand(String name, ArrayList<String> alias) {
+        this.name = name;
+        this.alias = alias;
+    }
+
+    /**
+     * 执行指令
+     *
+     * @param userId  封装用户ID信息
+     * @param id      封装的ID（用户ID or 群ID or 讨论组ID）
+     * @param type    封装消息类型
+     * @param command 指令 ( 包含指令参数,多个参数中间空格隔开的 )
+     * @param args    指令参数
+     */
+    public abstract void execute(Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception;
+
+    /**
+     * 执行非匹配指令默认方法（子类BaseNonCommand继承）
+     */
+    public void execute(JSONObject msgObj, Long userId, Long id, Integer type, String command, ArrayList<String> args) throws Exception{
+
+    }
+
+
+    @Override
+    public String toString() {
+        return "Command{" +
+                "name='" + name + '\'' +
+                ", alias=" + alias +
+                '}';
+    }
+}
