@@ -58,6 +58,10 @@ public abstract class BaseCommand extends AbstractBotMsgHandler {
 
     }
 
+    @Override
+    public void exec() {
+
+    }
 
     @Override
     public String toString() {
