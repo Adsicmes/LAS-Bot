@@ -7,7 +7,7 @@ import com.las.annotation.BotCmd;
 import com.las.cmd.BaseCommand;
 import com.las.utils.CmdUtil;
 import com.las.utils.JsonUtils;
-import com.las.utils.netease.NeteaseMusicAPI;
+import com.las.utils.NetEaseMusicUtil;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class SongCmd extends BaseCommand {
             songName = songName.replaceAll("：", " ");
             songName = songName.replaceAll("#", " ");
             songName = songName.replaceAll("!", " ");
-            String search = NeteaseMusicAPI.search(songName);
+            String search = NetEaseMusicUtil.search(songName);
             JSONObject object = JsonUtils.getJsonObjectByJsonString(search);
             assert object != null;
             if (null != object.get("result")) {

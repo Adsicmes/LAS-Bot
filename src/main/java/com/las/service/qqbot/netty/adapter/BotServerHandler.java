@@ -90,11 +90,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         channelHandlerContext.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 
-    /*
-     * 获取GET方式传递的参数
-     */
+
     private Map<String, Object> getGetParamsFromChannel(FullHttpRequest fullHttpRequest) {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
 
         if (fullHttpRequest.method() == HttpMethod.GET) {
             // 处理get请求
@@ -110,24 +108,16 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
 
     }
 
-    /*
-     * 获取POST方式传递的参数
-     */
+
     private Map<String, Object> getPostParamsFromChannel(FullHttpRequest fullHttpRequest) {
-
-        Map<String, Object> params = new HashMap<String, Object>();
-
+        Map<String, Object> params;
         if (fullHttpRequest.method() == HttpMethod.POST) {
             // 处理POST请求
             String strContentType = fullHttpRequest.headers().get("Content-Type").trim();
             if (strContentType.contains("x-www-form-urlencoded")) {
                 params = getFormParams(fullHttpRequest);
             } else if (strContentType.contains("application/json")) {
-                try {
-                    params = getJSONParams(fullHttpRequest);
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
+                params = getJSONParams(fullHttpRequest);
             } else {
                 return null;
             }
@@ -137,11 +127,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         }
     }
 
-    /*
-     * 解析from表单数据（Content-Type = x-www-form-urlencoded）
-     */
+
     private Map<String, Object> getFormParams(FullHttpRequest fullHttpRequest) {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
 
         HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(new DefaultHttpDataFactory(false), fullHttpRequest);
         List<InterfaceHttpData> postData = decoder.getBodyHttpDatas();
@@ -157,7 +145,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
     }
 
 
-    private Map<String, Object> getJSONParams(FullHttpRequest fullHttpRequest) throws UnsupportedEncodingException {
+    private Map<String, Object> getJSONParams(FullHttpRequest fullHttpRequest) {
         Map<String, Object> params = new HashMap<>();
         ByteBuf content = fullHttpRequest.content();
         byte[] reqContent = new byte[content.readableBytes()];

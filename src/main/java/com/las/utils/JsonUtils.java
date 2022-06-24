@@ -72,6 +72,7 @@ public class JsonUtils {
         return getJsonObjectByJsonString(getJsonString(obj));
     }
 
+
     public static List<JSONObject> getJSONArray(Object obj) {
         return getJsonArrayByJsonString(getJsonString(obj));
     }

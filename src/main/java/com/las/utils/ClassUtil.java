@@ -243,10 +243,8 @@ public final class ClassUtil {
         int index = path.lastIndexOf(JAR_PATH_EXT);
         if (index != -1) {
             //Jar文件
-            path = path.substring(0, index + JAR_FILE_EXT.length());    //截取jar路径
-
-            path = removePrefix(path, PATH_FILE_PRE);    //去掉文件前缀
-
+            path = path.substring(0, index + JAR_FILE_EXT.length());
+            path = removePrefix(path, PATH_FILE_PRE);
             processJarFile(new File(path), packageName, classFilter, classes);
         } else {
             fillClasses(path, new File(path), packageName, classFilter, classes);

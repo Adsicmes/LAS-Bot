@@ -1,7 +1,5 @@
-package com.las.utils.netease;
+package com.las.utils;
 
-import com.las.utils.AesUtil;
-import com.las.utils.JsonUtils;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -18,16 +16,16 @@ import java.util.Map;
 /**
  * @author dullwolf
  */
-public class NeteaseMusicAPI {
+public class NetEaseMusicUtil {
 
-    private static Logger logger = Logger.getLogger(NeteaseMusicAPI.class);
+    private static Logger logger = Logger.getLogger(NetEaseMusicUtil.class);
 
     private static String connection(String url, Map<String, Object> data)
             throws Exception {
         StringBuilder response = new StringBuilder();
         OutputStreamWriter out = null;
         BufferedReader reader = null;
-        StringBuffer parameterBuffer = new StringBuffer();
+        StringBuilder parameterBuffer = new StringBuilder();
         URL curl = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) curl.openConnection();
         if (data != null && data.size() > 0) {
@@ -46,8 +44,7 @@ public class NeteaseMusicAPI {
                 } else {
                     value = "";
                 }
-                parameterBuffer.append(key).append("=")
-                        .append(URLEncoder.encode(value, "utf-8"));
+                parameterBuffer.append(key).append("=").append(URLEncoder.encode(value, "utf-8"));
                 if (iterator.hasNext()) {
                     parameterBuffer.append("&");
                 }
@@ -56,15 +53,14 @@ public class NeteaseMusicAPI {
                 out = new OutputStreamWriter(conn.getOutputStream());
                 out.write(parameterBuffer.toString());
                 out.flush();
-                reader = new BufferedReader(new InputStreamReader(
-                        conn.getInputStream()));
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String lines;
                 while ((lines = reader.readLine()) != null) {
                     lines = new String(lines.getBytes(), StandardCharsets.UTF_8);
                     response.append(lines);
                 }
             } catch (Exception e) {
-                logger.error("出错ERROR：" + e.getMessage(),e);
+                logger.error("出错ERROR：" + e.getMessage(), e);
             } finally {
                 if (reader != null) {
                     reader.close();
@@ -104,7 +100,7 @@ public class NeteaseMusicAPI {
         try {
             return connection(url, prepare(map));
         } catch (Exception e) {
-            logger.error("出错ERROR：" + e.getMessage(),e);
+            logger.error("出错ERROR：" + e.getMessage(), e);
         }
         return null;
     }
@@ -119,7 +115,7 @@ public class NeteaseMusicAPI {
         try {
             return connection(url, prepare(map));
         } catch (Exception e) {
-            logger.error("出错ERROR：" + e.getMessage(),e);
+            logger.error("出错ERROR：" + e.getMessage(), e);
         }
         return null;
     }
@@ -139,7 +135,7 @@ public class NeteaseMusicAPI {
         try {
             return connection(url, prepare(map));
         } catch (Exception e) {
-            logger.error("出错ERROR：" + e.getMessage(),e);
+            logger.error("出错ERROR：" + e.getMessage(), e);
         }
         return null;
     }
