@@ -2,6 +2,9 @@ package com.las.dto;
 
 import java.io.Serializable;
 
+/**
+ * @author dullwolf
+ */
 public class CqResponse<T> implements Serializable {
 
     private String status;

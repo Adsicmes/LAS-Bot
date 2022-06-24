@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+/**
+ * @author dullwolf
+ */
 public class GroupDao extends BaseDao<Group> {
 
     private static Logger logger = Logger.getLogger(GroupDao.class);
@@ -34,7 +36,6 @@ public class GroupDao extends BaseDao<Group> {
         try {
             group = getRunner().query(sql, new BeanHandler<>(Group.class, getProcessor()), gid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return group;
@@ -47,7 +48,6 @@ public class GroupDao extends BaseDao<Group> {
         try {
             groupList = getRunner().query(sql, new BeanListHandler<>(Group.class, getProcessor()), Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return groupList;

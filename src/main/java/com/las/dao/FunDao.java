@@ -12,7 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+/**
+ * @author dullwolf
+ */
 public class FunDao extends BaseDao<Fun> {
 
     private static Logger logger = Logger.getLogger(FunDao.class);
@@ -30,8 +32,7 @@ public class FunDao extends BaseDao<Fun> {
         try {
             funList = getRunner().query(sql, new BeanListHandler<>(Fun.class, getProcessor()), AppConfigs.BOT_QQ);
         } catch (SQLException e) {
-            //e.printStackTrace();
-            logger.error("出错ERROR：" + e.getMessage(),e);
+            logger.error("出错ERROR：" + e.getMessage(), e);
         }
         return funList;
     }

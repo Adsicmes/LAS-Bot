@@ -5,11 +5,14 @@ import org.apache.log4j.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author dullwolf
+ */
 public class EmojiUtil {
 
     private static Logger logger = Logger.getLogger(EmojiUtil.class);
 
-    private final static String unicodeReg = "[" + "\u4E00-\u9FBF" + // ：CJK
+    private final static String unicodeReg = "[" + "\u4E00-\u9FBF" +
             // 统一表意符号
             // (CJK
             // Unified
@@ -187,7 +190,6 @@ public class EmojiUtil {
             }
             return sb.toString();
         } catch (Exception e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return "";

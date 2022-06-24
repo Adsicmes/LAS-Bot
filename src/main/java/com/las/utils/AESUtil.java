@@ -42,7 +42,6 @@ public class AESUtil {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, paramSpec);
             result = cipher.doFinal(content.getBytes(CHARSET_NAME));
         } catch (Exception e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return Base64Kit.encode(result);
@@ -63,7 +62,6 @@ public class AESUtil {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, paramSpec);
             result = cipher.doFinal(content.getBytes(CHARSET_NAME));
         } catch (Exception e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return Base64Kit.encode(result);
@@ -83,7 +81,6 @@ public class AESUtil {
             cipher.init(Cipher.DECRYPT_MODE, keySpec, paramSpec);
             return new String(cipher.doFinal(Base64Kit.decode(content)), CHARSET_NAME);
         } catch (Exception e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return "";

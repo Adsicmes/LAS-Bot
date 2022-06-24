@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
-@Component
+/**
+ * @author dullwolf
+ */
 public class GroupExtDao extends BaseDao<GroupExt> {
 
     private static Logger logger = Logger.getLogger(GroupExtDao.class);
@@ -31,7 +33,6 @@ public class GroupExtDao extends BaseDao<GroupExt> {
         try {
             groupExt = getRunner().query(sql, new BeanHandler<>(GroupExt.class, getProcessor()), gid, Long.parseLong(AppConfigs.BOT_QQ));
         } catch (SQLException e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return groupExt;

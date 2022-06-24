@@ -2,6 +2,9 @@ package com.las.strategy.wxhandle;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author dullwolf
+ */
 public class WxFriendMsgHandler extends WxBotMsgHandler {
 
     private static Logger logger = Logger.getLogger(WxFriendMsgHandler.class);

@@ -10,6 +10,9 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.RandomAccessFile;
 
+/**
+ * @author dullwolf
+ */
 public class WebServerHandleAdapter extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private static Logger logger = Logger.getLogger(BotServerHandler.class);

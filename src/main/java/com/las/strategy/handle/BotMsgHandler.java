@@ -3,7 +3,6 @@ package com.las.strategy.handle;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.StrKit;
 import com.las.annotation.BotCmd;
@@ -23,29 +22,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.las.config.AppConfigs.APP_CONTEXT;
-
 /**
  * 该抽象类的作用就是实现各种处理
+ * @author dullwolf
  */
-public abstract class BotMsgHandler implements BotStrategy {
+public class BotMsgHandler implements BotStrategy {
 
     private static Logger logger = Logger.getLogger(BotMsgHandler.class);
 
-    // 消息完整对象
-    private JSONObject object;
-    // 消息类型 0表示私有 1群消息 2讨论组
-    private int type = -1;
-    // 消息内容
-    private String msgData;
-    // 用户ID
-    private Long userId;
-    // 组ID
-    private Long id;
+    /**
+     * QQ消息完整对象
+     */
+    private JSONObject cqObj;
 
-    private JSONObject sender;
-
-    private JSONArray msgChain;
+    /**
+     * 提供getter
+     */
+    JSONObject getCqObj() {
+        return cqObj;
+    }
 
     private GroupDao groupDao;
 
@@ -58,59 +53,30 @@ public abstract class BotMsgHandler implements BotStrategy {
     private GroupExtDao groupExtDao;
 
     protected BotMsgHandler() {
-        this.groupDao = (GroupDao) APP_CONTEXT.getBean("groupDao");
-        this.userDao = (UserDao) APP_CONTEXT.getBean("userDao");
-        this.funDao = (FunDao) APP_CONTEXT.getBean("funDao");
-        this.groupFunDao = (GroupFunDao) APP_CONTEXT.getBean("groupFunDao");
-        this.groupExtDao = (GroupExtDao) APP_CONTEXT.getBean("groupExtDao");
+        this.groupDao = new GroupDao();
+        this.userDao = new UserDao();
+        this.funDao = new FunDao();
+        this.groupFunDao = new GroupFunDao();
+        this.groupExtDao = new GroupExtDao();
     }
 
-
-    int getMsgType() {
-        return type;
-    }
-
-    String getMsgData() {
-        return msgData;
-    }
-
-    Long getUserId() {
-        return userId;
-    }
-
-    Long getId() {
-        return id;
-    }
-
-    JSONObject getMsgObject() {
-        return object;
-    }
-
-    JSONObject getSender() {
-        return sender;
-    }
-
-    JSONArray getMsgChain() {
-        return msgChain;
-    }
-
-    public GroupDao getGroupDao() {
+    protected GroupDao getGroupDao() {
         return groupDao;
     }
 
-    public UserDao getUserDao() {
+    protected UserDao getUserDao() {
         return userDao;
     }
 
-    public FunDao getFunDao() {
+    protected FunDao getFunDao() {
         return funDao;
     }
 
-    public GroupFunDao getGroupFunDao() {
+    protected GroupFunDao getGroupFunDao() {
         return groupFunDao;
     }
 
-    public GroupExtDao getGroupExtDao() {
+    protected GroupExtDao getGroupExtDao() {
         return groupExtDao;
     }
 
@@ -128,47 +94,14 @@ public abstract class BotMsgHandler implements BotStrategy {
      */
     @Override
     public final void handleMsg(Map map) {
-        object = JSON.parseObject(JSONObject.toJSONString(map));
-        sender = object.getJSONObject("sender");
-        msgChain = object.getJSONArray("messageChain");
-        String strType = object.getString("type");
-        switch (strType) {
-            case "FriendMessage":
-                type = Constant.MESSAGE_TYPE_PRIVATE;
-                break;
-            case "GroupMessage":
-                type = Constant.MESSAGE_TYPE_GROUP;
-                break;
-            case "TempMessage":
-                type = Constant.MESSAGE_TYPE_DISCUSS;
-                break;
-            default:
-                break;
-        }
-        if (CollectionUtil.isNotEmpty(msgChain)) {
-            for (int i = 0; i < msgChain.size(); i++) {
-                JSONObject jsonObj = msgChain.getJSONObject(i);
-                if ("Plain".equals(jsonObj.getString("type"))) {
-                    msgData = jsonObj.getString("text");
-                    break;
-                }
-            }
-        }
-        if (null != sender) {
-            userId = sender.getLong("id");
-            JSONObject group = sender.getJSONObject("group");
-            if (null != group) {
-                id = group.getLong("id");
-            } else {
-                id = userId;
-            }
-        }
+        cqObj = JSON.parseObject(JSONObject.toJSONString(map));
     }
 
 
     /**
      * 执行指令方法(权限为缺省：不同包的类不可以去使用)
      */
+    @SuppressWarnings("unchecked")
     void exeCommand(String msg, Long userId, Long id, int type) {
         BaseCommand command = null;
         String cmd = null;
@@ -211,17 +144,13 @@ public abstract class BotMsgHandler implements BotStrategy {
             }
             cmd = getLowerParams(msg);
             Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
-            for (Class c : classSet) {
+            for (Class<?> c : classSet) {
                 if (null != command) {
                     // 把非匹配指令的跳过
                     BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
                     if (null != botCmd) {
                         if (botCmd.isMatch()) {
                             break;
-                        } else {
-                            //匹配到非指令的，需要重新查找指令的
-                            //logger.info("匹配非指令：" + command.toString());
-                            command = null;
                         }
                     }
                 }
@@ -237,8 +166,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                         method = superclass.getDeclaredMethod(methodName);
                         o = method.invoke(c.newInstance());
                     } catch (Exception e) {
-                        //e.printStackTrace();
-                        logger.error("出错ERROR：" + e.getMessage(),e);
+                        logger.error("出错ERROR：" + e.getMessage(), e);
                     }
                     if ("alias".equalsIgnoreCase(colName)) {
                         if (cmdList.isEmpty()) {
@@ -252,16 +180,15 @@ public abstract class BotMsgHandler implements BotStrategy {
                     }
                 }
                 if (StrKit.notBlank(cmd)) {
-                    for (String cmds : cmdList) {
-                        if (StrKit.notBlank(cmds) && (cmd.toUpperCase().startsWith(cmds) || cmd.toLowerCase().startsWith(cmds))) {
-                            if (cmdLength < cmds.length()) {
-                                cmdLength = cmds.length();
+                    for (String oneCmd : cmdList) {
+                        if (StrUtils.notBlank(oneCmd) && (cmd.toUpperCase().startsWith(oneCmd) || cmd.toLowerCase().startsWith(oneCmd))) {
+                            if (cmdLength < oneCmd.length()) {
+                                cmdLength = oneCmd.length();
                                 if (null == command) {
                                     try {
                                         command = (BaseCommand) c.newInstance();
                                     } catch (Exception e) {
-                                        //e.printStackTrace();
-                                        logger.error("出错ERROR：" + e.getMessage(),e);
+                                        logger.error("出错ERROR：" + e.getMessage(), e);
                                     }
                                 }
                             }
@@ -281,7 +208,6 @@ public abstract class BotMsgHandler implements BotStrategy {
                     try {
                         command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                     } catch (Exception e) {
-                        //e.printStackTrace();
                         logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
                     }
                 }
@@ -299,9 +225,8 @@ public abstract class BotMsgHandler implements BotStrategy {
                     try {
                         BaseCommand notCommand = (BaseCommand) aClass.newInstance();
                         logger.info("执行非匹配指令是：" + notCommand.toString());
-                        notCommand.execute(object, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                        notCommand.execute(cqObj, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                     } catch (Exception e) {
-                        //e.printStackTrace();
                         logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
                     }
                 }
@@ -353,7 +278,7 @@ public abstract class BotMsgHandler implements BotStrategy {
             if (AppConfigs.SUPER_QQ.equals(userId.toString())) {
                 user.setFunPermission(Constant.SUPER_PERMISSION);
             } else {
-                if (funWeight < 996) {
+                if (funWeight < Constant.ADMIN_PERMISSION) {
                     if (user.getFunPermission() < funWeight) {
                         isExecute = false;
                         // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
@@ -363,7 +288,7 @@ public abstract class BotMsgHandler implements BotStrategy {
                     }
                 } else {
                     // 管理员的功能需要查找管理员初始用户
-                    User groupUser = getUserDao().findGroupUser(userId);
+                    User groupUser = getUserDao().findGroupUser(userId, id);
                     if (null == groupUser || groupUser.getFunPermission() < funWeight) {
                         isExecute = false;
                         // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
@@ -520,8 +445,7 @@ public abstract class BotMsgHandler implements BotStrategy {
      * @return 优化好的参数
      */
     private String getLowerParams(String msg) {
-        Pattern p = Pattern.compile("\\s+");
-        Matcher m = p.matcher(msg);
+        Matcher m = Constant.PATTERN_ONE_SPACE.matcher(msg);
         return m.replaceAll(" ").toLowerCase().trim();
     }
 

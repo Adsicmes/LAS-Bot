@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author dullwolf
+ */
 public class MiraiUtil {
 
     private static Logger logger = Logger.getLogger(MiraiUtil.class);
@@ -118,18 +121,6 @@ public class MiraiUtil {
         String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
         logger.info("CQ结果：" + result);
         //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
-//        if ("group".equals(type)) {
-//            JSONArray array = JSONObject.parseArray(result);
-//            if (!array.isEmpty()) {
-//                URL = baseURL + "/sendImageMessage";
-//                info.put("sessionKey", Constant.session);
-//                info.put("qq", id);
-//                info.put("group", gId);
-//                info.put("target", id);
-//                String result2 = HttpKit.post(URL, JsonUtils.getJsonString(info));
-//                logger.info("CQ结果2：" + result2);
-//            }
-//        }
         releaseSession();
         return null;
     }
@@ -166,25 +157,11 @@ public class MiraiUtil {
         String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
         logger.info("CQ结果：" + result);
         //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
-//        if ("group".equals(type)) {
-//            JSONObject obj = JsonUtils.getJsonObjectByJsonString(result);
-//            String msgCode = obj.getString("msg");
-//            if ("success".equals(msgCode)) {
-//                Long msgId = obj.getLong("messageId");
-//                if (0 == msgId) {
-//                    URL = baseURL + "/sendTempMessage";
-//                    info.put("sessionKey", Constant.session);
-//                    info.put("qq", id);
-//                    info.put("group", gId);
-//                    info.put("messageChain", msgList);
-//                    String result2 = HttpKit.post(URL, JsonUtils.getJsonString(info));
-//                    logger.info("CQ结果2：" + result2);
-//                }
-//            }
-//        }
         releaseSession();
         return JsonUtils.getObjectByJson(result, CqResponse.class);
     }
+
+
 
     public void agreeFriend(JSONObject obj) {
         initSession();
@@ -195,13 +172,12 @@ public class MiraiUtil {
         info.put("fromId", obj.getLongValue("fromId"));
         info.put("groupId", obj.getLongValue("groupId"));
         info.put("message", "Hello");
-        logger.info("同意好友：" + info);
-        String URL = baseURL + "/resp/newFriendRequestEvent";
-        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
-        logger.info("同意结果：" + result);
-
+        String result = HttpKit.post(baseURL + "/resp/newFriendRequestEvent", JsonUtils.getJsonString(info));
+        logger.info("同意好友：" + result);
         releaseSession();
     }
+
+
 
     public void agreeGroup(JSONObject obj) {
         initSession();
@@ -212,10 +188,7 @@ public class MiraiUtil {
         info.put("groupId", obj.getLongValue("groupId"));
         info.put("operate", 0);
         info.put("message", "Hi");
-        String URL = baseURL + "/resp/botInvitedJoinGroupRequestEvent";
-        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
-        logger.info("邀请进群：" + result);
-
+        HttpKit.post(baseURL + "/resp/botInvitedJoinGroupRequestEvent", JsonUtils.getJsonString(info));
         releaseSession();
     }
 

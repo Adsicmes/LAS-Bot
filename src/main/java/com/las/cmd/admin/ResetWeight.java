@@ -40,7 +40,7 @@ public class ResetWeight extends BaseCommand {
                         User qqUser = null;
                         if (command.startsWith(Constant.PERMISSION_ENABLE) && Integer.parseInt(weight) > 995) {
                             // 权限赋能 996、997、998 分别是普通管理员、中级管理员、高级管理员
-                            qqUser = getUserDao().findGroupUser(Long.parseLong(qq));
+                            qqUser = getUserDao().findGroupUser(Long.parseLong(qq), id);
                             if (null == qqUser) {
                                 // 数据库不存在，直接创建并且一定要设置备注
                                 qqUser = new User();

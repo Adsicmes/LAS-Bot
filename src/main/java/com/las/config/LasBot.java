@@ -1,26 +1,29 @@
-package com.las;
+package com.las.config;
 
 import cn.hutool.core.util.StrUtil;
 import com.las.annotation.BotRun;
-import com.las.config.AppConfigs;
 import com.las.dao.UserDao;
 import com.las.model.User;
 import com.las.service.qqbot.netty.HttpServer;
 import com.las.service.wx.WeChatPushService;
 import com.las.utils.ClassUtil;
 import com.las.utils.StrUtils;
+import com.las.utils.ThreadPoolUtil;
 import org.apache.log4j.Logger;
 import org.java_websocket.enums.ReadyState;
 
 import java.io.*;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.las.config.AppConfigs.APP_CONTEXT;
 
+/**
+ * @author dullwolf
+ */
+public class LasBot {
 
-public class LASBot {
-
-    private static Logger logger = Logger.getLogger(LASBot.class);
+    private static Logger logger = Logger.getLogger(LasBot.class);
 
     public static void run(Class<?> appClass) {
         BotRun botRun = appClass.getDeclaredAnnotation(BotRun.class);
@@ -50,52 +53,62 @@ public class LASBot {
                     // 初始化环境
                     init(annotation);
                     logger.warn("启动完成，请勿关闭程序窗口");
-                    new Thread(() -> {
-                        // 启动QQ服务
-                        HttpServer httpServer = new HttpServer(annotation.botPort());
-                        try {
-                            httpServer.start();
-                        } catch (Exception e) {
-                            //e.printStackTrace();
-                            logger.warn("启动QQ机器人失败！原因：" + e.getMessage());
-                        }
-                    }).start();
-                    new Thread(() -> {
-                        while (true) {
-                            try {
-                                Thread.sleep(2000);
-                                WeChatPushService client;
-                                if (null == AppConfigs.WX_PUSH_SERVER) {
-                                    // 启动WX服务
-                                    client = new WeChatPushService(AppConfigs.WX_SERVER_URL);
-                                    client.connect();
-                                    while (!client.getReadyState().equals(ReadyState.OPEN)) {
-                                        Thread.sleep(500);
-                                        logger.debug("正在连接微信机器人服务...");
-                                    }
-                                    logger.warn("启动WX机器人成功");
-                                    AppConfigs.WX_PUSH_SERVER = client;
-                                } else {
-                                    client = AppConfigs.WX_PUSH_SERVER;
-                                    // 启动成功一次之后，若微信客户端挂了，需要不断监听连接状态
-                                    // 若不是OPEN，需要重新连接
-                                    if (!client.getReadyState().equals(ReadyState.OPEN)) {
-                                        client.reconnect();
-                                        logger.debug("正在重新连接微信机器人服务...");
-                                        Thread.sleep(2000);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                //e.printStackTrace();
-                                logger.warn("启动WX机器人失败！原因：" + e.getMessage());
-                            }
-                        }
-                    }).start();
+                    ThreadPoolExecutor executor = ThreadPoolUtil.getPool();
+                    executor.execute(() -> initBotService(annotation));
+                    executor.execute(LasBot::initWxBotService);
                     break;
                 }
             }
         } catch (Exception e) {
             logger.error("初始化bot失败,原因：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 启动QQ机器人服务
+     * @param annotation 注解参数
+     */
+    private static void initBotService(BotRun annotation) {
+        HttpServer httpServer = new HttpServer(annotation.botPort());
+        try {
+            httpServer.start();
+        } catch (Exception e) {
+            logger.warn("启动QQ机器人失败！原因：" + e.getMessage());
+        }
+    }
+
+
+    /**
+     * 启动WX机器人服务
+     */
+    private static void initWxBotService() {
+        while (true) {
+            try {
+                Thread.sleep(2000);
+                WeChatPushService client;
+                if (null == AppConfigs.WX_PUSH_SERVER) {
+                    // 启动WX服务
+                    client = new WeChatPushService(AppConfigs.WX_SERVER_URL);
+                    client.connect();
+                    while (!client.getReadyState().equals(ReadyState.OPEN)) {
+                        Thread.sleep(500);
+                        logger.debug("正在连接微信机器人服务...");
+                    }
+                    logger.warn("启动WX机器人成功");
+                    AppConfigs.WX_PUSH_SERVER = client;
+                } else {
+                    client = AppConfigs.WX_PUSH_SERVER;
+                    // 启动成功一次之后，若微信客户端挂了，需要不断监听连接状态
+                    // 若不是OPEN，需要重新连接
+                    if (!client.getReadyState().equals(ReadyState.OPEN)) {
+                        client.reconnect();
+                        logger.debug("正在重新连接微信机器人服务...");
+                        Thread.sleep(2000);
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("启动WX机器人失败！原因：" + e.getMessage());
+            }
         }
     }
 

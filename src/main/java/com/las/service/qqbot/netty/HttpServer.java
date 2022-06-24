@@ -8,6 +8,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author dullwolf
+ */
 public class HttpServer {
 
     private static Logger logger = Logger.getLogger(HttpServer.class);

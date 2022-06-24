@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author dullwolf
+ */
 public class CmdUtil {
 
     private static Logger logger = Logger.getLogger(CmdUtil.class);
@@ -25,8 +28,7 @@ public class CmdUtil {
      * @param type 消息类型
      */
     public static CqResponse sendMessage(String msg, Long userId, Long id, int type) {
-        CqResponse response = null;
-        //和Cq发消息内容不一样，Mirai采取用消息链，后续封装其他方法，例如发送语音消息、图片消息
+        CqResponse response;
         ArrayList<JSONObject> msgList = new ArrayList<>();
         JSONObject object = new JSONObject();
         object.put("type", "Plain");
@@ -37,7 +39,7 @@ public class CmdUtil {
     }
 
     public static CqResponse send163MusicMessage(JSONObject obj, Long userId, Long id, int type) {
-        CqResponse response = null;
+        CqResponse response;
         JSONObject info = new JSONObject();
         JSONArray authors = obj.getJSONArray("ar");
         if (authors.size() > 0) {
@@ -49,7 +51,7 @@ public class CmdUtil {
         String songName = obj.getString("name");
         info.put("brief", "[分享]" + songName);
         info.put("kind", "NeteaseCloudMusic");
-        info.put("musicUrl", "http://music.163.com/song/media/outer/url?id=" + obj.getString("id") + "&userid=558417883&sc=wm");//用户是蠢狼网易云APP的账号，我分享形成的小卡片
+        info.put("musicUrl", "http://music.163.com/song/media/outer/url?id=" + obj.getString("id") + "&userid=558417883&sc=wm");
         String picUrl = obj.getJSONObject("al").getString("picUrl");
         info.put("pictureUrl", picUrl);
         info.put("type", "MusicShare");
@@ -67,7 +69,7 @@ public class CmdUtil {
 
 
     public static CqResponse sendAtMessage(String msg, Long atId, Long userId, Long id, int type) {
-        CqResponse response = null;
+        CqResponse response;
         ArrayList<JSONObject> msgList = new ArrayList<>();
         JSONObject object2 = new JSONObject();
         object2.put("type", "At");
@@ -75,7 +77,8 @@ public class CmdUtil {
         msgList.add(object2);
         JSONObject object = new JSONObject();
         object.put("type", "Plain");
-        object.put("text", " " + msg.trim());//因为前面有AT，加下空格
+        //因为前面有AT，加下空格
+        object.put("text", " " + msg.trim());
         msgList.add(object);
         response = getCqResponse(userId, id, type, msgList);
         return response;

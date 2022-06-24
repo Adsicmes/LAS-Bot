@@ -2,6 +2,9 @@ package com.las.enums;
 
 import com.las.strategy.wxhandle.WxFriendMsgHandler;
 
+/**
+ * @author dullwolf
+ */
 public enum WxMsgCallBackEnum {
     // 文档暂无
 

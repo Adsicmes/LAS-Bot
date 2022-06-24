@@ -13,6 +13,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+/**
+ * @author dullwolf
+ */
 public class WeChatPushService extends WebSocketClient {
 
     private static Logger logger = Logger.getLogger(WeChatPushService.class);
@@ -48,7 +51,6 @@ public class WeChatPushService extends WebSocketClient {
                 Method exec = aClass.getMethod("exec");
                 exec.invoke(obj);
             } catch (Exception e) {
-                //e.printStackTrace();
                 logger.error("执行微信事件类型报错，原因：" + e.toString());
             }
         }

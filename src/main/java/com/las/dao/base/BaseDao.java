@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dullwolf
+ */
 public class BaseDao<T> {
 
     private static Logger logger = Logger.getLogger(BaseDao.class);
@@ -48,7 +51,6 @@ public class BaseDao<T> {
         try {
             bean = getRunner().query(sql, new BeanHandler<>(aClass, processor), id);
         } catch (SQLException e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
         return bean;
@@ -107,7 +109,6 @@ public class BaseDao<T> {
             logger.debug("sql：" + sql.toString());
             getRunner().update(sql.toString(), params.toArray());
         } catch (Exception e) {
-            //e.printStackTrace();
             logger.error("出错ERROR：" + e.getMessage(),e);
         }
     }

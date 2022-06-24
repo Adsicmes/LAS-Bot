@@ -3,6 +3,9 @@ package com.las.model;
 import com.las.annotation.Column;
 import com.las.annotation.Table;
 
+/**
+ * @author dullwolf
+ */
 @Table("user")
 public class User {
 

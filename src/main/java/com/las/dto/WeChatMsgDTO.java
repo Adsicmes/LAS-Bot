@@ -1,5 +1,8 @@
 package com.las.dto;
 
+/**
+ * @author dullwolf
+ */
 public class WeChatMsgDTO {
 
     private String id;
@@ -37,5 +40,15 @@ public class WeChatMsgDTO {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "WeChatMsgDTO{" +
+                "id='" + id + '\'' +
+                ", wxid='" + wxid + '\'' +
+                ", content='" + content + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

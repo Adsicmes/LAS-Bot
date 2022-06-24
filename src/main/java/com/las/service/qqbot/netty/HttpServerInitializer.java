@@ -9,7 +9,9 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
-
+/**
+ * @author dullwolf
+ */
 public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override

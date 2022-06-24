@@ -1,7 +1,9 @@
 package com.las.common;
 
+import java.util.regex.Pattern;
+
 /**
- * @author SIE
+ * @author dullwolf
  */
 public class Constant {
 
@@ -19,6 +21,11 @@ public class Constant {
      * 超管QQ默认权限
      */
     public static final int SUPER_PERMISSION = 999;
+
+    /**
+     * 管理员临界值权限
+     */
+    public static final int ADMIN_PERMISSION = 996;
 
     /**
      * CQ消息类型
@@ -44,4 +51,9 @@ public class Constant {
     public static final String PERMISSION_UPDATE = "权限更新";
     public static final String PERMISSION_ENABLE = "权限赋能";
     public static final String INIT_PERMISSION = "初次初始化权限赋能";
+
+    /**
+     * 指令去多个空格
+     */
+    public static Pattern PATTERN_ONE_SPACE = Pattern.compile("\\s+");
 }

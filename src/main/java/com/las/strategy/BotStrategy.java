@@ -2,6 +2,9 @@ package com.las.strategy;
 
 import java.util.Map;
 
+/**
+ * @author dullwolf
+ */
 public interface BotStrategy {
 
     /**

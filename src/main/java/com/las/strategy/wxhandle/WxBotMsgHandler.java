@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import java.util.Map;
 
 /**
- * 该抽象类的作用就是实现各种处理
+ * @author dullwolf
  */
 public abstract class WxBotMsgHandler implements BotStrategy {
 

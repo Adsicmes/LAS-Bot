@@ -8,6 +8,9 @@ import org.apache.log4j.Logger;
 
 import java.util.Date;
 
+/**
+ * @author dullwolf
+ */
 public class WxCmdUtil {
 
     private static Logger logger = Logger.getLogger(WxCmdUtil.class);
@@ -21,7 +24,7 @@ public class WxCmdUtil {
     }
 
     public static void getContact() {
-        String id = String.valueOf(new Date().getTime());
+        String id = String.valueOf(System.currentTimeMillis());
         WeChatMsgDTO msgDTO = new WeChatMsgDTO();
         msgDTO.setContent("op:list member");
         msgDTO.setWxid("null");
@@ -32,11 +35,11 @@ public class WxCmdUtil {
         sendMsg(json);
     }
 
-    public static void sendMsg(String wxid, String text) {
-        String id = String.valueOf(new Date().getTime());
+    public static void sendMsg(String wxId, String text) {
+        String id = String.valueOf(System.currentTimeMillis());
         WeChatMsgDTO msgDTO = new WeChatMsgDTO();
         msgDTO.setContent(text);
-        msgDTO.setWxid(wxid);
+        msgDTO.setWxid(wxId);
         msgDTO.setType(555);
         msgDTO.setId(id);
         String json = JSONObject.toJSONString(msgDTO);

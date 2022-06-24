@@ -6,11 +6,14 @@ import com.las.model.GroupExt;
 import com.las.utils.CmdUtil;
 import com.las.utils.StrUtils;
 
+/**
+ * @author dullwolf
+ */
 public class MemberJoinMsgHandler extends BotMsgHandler {
 
     @Override
     public void exec() {
-        JSONObject member = getMsgObject().getJSONObject("member");
+        JSONObject member = getCqObj().getJSONObject("member");
         Long gId = member.getJSONObject("group").getLong("id");
         Long uId = member.getLong("id");
         GroupExt groupExt = getGroupExtDao().findByGid(gId);
