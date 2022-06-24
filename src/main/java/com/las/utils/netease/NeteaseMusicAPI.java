@@ -33,12 +33,9 @@ public class NeteaseMusicAPI {
         if (data != null && data.size() > 0) {
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
-            String REFERER = "http://music.163.com/";
-            conn.setRequestProperty("Referer", REFERER);
-            String COOKIE = "os=pc; osver=Microsoft-Windows-10-Professional-build-10586-64bit; appver=2.0.3.131777; channel=netease; __remember_me=true";
-            conn.setRequestProperty("Cookie", COOKIE);
-            String USERAGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.157 Safari/537.36";
-            conn.setRequestProperty("User-Agent", USERAGENT);
+            conn.setRequestProperty("Referer", "http://music.163.com/");
+            conn.setRequestProperty("Cookie", "os=pc; osver=Microsoft-Windows-10-Professional-build-10586-64bit; appver=2.0.3.131777; channel=netease; __remember_me=true");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.157 Safari/537.36");
             Iterator iterator = data.keySet().iterator();
             String key;
             String value;
@@ -82,10 +79,8 @@ public class NeteaseMusicAPI {
 
     private static Map<String, Object> prepare(Map<String, Object> raw) {
         Map<String, Object> data = new HashMap<>();
-        String NONCE = "0CoJUm6Qyw8W8jud";
-        data.put("params", encrypt(jsonEncode(raw), NONCE));
-        String secretKey = "TA3YiYCfY2dDJQgg";
-        data.put("params", encrypt((String) data.get("params"), secretKey));
+        data.put("params", encrypt(jsonEncode(raw), "0CoJUm6Qyw8W8jud"));
+        data.put("params", encrypt((String) data.get("params"), "TA3YiYCfY2dDJQgg"));
         String encSecKey = "84ca47bca10bad09a6b04c5c927ef077d9b9f1e37098aa3eac6ea70eb59df0aa28b691b7e75e4f1f9831754919ea784c8f74fbfadf2898b0be17849fd656060162857830e241aba44991601f137624094c114ea8d17bce815b0cd4e5b8e2fbaba978c6d1d14dc3d1faf852bdd28818031ccdaaa13a6018e1024e2aae98844210";
         data.put("encSecKey", encSecKey);
         return data;
@@ -96,18 +91,6 @@ public class NeteaseMusicAPI {
     }
 
     private static String encrypt(String content, String password) {
-//        try {
-//            SecretKeySpec key = new SecretKeySpec(password.getBytes(), "AES");
-//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");// 创建密码器
-//            String VI = "0102030405060708";
-//            IvParameterSpec iv = new IvParameterSpec(VI.getBytes());// 创建iv
-//            byte[] byteContent = content.getBytes(StandardCharsets.UTF_8);
-//            cipher.init(Cipher.ENCRYPT_MODE, key, iv);// 初始化
-//            byte[] result = cipher.doFinal(byteContent);
-//            return Base64Kit.encode(result); // 加密
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         return AesUtil.encrypt(content, password);
     }
 
@@ -142,7 +125,7 @@ public class NeteaseMusicAPI {
     }
 
     public static String search(String s) {
-        int limit = 10;//限制结果数量
+        int limit = 10;
         int offset = 0;
         int type = 1;
         String url = "http://music.163.com/weapi/cloudsearch/get/web?csrf_token=";

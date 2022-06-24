@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author dullwolf
  */
-public abstract class WxBotMsgHandler implements BotStrategy {
+public class WxBotMsgHandler implements BotStrategy {
 
     private static Logger logger = Logger.getLogger(WxBotMsgHandler.class);
 

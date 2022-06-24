@@ -71,8 +71,7 @@ public class MiRaiUtil {
      */
     public List<JSONObject> getGroupList() {
         initSession();
-        String URL = baseURL + "/groupList?sessionKey=" + Constant.session;
-        String result = HttpKit.get(URL);
+        String result = HttpKit.get(baseURL + "/groupList?sessionKey=" + Constant.session);
         releaseSession();
         return JsonUtils.getJsonArrayByJsonString(result);
     }
@@ -82,19 +81,18 @@ public class MiRaiUtil {
      */
     public List<JSONObject> getFriendList() {
         initSession();
-        String URL = baseURL + "/friendList?sessionKey=" + Constant.session;
-        String result = HttpKit.get(URL);
+        String result = HttpKit.get(baseURL + "/friendList?sessionKey=" + Constant.session);
         releaseSession();
         return JsonUtils.getJsonArrayByJsonString(result);
     }
 
     public CqResponse sendImgMsg(Long id, Long gId, ArrayList<String> urls, String type) {
         initSession();
-        String URL;
+        String apiUrl;
         Map<String, Object> info = new HashMap<>();
         switch (type) {
             case "group":
-                URL = baseURL + "/sendImageMessage";
+                apiUrl = baseURL + "/sendImageMessage";
                 info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("group", gId);
@@ -103,14 +101,14 @@ public class MiRaiUtil {
 
                 break;
             case "discuss":
-                URL = baseURL + "/sendImageMessage";
+                apiUrl = baseURL + "/sendImageMessage";
                 info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("group", gId);
                 info.put("urls", urls);
                 break;
             case "private":
-                URL = baseURL + "/sendImageMessage";
+                apiUrl = baseURL + "/sendImageMessage";
                 info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("urls", urls);
@@ -118,7 +116,7 @@ public class MiRaiUtil {
             default:
                 return null;
         }
-        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
+        String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
         logger.info("CQ结果：" + result);
         //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
         releaseSession();
@@ -128,25 +126,25 @@ public class MiRaiUtil {
 
     public CqResponse sendMsg(Long id, Long gId, ArrayList<JSONObject> msgList, String type) {
         initSession();
-        String URL;
+        String apiUrl;
         Map<String, Object> info = new HashMap<>();
         switch (type) {
             case "group":
-                URL = baseURL + "/sendGroupMessage";
+                apiUrl = baseURL + "/sendGroupMessage";
                 info.put("sessionKey", Constant.session);
                 info.put("target", gId);
                 info.put("messageChain", msgList);
 
                 break;
             case "discuss":
-                URL = baseURL + "/sendTempMessage";
+                apiUrl = baseURL + "/sendTempMessage";
                 info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("group", gId);
                 info.put("messageChain", msgList);
                 break;
             case "private":
-                URL = baseURL + "/sendFriendMessage";
+                apiUrl = baseURL + "/sendFriendMessage";
                 info.put("sessionKey", Constant.session);
                 info.put("target", id);
                 info.put("messageChain", msgList);
@@ -154,7 +152,7 @@ public class MiRaiUtil {
             default:
                 return null;
         }
-        String result = HttpKit.post(URL, JsonUtils.getJsonString(info));
+        String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
         logger.info("CQ结果：" + result);
         //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
         releaseSession();

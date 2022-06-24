@@ -156,9 +156,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         return params;
     }
 
-    /*
-     * 解析json数据（Content-Type = application/json）
-     */
+
     private Map<String, Object> getJSONParams(FullHttpRequest fullHttpRequest) throws UnsupportedEncodingException {
         Map<String, Object> params = new HashMap<>();
         ByteBuf content = fullHttpRequest.content();

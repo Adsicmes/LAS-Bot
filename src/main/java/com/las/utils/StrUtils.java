@@ -46,8 +46,9 @@ public class StrUtils extends StrKit {
     }
 
     public static boolean areNotEmpty(String... strings) {
-        if (strings == null || strings.length == 0)
+        if (strings == null || strings.length == 0) {
             return false;
+        }
 
         for (String string : strings) {
             if (string == null || "".equals(string)) {
@@ -62,7 +63,7 @@ public class StrUtils extends StrKit {
      *
      */
     public static boolean isNotEmpty(String string) {
-        return string != null && !string.equals("");
+        return string != null && !"".equals(string);
     }
 
 

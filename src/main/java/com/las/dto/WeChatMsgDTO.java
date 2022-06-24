@@ -8,7 +8,7 @@ public class WeChatMsgDTO {
     private String id;
     private String wxid;
     private String content;
-    private int type;
+    private Integer type;
 
     public String getId() {
         return id;
@@ -34,11 +34,11 @@ public class WeChatMsgDTO {
         this.content = content;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
