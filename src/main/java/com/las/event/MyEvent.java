@@ -1,8 +1,5 @@
 package com.las.event;
 
-import com.las.annotation.BotEvent;
-import com.las.dao.UserDao;
-import com.las.enums.MsgCallBackEnum;
 import com.las.strategy.handle.AbstractBotMsgHandler;
 import org.apache.log4j.Logger;
 
