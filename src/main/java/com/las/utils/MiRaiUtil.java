@@ -160,7 +160,10 @@ public class MiRaiUtil {
     }
 
 
-
+    /**
+     * 好友申请同意
+     * @param obj
+     */
     public void agreeFriend(JSONObject obj) {
         initSession();
         Map<String, Object> info = new HashMap<>();
@@ -176,7 +179,10 @@ public class MiRaiUtil {
     }
 
 
-
+    /**
+     * 邀请进群同意
+     * @param obj
+     */
     public void agreeGroup(JSONObject obj) {
         initSession();
         Map<String, Object> info = new HashMap<>();
@@ -188,6 +194,17 @@ public class MiRaiUtil {
         info.put("message", "Hi");
         HttpKit.post(baseURL + "/resp/botInvitedJoinGroupRequestEvent", JsonUtils.getJsonString(info));
         releaseSession();
+    }
+
+    /**
+     * 获取群好友列表
+     */
+    public List<JSONObject> getGroupUsers(Long gId) {
+        initSession();
+        String result = HttpKit.get(baseURL + "/memberList?sessionKey=" + Constant.session + "&target=" + gId);
+        logger.info("获取群[" + gId + "]好友列表信息：" + result);
+        releaseSession();
+        return JsonUtils.getJsonArrayByJsonString(result);
     }
 
 }
