@@ -207,4 +207,16 @@ public class MiRaiUtil {
         return JsonUtils.getJsonArrayByJsonString(result);
     }
 
+    /**
+     * 撤回消息
+     */
+    public void reCall(Long id) {
+        initSession();
+        Map<String, Object> info = new HashMap<>();
+        info.put("sessionKey", Constant.session);
+        info.put("target", id);
+        HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
+        releaseSession();
+    }
+
 }
