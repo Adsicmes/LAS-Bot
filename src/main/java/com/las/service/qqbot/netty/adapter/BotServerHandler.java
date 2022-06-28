@@ -22,10 +22,8 @@ import org.apache.log4j.Logger;
 import java.io.Console;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
@@ -77,11 +75,16 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                             Method exec = aClass.getMethod("exec");
                             exec.invoke(obj);
                         } catch (Exception e) {
-                            logger.error("出错ERROR：" + e.getMessage(),e);
+                            logger.error("出错ERROR：" + e.getMessage(), e);
                         }
                     }
                 }
-                MiRaiUtil.getInstance().releaseSession();
+                //检测系统时间，如果分钟能被5整除，释放
+                int min = Calendar.getInstance().get(Calendar.MINUTE);
+                if (min % 5 == 0) {
+                    MiRaiUtil.getInstance().releaseSession();
+                    MiRaiUtil.getInstance().initSession();
+                }
             }
 
             String data = "POST method over";

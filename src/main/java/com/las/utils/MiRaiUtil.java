@@ -24,23 +24,28 @@ public class MiRaiUtil {
     private static String qqAuth = AppConfigs.keyAuth;
 
     public void releaseSession() {
-        //之后需要释放session
-        Map<String, Object> info = new HashMap<>();
-        info.put("sessionKey", Constant.session);
-        info.put("qq", Long.parseLong(qq));
-        String release = HttpKit.post(baseURL + "/release", JsonUtils.getJsonString(info));
-        logger.info("释放：" + release);
+        if (StrUtils.isNotBlank(Constant.session)) {
+            //之后需要释放session
+            Map<String, Object> info = new HashMap<>();
+            info.put("sessionKey", Constant.session);
+            info.put("qq", Long.parseLong(qq));
+            String release = HttpKit.post(baseURL + "/release", JsonUtils.getJsonString(info));
+            logger.info("释放：" + release);
+            Constant.session = null;
+        }
     }
 
     public void initSession() {
-        Map<String, Object> info = new HashMap<>();
-        info.put("authKey", qqAuth);
-        String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
-        Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
-        info = new HashMap<>();
-        info.put("sessionKey", Constant.session);
-        info.put("qq", Long.parseLong(qq));
-        HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+        if (StrUtils.isBlank(Constant.session)) {
+            Map<String, Object> info = new HashMap<>();
+            info.put("authKey", qqAuth);
+            String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
+            Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
+            info = new HashMap<>();
+            info.put("sessionKey", Constant.session);
+            info.put("qq", Long.parseLong(qq));
+            HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+        }
     }
 
     private MiRaiUtil() {
@@ -154,6 +159,7 @@ public class MiRaiUtil {
 
     /**
      * 好友申请同意
+     *
      * @param obj
      */
     public void agreeFriend(JSONObject obj) {
@@ -171,6 +177,7 @@ public class MiRaiUtil {
 
     /**
      * 邀请进群同意
+     *
      * @param obj
      */
     public void agreeGroup(JSONObject obj) {
