@@ -215,7 +215,8 @@ public class MiRaiUtil {
         Map<String, Object> info = new HashMap<>();
         info.put("sessionKey", Constant.session);
         info.put("target", id);
-        HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
+        String result = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
+        logger.info("撤回消息响应结果：" + result);
         releaseSession();
     }
 
