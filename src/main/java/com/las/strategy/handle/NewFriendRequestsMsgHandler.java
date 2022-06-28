@@ -17,5 +17,7 @@ public class NewFriendRequestsMsgHandler extends AbstractBotMsgHandler {
         logger.info(object.toJSONString());
         //添加好友
         MiRaiUtil.getInstance().agreeFriend(object);
+        //重置
+        initBot();
     }
 }

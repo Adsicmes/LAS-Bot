@@ -234,7 +234,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
             if (CollectionUtil.isNotEmpty(commands)) {
                 // 因为可能有开发者用户覆盖内置机器人点歌功能，可以按顺序排优先级高的
                 Optional<BaseCommand> baseCommand = commands.stream().max(Comparator.comparing(BaseCommand::getPriority));
-                if(baseCommand.isPresent()){
+                if (baseCommand.isPresent()) {
                     BaseCommand finalBaseCommand = baseCommand.get();
                     logger.info("最终执行指令是：" + finalBaseCommand.toString());
                     boolean isExecute = true;
@@ -329,6 +329,8 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                 // 说明没找到此功能有启动的数据，返回错误信息（非匹配指令不需要）
                 if (botCmd.isMatch()) {
                     logger.warn("该群：" + id + "，未开启功能：" + funName + "，请联系管理员开启");
+                    CmdUtil.sendMessage("该群：" + id + "，未开启功能：" + funName + "，请联系管理员开启", userId, id, type);
+
                 }
             }
         }
@@ -363,6 +365,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                         // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
                         if (botCmd.isMatch()) {
                             logger.warn("用户：" + userId + " 权限不足，请联系管理员");
+                            CmdUtil.sendMessage("用户：" + userId + " 权限不足，请联系管理员", userId, id, type);
                         }
                     }
                 } else {
@@ -373,6 +376,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                         // 用户权限小于功能权限，则返回错误信息（非匹配指令不需要）
                         if (botCmd.isMatch()) {
                             logger.warn("群管：" + userId + " 权限不足，请联系超管");
+                            CmdUtil.sendMessage("群管：" + userId + " 权限不足，请联系超管", userId, id, type);
                         }
                     }
                 }

@@ -23,7 +23,7 @@ public class GroupFunDao extends BaseDao<GroupFun> {
 
 
     public List<GroupFun> findListByGid(Long gid) {
-        String sql = "select * from `group_fun` where is_enable = 1 and group_id = ? and bot_qq = ?";
+        String sql = "select * from `group_fun` where group_id = ? and bot_qq = ?";
         List<GroupFun> groupFunList = new ArrayList<>();
         try {
             groupFunList = getRunner().query(sql, new BeanListHandler<>(GroupFun.class, getProcessor()), gid, Long.parseLong(AppConfigs.botQQ));

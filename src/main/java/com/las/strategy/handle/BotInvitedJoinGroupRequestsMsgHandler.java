@@ -17,5 +17,7 @@ public class BotInvitedJoinGroupRequestsMsgHandler extends AbstractBotMsgHandler
         logger.info(object.toJSONString());
         //邀请进群
         MiRaiUtil.getInstance().agreeGroup(object);
+        //初始化群权限
+        initBotFun();
     }
 }
