@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.enums.MsgCallBackEnum;
+import com.las.utils.MiRaiUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -51,6 +52,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
             String uri = fullHttpRequest.uri();
             logger.info(uri);
             if (uri.equals(AppConfigs.qqBotServer)) {
+                MiRaiUtil.getInstance().initSession();
                 Map<String, Object> params = getPostParamsFromChannel(fullHttpRequest);
                 String content = JSONObject.toJSONString(params);
                 logger.info(content);
@@ -79,7 +81,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                         }
                     }
                 }
-
+                MiRaiUtil.getInstance().releaseSession();
             }
 
             String data = "POST method over";
