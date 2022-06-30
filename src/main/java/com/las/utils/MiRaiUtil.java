@@ -224,6 +224,15 @@ public class MiRaiUtil {
         info.put("target", id);
         String result = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
         logger.info("撤回消息响应结果：" + result);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        if(jsonObject.getInteger("code") == 5 && null != oldSession){
+            // 有可能消息ID在原先的会话，再尝试
+            info = new HashMap<>();
+            info.put("sessionKey", oldSession);
+            info.put("target", id);
+            String result2 = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
+            logger.info("撤回消息响应结果2：" + result2);
+        }
     }
 
 }
