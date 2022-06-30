@@ -12,6 +12,7 @@ public class Constant {
      */
     public static volatile String session;
     public static volatile String oldSession;
+    public static volatile String tempSession;
 
     /**
      * QQ用户默认权限

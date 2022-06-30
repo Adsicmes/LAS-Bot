@@ -30,13 +30,14 @@ public class MiRaiUtil {
 
 
     public void initSession() {
-        if (null == Constant.session) {
+        if (null == Constant.tempSession) {
             synchronized (obj) {
-                if (null == Constant.session) {
+                if (null == Constant.tempSession) {
                     Map<String, Object> info = new HashMap<>();
                     info.put("authKey", qqAuth);
                     String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
                     Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
+                    Constant.tempSession = Constant.session;
                     info = new HashMap<>();
                     info.put("sessionKey", Constant.session);
                     info.put("qq", Long.parseLong(qq));
@@ -47,11 +48,11 @@ public class MiRaiUtil {
     }
 
     public void releaseSession() {
-        if (null != Constant.session) {
+        if (null != Constant.tempSession) {
             synchronized (obj) {
-                if (null != Constant.session) {
+                if (null != Constant.tempSession) {
                     Constant.oldSession = Constant.session;
-                    Constant.session = null;
+                    Constant.tempSession = null;
                 }
             }
         }
