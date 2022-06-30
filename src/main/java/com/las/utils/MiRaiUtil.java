@@ -24,11 +24,15 @@ public class MiRaiUtil {
     private static String qqAuth = AppConfigs.keyAuth;
 
     /**
+     * 锁
+     */
+    private final Object obj = new Object();
+
+    /**
      * 消息临时会话
      */
     private String session;
     private String oldSession;
-    private Object obj = new Object();
 
     public void initSession() {
         if (null == session) {
@@ -48,17 +52,12 @@ public class MiRaiUtil {
     }
 
     public void releaseSession() {
-        synchronized (obj) {
-            if (null != session) {
-                oldSession = session;
-                Map<String, Object> info = new HashMap<>();
-                info.put("authKey", qqAuth);
-                String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
-                session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
-                info = new HashMap<>();
-                info.put("sessionKey", session);
-                info.put("qq", Long.parseLong(qq));
-                HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+        if (null != session) {
+            synchronized (obj) {
+                if (null != session) {
+                    oldSession = session;
+                    session = null;
+                }
             }
         }
     }
@@ -225,7 +224,7 @@ public class MiRaiUtil {
         String result = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
         logger.info("撤回消息响应结果：" + result);
         JSONObject jsonObject = JSONObject.parseObject(result);
-        if(jsonObject.getInteger("code") == 5 && null != oldSession){
+        if (jsonObject.getInteger("code") == 5 && null != oldSession) {
             // 有可能消息ID在原先的会话，再尝试
             info = new HashMap<>();
             info.put("sessionKey", oldSession);
