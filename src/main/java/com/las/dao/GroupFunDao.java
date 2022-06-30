@@ -28,9 +28,20 @@ public class GroupFunDao extends BaseDao<GroupFun> {
         try {
             groupFunList = getRunner().query(sql, new BeanListHandler<>(GroupFun.class, getProcessor()), gid, Long.parseLong(AppConfigs.botQQ));
         } catch (SQLException e) {
-            logger.error("出错ERROR：" + e.getMessage(),e);
+            logger.error("出错ERROR：" + e.getMessage(), e);
         }
         return groupFunList;
+    }
+
+    public boolean deleteById(Long id) {
+        String sql = "delete from `group_fun` where id = ? and bot_qq = ?";
+        int row = 0;
+        try {
+            row = getRunner().update(sql, id, AppConfigs.botQQ);
+        } catch (SQLException e) {
+            logger.error("出错ERROR：" + e.getMessage(), e);
+        }
+        return row > 0;
     }
 
 

@@ -35,5 +35,18 @@ public class FunDao extends BaseDao<Fun> {
         return funList;
     }
 
+    public boolean deleteAll() {
+        String sql = "delete from `fun` where bot_qq = ?";
+        int row = 0;
+        try {
+            row = getRunner().update(sql, AppConfigs.botQQ);
+        } catch (SQLException e) {
+            logger.error("出错ERROR：" + e.getMessage(), e);
+        }
+        return row > 0;
+    }
+
+
+
 
 }
