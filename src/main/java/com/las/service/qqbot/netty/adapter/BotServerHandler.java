@@ -76,11 +76,10 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                         }
                     }
                 }
-                //检测系统时间，如果分钟能被5整除，释放
+                //检测系统时间，如果分钟能被10整除，释放
                 int min = Calendar.getInstance().get(Calendar.MINUTE);
-                if (min % 5 == 0) {
+                if (min % 10 == 0) {
                     MiRaiUtil.getInstance().releaseSession();
-                    MiRaiUtil.getInstance().initSession();
                 }
             }
 
