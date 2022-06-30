@@ -28,22 +28,17 @@ public class MiRaiUtil {
      */
     private final Object obj = new Object();
 
-    /**
-     * 消息临时会话
-     */
-    private String session;
-    private String oldSession;
 
     public void initSession() {
-        if (null == session) {
+        if (null == Constant.session) {
             synchronized (obj) {
-                if (null == session) {
+                if (null == Constant.session) {
                     Map<String, Object> info = new HashMap<>();
                     info.put("authKey", qqAuth);
                     String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
-                    session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
+                    Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
                     info = new HashMap<>();
-                    info.put("sessionKey", session);
+                    info.put("sessionKey", Constant.session);
                     info.put("qq", Long.parseLong(qq));
                     HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
                 }
@@ -52,11 +47,11 @@ public class MiRaiUtil {
     }
 
     public void releaseSession() {
-        if (null != session) {
+        if (null != Constant.session) {
             synchronized (obj) {
-                if (null != session) {
-                    oldSession = session;
-                    session = null;
+                if (null != Constant.session) {
+                    Constant.oldSession = Constant.session;
+                    Constant.session = null;
                 }
             }
         }
@@ -89,7 +84,7 @@ public class MiRaiUtil {
      * 获取群列表
      */
     public List<JSONObject> getGroupList() {
-        String result = HttpKit.get(baseURL + "/groupList?sessionKey=" + session);
+        String result = HttpKit.get(baseURL + "/groupList?sessionKey=" + Constant.session);
         return JsonUtils.getJsonArrayByJsonString(result);
     }
 
@@ -97,7 +92,7 @@ public class MiRaiUtil {
      * 获取好友列表
      */
     public List<JSONObject> getFriendList() {
-        String result = HttpKit.get(baseURL + "/friendList?sessionKey=" + session);
+        String result = HttpKit.get(baseURL + "/friendList?sessionKey=" + Constant.session);
         return JsonUtils.getJsonArrayByJsonString(result);
     }
 
@@ -107,7 +102,7 @@ public class MiRaiUtil {
         switch (type) {
             case "group":
                 apiUrl = baseURL + "/sendImageMessage";
-                info.put("sessionKey", session);
+                info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("group", gId);
                 info.put("target", gId);
@@ -116,14 +111,14 @@ public class MiRaiUtil {
                 break;
             case "discuss":
                 apiUrl = baseURL + "/sendImageMessage";
-                info.put("sessionKey", session);
+                info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("group", gId);
                 info.put("urls", urls);
                 break;
             case "private":
                 apiUrl = baseURL + "/sendImageMessage";
-                info.put("sessionKey", session);
+                info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("urls", urls);
                 break;
@@ -143,21 +138,21 @@ public class MiRaiUtil {
         switch (type) {
             case "group":
                 apiUrl = baseURL + "/sendGroupMessage";
-                info.put("sessionKey", session);
+                info.put("sessionKey", Constant.session);
                 info.put("target", gId);
                 info.put("messageChain", msgList);
 
                 break;
             case "discuss":
                 apiUrl = baseURL + "/sendTempMessage";
-                info.put("sessionKey", session);
+                info.put("sessionKey", Constant.session);
                 info.put("qq", id);
                 info.put("group", gId);
                 info.put("messageChain", msgList);
                 break;
             case "private":
                 apiUrl = baseURL + "/sendFriendMessage";
-                info.put("sessionKey", session);
+                info.put("sessionKey", Constant.session);
                 info.put("target", id);
                 info.put("messageChain", msgList);
                 break;
@@ -178,7 +173,7 @@ public class MiRaiUtil {
      */
     public void agreeFriend(JSONObject obj) {
         Map<String, Object> info = new HashMap<>();
-        info.put("sessionKey", session);
+        info.put("sessionKey", Constant.session);
         info.put("operate", 0);
         info.put("eventId", obj.getLongValue("eventId"));
         info.put("fromId", obj.getLongValue("fromId"));
@@ -196,7 +191,7 @@ public class MiRaiUtil {
      */
     public void agreeGroup(JSONObject obj) {
         Map<String, Object> info = new HashMap<>();
-        info.put("sessionKey", session);
+        info.put("sessionKey", Constant.session);
         info.put("eventId", obj.getLongValue("eventId"));
         info.put("fromId", obj.getLongValue("fromId"));
         info.put("groupId", obj.getLongValue("groupId"));
@@ -209,7 +204,7 @@ public class MiRaiUtil {
      * 获取群好友列表
      */
     public List<JSONObject> getGroupUsers(Long gId) {
-        String result = HttpKit.get(baseURL + "/memberList?sessionKey=" + session + "&target=" + gId);
+        String result = HttpKit.get(baseURL + "/memberList?sessionKey=" + Constant.session + "&target=" + gId);
         logger.info("获取群[" + gId + "]好友列表信息：" + result);
         return JsonUtils.getJsonArrayByJsonString(result);
     }
@@ -219,15 +214,15 @@ public class MiRaiUtil {
      */
     public void reCall(Long id) {
         Map<String, Object> info = new HashMap<>();
-        info.put("sessionKey", session);
+        info.put("sessionKey", Constant.session);
         info.put("target", id);
         String result = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
         logger.info("撤回消息响应结果：" + result);
         JSONObject jsonObject = JSONObject.parseObject(result);
-        if (jsonObject.getInteger("code") == 5 && null != oldSession) {
+        if (jsonObject.getInteger("code") == 5 && null != Constant.oldSession) {
             // 有可能消息ID在原先的会话，再尝试
             info = new HashMap<>();
-            info.put("sessionKey", oldSession);
+            info.put("sessionKey", Constant.oldSession);
             info.put("target", id);
             String result2 = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
             logger.info("撤回消息响应结果2：" + result2);

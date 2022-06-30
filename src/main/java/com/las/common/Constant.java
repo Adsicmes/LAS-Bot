@@ -8,6 +8,12 @@ import java.util.regex.Pattern;
 public class Constant {
 
     /**
+     * 消息临时会话
+     */
+    public static volatile String session;
+    public static volatile String oldSession;
+
+    /**
      * QQ用户默认权限
      */
     public static final int DEFAULT_PERMISSION = 0;
