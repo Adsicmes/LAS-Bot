@@ -121,7 +121,7 @@ public class BaseDao<T> {
         return null;
     }
 
-    private T findById(Object id) {
+    public T findById(Object id) {
         String sql = "select * from " + tableName + " where " + idKey + " = ?";
         T bean = null;
         try {
