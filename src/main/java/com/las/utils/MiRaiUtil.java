@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author dullwolf
@@ -23,37 +24,44 @@ public class MiRaiUtil {
     private static String qq = AppConfigs.botQQ;
     private static String qqAuth = AppConfigs.keyAuth;
 
+
     /**
      * 锁
      */
-    private final Object obj = new Object();
+    private final ReentrantLock lock = new ReentrantLock();
 
 
     public void initSession() {
         if (null == Constant.tempSession) {
-            synchronized (obj) {
-                if (null == Constant.tempSession) {
-                    Map<String, Object> info = new HashMap<>();
-                    info.put("authKey", qqAuth);
-                    String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
-                    Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
-                    Constant.tempSession = Constant.session;
-                    info = new HashMap<>();
-                    info.put("sessionKey", Constant.session);
-                    info.put("qq", Long.parseLong(qq));
-                    HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
-                }
+            lock.lock();
+            try {
+                Map<String, Object> info = new HashMap<>();
+                info.put("authKey", qqAuth);
+                String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
+                Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
+                Constant.tempSession = Constant.session;
+                info = new HashMap<>();
+                info.put("sessionKey", Constant.session);
+                info.put("qq", Long.parseLong(qq));
+                HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+            } catch (Exception e){
+                logger.error("错误ERROR：" + e.getMessage());
+            } finally {
+                lock.unlock();
             }
         }
     }
 
     public void releaseSession() {
         if (null != Constant.tempSession) {
-            synchronized (obj) {
-                if (null != Constant.tempSession) {
-                    Constant.oldSession = Constant.session;
-                    Constant.tempSession = null;
-                }
+            lock.lock();
+            try {
+                Constant.oldSession = Constant.session;
+                Constant.tempSession = null;
+            } catch (Exception e){
+                logger.error("错误ERROR：" + e.getMessage());
+            } finally {
+                lock.unlock();
             }
         }
     }
