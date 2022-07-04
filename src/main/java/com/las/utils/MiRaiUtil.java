@@ -24,7 +24,6 @@ public class MiRaiUtil {
     private static String qq = AppConfigs.botQQ;
     private static String qqAuth = AppConfigs.keyAuth;
 
-
     /**
      * 锁
      */
@@ -35,17 +34,19 @@ public class MiRaiUtil {
         if (null == Constant.tempSession) {
             lock.lock();
             try {
-                Map<String, Object> info = new HashMap<>();
-                info.put("authKey", qqAuth);
-                String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
-                Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
-                Constant.tempSession = Constant.session;
-                info = new HashMap<>();
-                info.put("sessionKey", Constant.session);
-                info.put("qq", Long.parseLong(qq));
-                HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
-            } catch (Exception e){
-                logger.error("错误ERROR：" + e.getMessage());
+                if (null == Constant.tempSession) {
+                    Map<String, Object> info = new HashMap<>();
+                    info.put("authKey", qqAuth);
+                    String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
+                    Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
+                    Constant.tempSession = Constant.session;
+                    info = new HashMap<>();
+                    info.put("sessionKey", Constant.session);
+                    info.put("qq", Long.parseLong(qq));
+                    HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+                }
+            } catch (Exception e) {
+                logger.error("初始化mirai会话报错：" + e.getMessage());
             } finally {
                 lock.unlock();
             }
@@ -56,10 +57,11 @@ public class MiRaiUtil {
         if (null != Constant.tempSession) {
             lock.lock();
             try {
-                Constant.oldSession = Constant.session;
-                Constant.tempSession = null;
-            } catch (Exception e){
-                logger.error("错误ERROR：" + e.getMessage());
+                if (null != Constant.tempSession) {
+                    Constant.oldSession = Constant.session;
+                    Constant.tempSession = null;
+                }
+            } catch (Exception ignored) {
             } finally {
                 lock.unlock();
             }
