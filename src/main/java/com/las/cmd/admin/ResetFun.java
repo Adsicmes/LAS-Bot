@@ -4,7 +4,7 @@ import com.las.annotation.BotCmd;
 import com.las.cmd.BaseCommand;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
-import com.las.utils.CmdUtil;
+import com.las.utils.mirai.CmdUtil;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

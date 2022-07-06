@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.enums.MsgCallBackEnum;
-import com.las.utils.MiRaiUtil;
+import com.las.utils.mirai.MiRaiUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

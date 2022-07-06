@@ -1,16 +1,18 @@
-package com.las.utils;
+package com.las.utils.mirai;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.dto.CqResponse;
+import com.las.utils.JsonUtils;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -69,7 +71,7 @@ public class MiRaiUtil {
     }
 
     private MiRaiUtil() {
-        logger.info("初始化ing...");
+        logger.debug("初始化mirai实例ing...");
     }
 
     private static ThreadLocal<MiRaiUtil> instance = ThreadLocal.withInitial(MiRaiUtil::new);
@@ -77,7 +79,7 @@ public class MiRaiUtil {
     public static MiRaiUtil getInstance() {
         MiRaiUtil context = instance.get();
         if (null == context) {
-            logger.info("实例被删了...准备重新初始化...");
+            logger.debug("mirai实例被删了...准备重新初始化...");
             context = init();
         }
         return context;
@@ -107,7 +109,7 @@ public class MiRaiUtil {
         return JsonUtils.getJsonArrayByJsonString(result);
     }
 
-    public CqResponse sendImgMsg(Long id, Long gId, ArrayList<String> urls, String type) {
+    public CqResponse sendImgMsg(Long id, Long gId, List<String> urls, String type) {
         String apiUrl;
         Map<String, Object> info = new HashMap<>();
         switch (type) {
@@ -136,14 +138,13 @@ public class MiRaiUtil {
             default:
                 return null;
         }
-        String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
-        logger.info("CQ结果：" + result);
+        HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
         //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
         return null;
     }
 
 
-    public CqResponse sendMsg(Long id, Long gId, ArrayList<JSONObject> msgList, String type) {
+    public CqResponse sendMsg(Long id, Long gId, List<JSONObject> msgList, String type) {
         String apiUrl;
         Map<String, Object> info = new HashMap<>();
         switch (type) {
@@ -171,9 +172,131 @@ public class MiRaiUtil {
                 return null;
         }
         String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
-        logger.info("CQ结果：" + result);
         //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
         return JsonUtils.getObjectByJson(result, CqResponse.class);
+    }
+
+    public CqResponse sendVoiceorImgMsg(Long id, Long gId, String url, String type, int tag) {
+        //音频的发送，私聊发似乎不行了，查API 腾讯那边也没有文档
+        File file = null;
+        try {
+            String URL = baseURL + "/uploadImage";
+            if (tag == 0) {
+                URL = baseURL + "/uploadImage";
+            } else if (tag == 1) {
+                URL = baseURL + "/uploadVoice";
+            }
+            Map<String, String> info = new HashMap<>();
+            info.put("sessionKey", Constant.session);
+            String fileType = "group";
+            switch (type) {
+                case "group":
+                    break;
+                case "discuss":
+                    fileType = "temp";
+                    break;
+                case "private":
+                    fileType = "friend";
+                    break;
+                default:
+                    return null;
+            }
+            if (tag == 0) {
+                info.put("type", fileType);
+            } else if (tag == 1) {
+                //语音上传只支持group
+                info.put("type", "group");
+            }
+
+
+            String fileName = UUID.randomUUID().toString();
+            if (tag == 0) {
+                fileName = fileName + ".jpg";
+            } else if (tag == 1) {
+                fileName = fileName + ".amr";
+            }
+
+            BufferedInputStream bis = new BufferedInputStream(Objects.requireNonNull(HttpUtil.getFileInputStream(url)));
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileName));
+            int b;
+            while (-1 != (b = bis.read())) {
+                bos.write(b);
+            }
+            bos.close();
+            bis.close();
+
+            ArrayList<JSONObject> msgList = new ArrayList<>();
+            file = new File(fileName);
+
+            Map<String, File> info2 = new HashMap<>();
+            if (tag == 0) {
+                info2.put("img", file);
+            } else if (tag == 1) {
+                info2.put("voice", file);
+            }
+            StringBuilder sb = new StringBuilder();
+            BufferedInputStream bis2 = new BufferedInputStream(HttpUtil.postFile(URL, info, info2));
+            int len;
+            byte[] bytes = new byte[1024];
+            while (-1 != (len = bis2.read(bytes))) {
+                String str = new String(bytes, 0, len);
+                sb.append(str);
+            }
+            bis2.close();
+            if (tag == 0) {
+                JSONObject data = JsonUtils.getJsonObjectByJsonString(sb.toString());
+                JSONObject object = new JSONObject();
+                object.put("type", "Image");
+                object.put("imageId", data.getString("imageId"));
+                msgList.add(object);
+            } else if (tag == 1) {
+
+                JSONObject data = JsonUtils.getJsonObjectByJsonString(sb.toString());
+                JSONObject object = new JSONObject();
+                object.put("type", "Voice");
+                object.put("voiceId", data.getString("voiceId"));
+                msgList.add(object);
+            }
+
+
+            Map<String, Object> info3 = new HashMap<>();
+            switch (type) {
+                case "group":
+                    URL = baseURL + "/sendGroupMessage";
+                    info3.put("sessionKey", Constant.session);
+                    info3.put("target", gId);
+                    info3.put("messageChain", msgList);
+
+                    break;
+                case "discuss":
+                    URL = baseURL + "/sendTempMessage";
+                    info3.put("sessionKey", Constant.session);
+                    info3.put("qq", id);
+                    info3.put("group", gId);
+                    info3.put("messageChain", msgList);
+                    break;
+                case "private":
+                    URL = baseURL + "/sendFriendMessage";
+                    info3.put("sessionKey", Constant.session);
+                    info3.put("target", id);
+                    info3.put("messageChain", msgList);
+                    break;
+                default:
+                    return null;
+            }
+
+            HttpKit.post(URL, JsonUtils.getJsonString(info3));
+
+        } catch (Exception ignored) {
+        } finally {
+            //最后删除文件
+            if (null != file) {
+                file.delete();
+            }
+        }
+
+        return null;
+
     }
 
 
@@ -191,7 +314,7 @@ public class MiRaiUtil {
         info.put("groupId", obj.getLongValue("groupId"));
         info.put("message", "Hello");
         String result = HttpKit.post(baseURL + "/resp/newFriendRequestEvent", JsonUtils.getJsonString(info));
-        logger.info("同意好友：" + result);
+        logger.debug("同意好友：" + result);
     }
 
 
@@ -216,7 +339,7 @@ public class MiRaiUtil {
      */
     public List<JSONObject> getGroupUsers(Long gId) {
         String result = HttpKit.get(baseURL + "/memberList?sessionKey=" + Constant.session + "&target=" + gId);
-        logger.info("获取群[" + gId + "]好友列表信息：" + result);
+        logger.debug("获取群[" + gId + "]好友列表信息：" + result);
         return JsonUtils.getJsonArrayByJsonString(result);
     }
 
@@ -228,7 +351,7 @@ public class MiRaiUtil {
         info.put("sessionKey", Constant.session);
         info.put("target", id);
         String result = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
-        logger.info("撤回消息响应结果：" + result);
+        logger.debug("撤回消息响应结果：" + result);
         JSONObject jsonObject = JSONObject.parseObject(result);
         if (jsonObject.getInteger("code") == 5 && null != Constant.oldSession) {
             // 有可能消息ID在原先的会话，再尝试
@@ -236,7 +359,7 @@ public class MiRaiUtil {
             info.put("sessionKey", Constant.oldSession);
             info.put("target", id);
             String result2 = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
-            logger.info("撤回消息响应结果2：" + result2);
+            logger.debug("撤回消息响应结果2：" + result2);
         }
     }
 

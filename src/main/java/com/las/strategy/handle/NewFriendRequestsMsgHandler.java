@@ -1,7 +1,7 @@
 package com.las.strategy.handle;
 
 import com.alibaba.fastjson.JSONObject;
-import com.las.utils.MiRaiUtil;
+import com.las.utils.mirai.MiRaiUtil;
 import org.apache.log4j.Logger;
 
 /**

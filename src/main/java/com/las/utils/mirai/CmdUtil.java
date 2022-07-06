@@ -1,4 +1,4 @@
-package com.las.utils;
+package com.las.utils.mirai;
 
 
 import com.alibaba.fastjson.JSONArray;
@@ -18,7 +18,7 @@ public class CmdUtil {
 
     private static Logger logger = Logger.getLogger(CmdUtil.class);
 
-    private static CqResponse getCqResponse(Long userId, Long id, int type, ArrayList<JSONObject> msgList) {
+    private static CqResponse getCqResponse(Long userId, Long id, int type, List<JSONObject> msgList) {
         CqResponse response = null;
         switch (type) {
             case Constant.MESSAGE_TYPE_PRIVATE:
@@ -122,7 +122,7 @@ public class CmdUtil {
      * @param id      组ID
      * @param type    消息类型
      */
-    public static CqResponse sendImgMessage(ArrayList<String> urls, Long userId, Long id, int type) {
+    public static CqResponse sendImgMessage(List<String> urls, Long userId, Long id, int type) {
         CqResponse response = null;
 
         switch (type) {
@@ -134,6 +134,34 @@ public class CmdUtil {
                 break;
             case Constant.MESSAGE_TYPE_DISCUSS:
                 response = MiRaiUtil.getInstance().sendImgMsg(userId, id, urls, "discuss");
+                break;
+            default:
+                break;
+        }
+        return response;
+    }
+
+    /**
+     * CQ发送语音or图片消息
+     *
+     * @param url    网络图URL
+     * @param userId  用户ID
+     * @param id      组ID
+     * @param type    消息类型
+     * @param tag     0 图片，1 语音
+     */
+    public static CqResponse sendVoiceorImgMessage(String url, Long userId, Long id, int type, int tag) {
+        CqResponse response = null;
+
+        switch (type) {
+            case Constant.MESSAGE_TYPE_PRIVATE:
+                response = MiRaiUtil.getInstance().sendVoiceorImgMsg(userId, id, url, "private", tag);
+                break;
+            case Constant.MESSAGE_TYPE_GROUP:
+                response = MiRaiUtil.getInstance().sendVoiceorImgMsg(userId, id, url, "group", tag);
+                break;
+            case Constant.MESSAGE_TYPE_DISCUSS:
+                response = MiRaiUtil.getInstance().sendVoiceorImgMsg(userId, id, url, "discuss", tag);
                 break;
             default:
                 break;

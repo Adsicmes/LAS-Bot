@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.las.cmd.BaseNonCommand;
 import com.las.common.Constant;
-import com.las.utils.CmdUtil;
+import com.las.utils.mirai.CmdUtil;
 import com.las.utils.JsonUtils;
 import org.apache.log4j.Logger;
 

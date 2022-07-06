@@ -3,7 +3,7 @@ package com.las.strategy.handle;
 import com.alibaba.fastjson.JSONObject;
 import com.las.common.Constant;
 import com.las.model.GroupExt;
-import com.las.utils.CmdUtil;
+import com.las.utils.mirai.CmdUtil;
 import com.las.utils.StrUtils;
 
 /**
