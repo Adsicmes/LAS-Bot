@@ -22,7 +22,7 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
         //将HTTP消息的多个部分组合成一条完整的HTTP消息
         pipeline.addLast(new HttpObjectAggregator(64 * 1024));
         pipeline.addLast(new ChunkedWriteHandler());
-//        pipeline.addLast(new WebServerHandleAdapter());
+        pipeline.addLast(new WebServerHandleAdapter());
         pipeline.addLast(new BotServerHandler());
     }
 }
