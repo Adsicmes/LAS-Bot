@@ -444,16 +444,6 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
             }
             getUserDao().saveOrUpdate(user);
         });
-
-        // 顺便初始化机器人群功能权限
-        deleteFun();
-        initBotFun();
-
-    }
-
-    private void deleteFun() {
-        FunDao funDao = getFunDao();
-        funDao.deleteAll();
     }
 
     /**

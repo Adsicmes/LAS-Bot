@@ -33,6 +33,7 @@ public class MiRaiUtil {
 
 
     public void initSession() {
+        logger.debug("锁对象：" + lock.toString());
         if (null == Constant.tempSession) {
             lock.lock();
             try {
@@ -56,6 +57,7 @@ public class MiRaiUtil {
     }
 
     public void releaseSession() {
+        logger.debug("准备释放锁对象：" + lock.toString());
         if (null != Constant.tempSession) {
             lock.lock();
             try {
