@@ -7,7 +7,7 @@
     <dependency>
         <groupId>com.github.Adsicmes</groupId>
         <artifactId>LAS-Bot</artifactId>
-        <version>v1.4.3</version>
+        <version>v1.4.4</version>
     </dependency>
 </dependencies>
 ```
