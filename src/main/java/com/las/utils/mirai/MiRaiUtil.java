@@ -29,7 +29,7 @@ public class MiRaiUtil {
     /**
      * 锁
      */
-    private final ReentrantLock lock = new ReentrantLock();
+    private static ReentrantLock lock = new ReentrantLock();
 
 
     public void initSession() {
@@ -79,7 +79,7 @@ public class MiRaiUtil {
     public static MiRaiUtil getInstance() {
         MiRaiUtil context = instance.get();
         if (null == context) {
-            logger.debug("mirai实例被删了...准备重新初始化...");
+            logger.warn("mirai实例被删了...准备重新初始化...");
             context = init();
         }
         return context;
