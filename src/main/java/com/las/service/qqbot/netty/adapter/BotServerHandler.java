@@ -70,7 +70,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                             handleMsg.invoke(obj, params);
                             // 用反射机制拿exec方法
                             Method exec = aClass.getMethod("exec");
-                            exec.invoke(obj);
+                            if(exec != null){
+                                exec.invoke(obj);
+                            }
                         } catch (Exception e) {
                             logger.error("出错ERROR：" + e.getMessage(), e);
                         }

@@ -38,7 +38,7 @@ public class WeChatPushService extends WebSocketClient {
         int type = content.getInteger("type");
         logger.info("微信事件类型是：" + type);
         String className = WxMsgCallBackEnum.getClassNameByType(type);
-        if(null != className){
+        if (null != className) {
             try {
                 Map<String, Object> params = JsonUtils.getMapByObject(content);
                 Class<?> aClass = Class.forName(className);
@@ -49,7 +49,9 @@ public class WeChatPushService extends WebSocketClient {
                 handleMsg.invoke(obj, params);
                 // 用反射机制拿exec方法
                 Method exec = aClass.getMethod("exec");
-                exec.invoke(obj);
+                if (exec != null) {
+                    exec.invoke(obj);
+                }
             } catch (Exception e) {
                 logger.error("执行微信事件类型报错，原因：" + e.toString());
             }
