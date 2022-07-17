@@ -174,6 +174,7 @@ public class MiRaiUtil {
                 return null;
         }
         String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
+        logger.debug("CQ发送消息返回结果：" + result);
         //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
         return JsonUtils.getObjectByJson(result, CqResponse.class);
     }
