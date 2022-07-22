@@ -81,6 +81,9 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 //检测系统时间，如果分钟能被10整除，释放
                 int min = Calendar.getInstance().get(Calendar.MINUTE);
                 if (min % 10 == 0) {
+                    // 主动调用GC回收多余的内存
+                    System.gc();
+                    // 释放会话
                     MiRaiUtil.getInstance().releaseSession();
                 }
             }
