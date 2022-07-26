@@ -15,8 +15,6 @@ import java.io.FileOutputStream;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static sun.plugin.javascript.navig.JSType.URL;
-
 /**
  * @author dullwolf
  */
