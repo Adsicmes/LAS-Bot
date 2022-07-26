@@ -34,7 +34,7 @@ public class MiRaiUtil {
 
     public void initSession() {
         logger.debug("锁对象：" + lock.toString());
-        if (null == Constant.tempSession) {
+        if (null == Constant.tempSession || !checkSession()) {
             lock.lock();
             try {
                 if (null == Constant.tempSession) {
@@ -43,10 +43,7 @@ public class MiRaiUtil {
                     String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
                     Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
                     Constant.tempSession = Constant.session;
-                    info = new HashMap<>();
-                    info.put("sessionKey", Constant.session);
-                    info.put("qq", Long.parseLong(qq));
-                    HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+                    checkSession();
                 }
             } catch (Exception e) {
                 logger.error("初始化mirai会话报错：" + e.getMessage());
@@ -70,6 +67,18 @@ public class MiRaiUtil {
                 lock.unlock();
             }
         }
+    }
+
+    /**
+     * 验证会话
+     */
+    private boolean checkSession() {
+        Map<String, Object> info = new HashMap<>();
+        info.put("sessionKey", Constant.session);
+        info.put("qq", Long.parseLong(qq));
+        String result = HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+        JSONObject obj = JSONObject.parseObject(result);
+        return obj.getIntValue("code") == 0;
     }
 
     private MiRaiUtil() {
