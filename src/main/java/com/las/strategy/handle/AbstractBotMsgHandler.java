@@ -169,110 +169,114 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      * 执行指令方法
      */
     protected void exeCommand(String msg, Long userId, Long id, int type) {
-        List<BaseCommand> commands = new ArrayList<>();
-        BaseCommand command = null;
-        String cmd = null;
-        int cmdLength = 0;
-        // 需要找匹配指令的
-        if (!StrKit.isBlank(msg)) {
-            msg = readPrefix(msg, id, type);
-            if (msg == null) {
-                return;
-            }
-            cmd = getLowerParams(msg);
-            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
-            for (Class<?> c : classSet) {
-                if (null != command) {
-                    // 把非匹配指令的跳过
-                    BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
-                    if (null != botCmd) {
-                        if (botCmd.isMatch()) {
-                            break;
+        try {
+            List<BaseCommand> commands = new ArrayList<>();
+            BaseCommand command = null;
+            String cmd = null;
+            int cmdLength = 0;
+            // 需要找匹配指令的
+            if (!StrKit.isBlank(msg)) {
+                msg = readPrefix(msg, id, type);
+                if (msg == null) {
+                    return;
+                }
+                cmd = getLowerParams(msg);
+                Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
+                for (Class<?> c : classSet) {
+                    if (null != command) {
+                        // 把非匹配指令的跳过
+                        BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
+                        if (null != botCmd) {
+                            if (botCmd.isMatch()) {
+                                break;
+                            }
                         }
                     }
-                }
-                Class superclass = c.getSuperclass();
-                Field[] fields = superclass.getDeclaredFields();
-                List<String> cmdList = new ArrayList<>();
-                for (Field field : fields) {
-                    String colName = field.getName();
-                    String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
-                    Method method;
-                    Object o = null;
-                    try {
-                        method = superclass.getDeclaredMethod(methodName);
-                        o = method.invoke(c.newInstance());
-                    } catch (Exception e) {
-                        logger.error("出错ERROR：" + e.getMessage(), e);
-                    }
-                    if ("alias".equalsIgnoreCase(colName)) {
-                        if (cmdList.isEmpty()) {
-                            cmdList = (List<String>) o;
-                        } else {
-                            cmdList.addAll((List<String>) o);
+                    Class superclass = c.getSuperclass();
+                    Field[] fields = superclass.getDeclaredFields();
+                    List<String> cmdList = new ArrayList<>();
+                    for (Field field : fields) {
+                        String colName = field.getName();
+                        String methodName = "get" + colName.substring(0, 1).toUpperCase() + colName.substring(1);
+                        Method method;
+                        Object o = null;
+                        try {
+                            method = superclass.getDeclaredMethod(methodName);
+                            o = method.invoke(c.newInstance());
+                        } catch (Exception e) {
+                            logger.error("出错ERROR：" + e.getMessage(), e);
+                        }
+                        if ("alias".equalsIgnoreCase(colName)) {
+                            if (cmdList.isEmpty()) {
+                                cmdList = (List<String>) o;
+                            } else {
+                                cmdList.addAll((List<String>) o);
+                            }
+                        }
+                        if ("name".equalsIgnoreCase(colName)) {
+                            cmdList.add(o.toString());
                         }
                     }
-                    if ("name".equalsIgnoreCase(colName)) {
-                        cmdList.add(o.toString());
-                    }
-                }
-                if (StrKit.notBlank(cmd)) {
-                    for (String oneCmd : cmdList) {
-                        if (!StrKit.isBlank(oneCmd) && (cmd.toUpperCase().startsWith(oneCmd) || cmd.toLowerCase().startsWith(oneCmd))) {
-                            if (cmdLength < oneCmd.length()) {
-                                cmdLength = oneCmd.length();
-                                if (null == command) {
-                                    try {
-                                        command = (BaseCommand) c.newInstance();
-                                        commands.add(command);
-                                    } catch (Exception e) {
-                                        logger.error("出错ERROR：" + e.getMessage(), e);
+                    if (StrKit.notBlank(cmd)) {
+                        for (String oneCmd : cmdList) {
+                            if (!StrKit.isBlank(oneCmd) && (cmd.toUpperCase().startsWith(oneCmd) || cmd.toLowerCase().startsWith(oneCmd))) {
+                                if (cmdLength < oneCmd.length()) {
+                                    cmdLength = oneCmd.length();
+                                    if (null == command) {
+                                        try {
+                                            command = (BaseCommand) c.newInstance();
+                                            commands.add(command);
+                                        } catch (Exception e) {
+                                            logger.error("出错ERROR：" + e.getMessage(), e);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if (CollectionUtil.isNotEmpty(commands)) {
-                // 因为可能有开发者用户覆盖内置机器人点歌功能，可以按顺序排优先级高的
-                Optional<BaseCommand> baseCommand = commands.stream().max(Comparator.comparing(BaseCommand::getPriority));
-                if (baseCommand.isPresent()) {
-                    BaseCommand finalBaseCommand = baseCommand.get();
-                    logger.info("最终执行指令是：" + finalBaseCommand.toString());
-                    boolean isExecute = true;
-                    // 找到指令之后，查找群是否开启，以及用户权限等问题
-                    BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
-                    if (null != botCmd) {
-                        isExecute = checkExe(userId, id, type, botCmd);
-                    }
-                    if (isExecute) {
-                        try {
-                            command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
-                        } catch (Exception e) {
-                            logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+                if (CollectionUtil.isNotEmpty(commands)) {
+                    // 因为可能有开发者用户覆盖内置机器人点歌功能，可以按顺序排优先级高的
+                    Optional<BaseCommand> baseCommand = commands.stream().max(Comparator.comparing(BaseCommand::getPriority));
+                    if (baseCommand.isPresent()) {
+                        BaseCommand finalBaseCommand = baseCommand.get();
+                        logger.info("最终执行指令是：" + finalBaseCommand.toString());
+                        boolean isExecute = true;
+                        // 找到指令之后，查找群是否开启，以及用户权限等问题
+                        BotCmd botCmd = command.getClass().getDeclaredAnnotation(BotCmd.class);
+                        if (null != botCmd) {
+                            isExecute = checkExe(userId, id, type, botCmd);
+                        }
+                        if (isExecute) {
+                            try {
+                                command.execute(userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                            } catch (Exception e) {
+                                logger.error(super.toString() + "执行时报错，命令内容:" + cmd);
+                            }
                         }
                     }
                 }
             }
-        }
-        // 需要查找非匹配指令的
-        Set<Class<?>> notCmdSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
-        for (Class<?> aClass : notCmdSet) {
-            BotCmd annotation = aClass.getDeclaredAnnotation(BotCmd.class);
-            if (null != annotation && !annotation.isMatch()) {
-                // 只要找到一个非指令的，直接执行。并且检查好权限
-                boolean isExecute = checkExe(userId, id, type, annotation);
-                if (isExecute) {
-                    try {
-                        BaseCommand notCommand = (BaseCommand) aClass.newInstance();
-                        logger.info("执行非匹配指令是：" + notCommand.toString());
-                        notCommand.execute(cqObj, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
-                    } catch (Exception e) {
-                        logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
+            // 需要查找非匹配指令的
+            Set<Class<?>> notCmdSet = ClassUtil.scanPackageByAnnotation("com", false, BotCmd.class);
+            for (Class<?> aClass : notCmdSet) {
+                BotCmd annotation = aClass.getDeclaredAnnotation(BotCmd.class);
+                if (null != annotation && !annotation.isMatch()) {
+                    // 只要找到一个非指令的，直接执行。并且检查好权限
+                    boolean isExecute = checkExe(userId, id, type, annotation);
+                    if (isExecute) {
+                        try {
+                            BaseCommand notCommand = (BaseCommand) aClass.newInstance();
+                            logger.info("执行非匹配指令是：" + notCommand.toString());
+                            notCommand.execute(cqObj, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
+                        } catch (Exception e) {
+                            logger.error(super.toString() + "执行时报错，非指令命令内容:" + cmd);
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            logger.error("消息处理命令时报错：" + e.toString(), e);
         }
 
 
