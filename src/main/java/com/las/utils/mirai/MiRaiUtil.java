@@ -15,6 +15,8 @@ import java.io.FileOutputStream;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static sun.plugin.javascript.navig.JSType.URL;
+
 /**
  * @author dullwolf
  */
@@ -42,8 +44,9 @@ public class MiRaiUtil {
                     info.put("authKey", qqAuth);
                     String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
                     Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
-                    Constant.tempSession = Constant.session;
-                    checkSession();
+                    if (checkSession()) {
+                        Constant.tempSession = Constant.session;
+                    }
                 }
             } catch (Exception e) {
                 logger.error("初始化mirai会话报错：" + e.getMessage());
@@ -149,8 +152,18 @@ public class MiRaiUtil {
             default:
                 return null;
         }
-        HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
-        //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
+        String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
+        if(JSONObject.parseObject(result).getIntValue("code") != 0){
+            //可能发群消息有风控！如果拿不到消息ID，开启临时会话，私聊发给用户
+            if ("group".equals(type)) {
+                info.put("sessionKey", Constant.session);
+                info.put("qq", id);
+                info.put("group", gId);
+                info.put("urls", urls);
+                String result2 = HttpKit.post(baseURL + "/sendImageMessage", JsonUtils.getJsonString(info));
+                logger.info("CQ结果2：" + result2);
+            }
+        }
         return null;
     }
 
@@ -184,7 +197,17 @@ public class MiRaiUtil {
         }
         String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
         logger.debug("CQ发送消息返回结果：" + result);
-        //可能发群消息有风控！如果拿不到消息ID，开启临时会发，私聊发给用户
+        if(JSONObject.parseObject(result).getIntValue("code") != 0){
+            //可能发群消息有风控！如果拿不到消息ID，开启临时会话，私聊发给用户
+            if ("group".equals(type)) {
+                info.put("sessionKey", Constant.session);
+                info.put("qq", id);
+                info.put("group", gId);
+                info.put("messageChain", msgList);
+                String result2 = HttpKit.post(baseURL + "/sendTempMessage", JsonUtils.getJsonString(info));
+                logger.info("CQ结果2：" + result2);
+            }
+        }
         return JsonUtils.getObjectByJson(result, CqResponse.class);
     }
 
@@ -297,7 +320,18 @@ public class MiRaiUtil {
                     return null;
             }
 
-            HttpKit.post(URL, JsonUtils.getJsonString(info3));
+            String result = HttpKit.post(URL, JsonUtils.getJsonString(info3));
+            if(JSONObject.parseObject(result).getIntValue("code") != 0){
+                //可能发群消息有风控！如果拿不到消息ID，开启临时会话，私聊发给用户
+                if ("group".equals(type)) {
+                    info3.put("sessionKey", Constant.session);
+                    info3.put("qq", id);
+                    info3.put("group", gId);
+                    info3.put("messageChain", msgList);
+                    String result2 = HttpKit.post(baseURL + "/sendTempMessage", JsonUtils.getJsonString(info));
+                    logger.info("CQ结果2：" + result2);
+                }
+            }
 
         } catch (Exception ignored) {
         } finally {
