@@ -150,15 +150,22 @@ public class MiRaiUtil {
             default:
                 return null;
         }
-        String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
-        if(JSONObject.parseObject(result).getIntValue("code") != 0){
+        String result = null;
+        try {
+            result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
+            logger.debug("CQ发送消息返回结果：" + result);
+        } catch (Exception e) {
+            logger.error("CQ发送异常：" + e.toString(), e);
+        }
+        if (result == null) {
             //可能发群消息有风控！如果拿不到消息ID，开启临时会话，私聊发给用户
             if ("group".equals(type)) {
-                info.put("sessionKey", Constant.session);
-                info.put("qq", id);
-                info.put("group", gId);
-                info.put("urls", urls);
-                String result2 = HttpKit.post(baseURL + "/sendImageMessage", JsonUtils.getJsonString(info));
+                Map<String, Object> info2 = new HashMap<>();
+                info2.put("sessionKey", Constant.session);
+                info2.put("qq", id);
+                info2.put("group", gId);
+                info2.put("urls", urls);
+                String result2 = HttpKit.post(baseURL + "/sendImageMessage", JsonUtils.getJsonString(info2));
                 logger.info("CQ结果2：" + result2);
             }
         }
@@ -193,20 +200,26 @@ public class MiRaiUtil {
             default:
                 return null;
         }
-        String result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
-        logger.debug("CQ发送消息返回结果：" + result);
-        if(JSONObject.parseObject(result).getIntValue("code") != 0){
+        String result = null;
+        try {
+            result = HttpKit.post(apiUrl, JsonUtils.getJsonString(info));
+            logger.debug("CQ发送消息返回结果：" + result);
+        } catch (Exception e) {
+            logger.error("CQ发送异常：" + e.toString(), e);
+        }
+        if (result == null) {
             //可能发群消息有风控！如果拿不到消息ID，开启临时会话，私聊发给用户
             if ("group".equals(type)) {
-                info.put("sessionKey", Constant.session);
-                info.put("qq", id);
-                info.put("group", gId);
-                info.put("messageChain", msgList);
-                String result2 = HttpKit.post(baseURL + "/sendTempMessage", JsonUtils.getJsonString(info));
+                Map<String, Object> info2 = new HashMap<>();
+                info2.put("sessionKey", Constant.session);
+                info2.put("qq", id);
+                info2.put("group", gId);
+                info2.put("messageChain", msgList);
+                String result2 = HttpKit.post(baseURL + "/sendTempMessage", JsonUtils.getJsonString(info2));
                 logger.info("CQ结果2：" + result2);
             }
         }
-        return JsonUtils.getObjectByJson(result, CqResponse.class);
+        return null;
     }
 
     public CqResponse sendVoiceorImgMsg(Long id, Long gId, String url, String type, int tag) {
@@ -318,27 +331,33 @@ public class MiRaiUtil {
                     return null;
             }
 
-            String result = HttpKit.post(URL, JsonUtils.getJsonString(info3));
-            if(JSONObject.parseObject(result).getIntValue("code") != 0){
+            String result = null;
+            try {
+                result = HttpKit.post(URL, JsonUtils.getJsonString(info3));
+                logger.debug("CQ发送消息返回结果：" + result);
+            } catch (Exception e) {
+                logger.error("CQ发送异常：" + e.toString(), e);
+            }
+            if (result == null) {
                 //可能发群消息有风控！如果拿不到消息ID，开启临时会话，私聊发给用户
                 if ("group".equals(type)) {
-                    info3.put("sessionKey", Constant.session);
-                    info3.put("qq", id);
-                    info3.put("group", gId);
-                    info3.put("messageChain", msgList);
-                    String result2 = HttpKit.post(baseURL + "/sendTempMessage", JsonUtils.getJsonString(info));
+                    Map<String,Object> info4 = new HashMap<>();
+                    info4.put("sessionKey", Constant.session);
+                    info4.put("qq", id);
+                    info4.put("group", gId);
+                    info4.put("messageChain", msgList);
+                    String result2 = HttpKit.post(baseURL + "/sendTempMessage", JsonUtils.getJsonString(info4));
                     logger.info("CQ结果2：" + result2);
                 }
             }
-
         } catch (Exception ignored) {
+
         } finally {
             //最后删除文件
             if (null != file) {
                 file.delete();
             }
         }
-
         return null;
 
     }
