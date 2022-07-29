@@ -47,7 +47,6 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
             String uri = fullHttpRequest.uri();
             logger.info(uri);
             if (uri.equals(AppConfigs.qqBotServer)) {
-                MiRaiUtil.getInstance().initSession();
                 Map<String, Object> params = getPostParamsFromChannel(fullHttpRequest);
                 String content = JSONObject.toJSONString(params);
                 logger.info(content);
@@ -61,6 +60,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                     if (StrUtil.isBlank(AppConfigs.botQQ) && StrUtil.isBlank(AppConfigs.keyAuth)) {
                         logger.error("botQQ暂未初始化，无法执行bot事件");
                     } else {
+                        MiRaiUtil.getInstance().initSession();
                         try {
                             Class<?> aClass = Class.forName(className);
                             Object obj = aClass.newInstance();
@@ -72,19 +72,12 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                             Method exec = aClass.getMethod("exec");
                             if(exec != null){
                                 exec.invoke(obj);
+                                System.gc();
                             }
                         } catch (Exception e) {
                             logger.error("出错ERROR：" + e.getMessage(), e);
                         }
                     }
-                }
-                //检测系统时间，如果分钟能被10整除，释放
-                int min = Calendar.getInstance().get(Calendar.MINUTE);
-                if (min % 10 == 0) {
-                    // 主动调用GC回收多余的内存
-                    System.gc();
-                    // 释放会话
-                    MiRaiUtil.getInstance().releaseSession();
                 }
             }
 

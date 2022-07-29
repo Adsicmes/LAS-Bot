@@ -34,51 +34,51 @@ public class MiRaiUtil {
 
     public void initSession() {
         logger.debug("锁对象：" + lock.toString());
-        if (null == Constant.tempSession || !checkSession()) {
-            lock.lock();
-            try {
-                if (null == Constant.tempSession) {
-                    Map<String, Object> info = new HashMap<>();
-                    info.put("authKey", qqAuth);
-                    String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
-                    Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
-                    if (checkSession()) {
-                        Constant.tempSession = Constant.session;
-                    }
+        lock.lock();
+        try {
+            if (!checkSession()) {
+                Map<String, Object> info = new HashMap<>();
+                info.put("authKey", qqAuth);
+                String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
+                Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
+                if(!checkSession()){
+                    throw new Exception("获取会话后验证失败");
                 }
-            } catch (Exception e) {
-                logger.error("初始化mirai会话报错：" + e.getMessage());
-            } finally {
-                lock.unlock();
             }
+        } catch (Exception e) {
+            logger.error("初始化mirai会话报错：" + e.getMessage());
+        } finally {
+            lock.unlock();
         }
     }
 
-    public void releaseSession() {
-        logger.debug("准备释放锁对象：" + lock.toString());
-        if (null != Constant.tempSession) {
-            lock.lock();
-            try {
-                if (null != Constant.tempSession) {
-                    Constant.oldSession = Constant.session;
-                    Constant.tempSession = null;
-                }
-            } catch (Exception ignored) {
-            } finally {
-                lock.unlock();
-            }
-        }
-    }
+//    public void releaseSession() {
+//        logger.debug("准备释放锁对象：" + lock.toString());
+//        lock.lock();
+//        try {
+//            if (null != Constant.session) {
+//                Constant.oldSession = Constant.session;
+//                Constant.session = null;
+//            }
+//        } catch (Exception ignored) {
+//        } finally {
+//            lock.unlock();
+//        }
+//    }
 
     /**
      * 验证会话
      */
     private boolean checkSession() {
+        if (null == Constant.session) {
+            return false;
+        }
         Map<String, Object> info = new HashMap<>();
         info.put("sessionKey", Constant.session);
         info.put("qq", Long.parseLong(qq));
         String result = HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
         JSONObject obj = JSONObject.parseObject(result);
+        logger.debug("验证会话：" + JSONObject.toJSONString(obj));
         return obj.getIntValue("code") == 0;
     }
 
@@ -341,7 +341,7 @@ public class MiRaiUtil {
             if (result == null) {
                 //可能发群消息有风控！如果拿不到消息ID，开启临时会话，私聊发给用户
                 if ("group".equals(type)) {
-                    Map<String,Object> info4 = new HashMap<>();
+                    Map<String, Object> info4 = new HashMap<>();
                     info4.put("sessionKey", Constant.session);
                     info4.put("qq", id);
                     info4.put("group", gId);
@@ -415,15 +415,15 @@ public class MiRaiUtil {
         info.put("target", id);
         String result = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
         logger.debug("撤回消息响应结果：" + result);
-        JSONObject jsonObject = JSONObject.parseObject(result);
-        if (jsonObject.getInteger("code") == 5 && null != Constant.oldSession) {
-            // 有可能消息ID在原先的会话，再尝试
-            info = new HashMap<>();
-            info.put("sessionKey", Constant.oldSession);
-            info.put("target", id);
-            String result2 = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
-            logger.debug("撤回消息响应结果2：" + result2);
-        }
+//        JSONObject jsonObject = JSONObject.parseObject(result);
+//        if (jsonObject.getInteger("code") == 5 && null != Constant.oldSession) {
+//            // 有可能消息ID在原先的会话，再尝试
+//            info = new HashMap<>();
+//            info.put("sessionKey", Constant.oldSession);
+//            info.put("target", id);
+//            String result2 = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
+//            logger.debug("撤回消息响应结果2：" + result2);
+//        }
     }
 
 }

@@ -11,8 +11,7 @@ public class Constant {
      * 消息临时会话
      */
     public static volatile String session;
-    public static volatile String oldSession;
-    public static volatile String tempSession;
+    //public static volatile String oldSession;
 
     /**
      * QQ用户默认权限
