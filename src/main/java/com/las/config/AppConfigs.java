@@ -10,6 +10,7 @@ import org.dtools.ini.IniFile;
 import org.dtools.ini.IniFileReader;
 import org.dtools.ini.IniSection;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.File;
@@ -63,12 +64,8 @@ public class AppConfigs {
         File html = new File(System.getProperty("user.dir"), webPath);
         logger.debug("根据路径地址构建文件信息：" + html.getAbsolutePath());
 
-        // 设置spring容器
+        // 初始spring容器
         context = new ClassPathXmlApplicationContext("spring.xml");
-        JedisPoolConfig poolConfig = (JedisPoolConfig) context.getBean("poolConfig");
-        if (null == poolConfig) {
-            logger.error("redis未配置");
-        }
 
         // 更新机器人权限
         try {
