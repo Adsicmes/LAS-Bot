@@ -72,11 +72,11 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
     private GroupExtDao groupExtDao;
 
     protected AbstractBotMsgHandler() {
-        this.groupDao = (GroupDao) AppConfigs.context.getBean("groupDao");
-        this.userDao = (UserDao) AppConfigs.context.getBean("userDao");
-        this.funDao = (FunDao) AppConfigs.context.getBean("funDao");
-        this.groupFunDao = (GroupFunDao) AppConfigs.context.getBean("groupFunDao");
-        this.groupExtDao = (GroupExtDao) AppConfigs.context.getBean("groupExtDao");
+        this.groupDao = new GroupDao();
+        this.userDao = new UserDao();
+        this.funDao = new FunDao();
+        this.groupFunDao = new GroupFunDao();
+        this.groupExtDao = new GroupExtDao();
     }
 
     /**
