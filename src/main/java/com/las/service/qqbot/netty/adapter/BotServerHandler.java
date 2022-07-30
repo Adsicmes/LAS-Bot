@@ -20,7 +20,10 @@ import io.netty.util.CharsetUtil;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
@@ -63,7 +66,12 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                         MiRaiUtil.getInstance().initSession();
                         try {
                             Class<?> aClass = Class.forName(className);
-                            Object obj = aClass.newInstance();
+                            String simpleName = aClass.getSimpleName();
+                            logger.debug("获取QQ事件类名：" + simpleName);
+                            String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                            logger.debug("获取QQ事件Bean名：" + beanName);
+                            Object obj = AppConfigs.context.getBean(beanName);
+                            //Object obj = aClass.newInstance();
                             // 用反射机制拿handleMsg方法
                             Method handleMsg = aClass.getMethod("handleMsg", Map.class);
                             // 代理执行 obj.handleMsg()

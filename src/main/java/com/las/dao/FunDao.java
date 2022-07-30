@@ -5,6 +5,7 @@ import com.las.dao.base.BaseDao;
 import com.las.model.Fun;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * @author dullwolf
  */
+@Component
 public class FunDao extends BaseDao<Fun> {
 
     private static Logger logger = Logger.getLogger(FunDao.class);

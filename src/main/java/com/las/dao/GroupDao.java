@@ -6,6 +6,7 @@ import com.las.model.Group;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 /**
  * @author dullwolf
  */
+@Component
 public class GroupDao extends BaseDao<Group> {
 
     private static Logger logger = Logger.getLogger(GroupDao.class);

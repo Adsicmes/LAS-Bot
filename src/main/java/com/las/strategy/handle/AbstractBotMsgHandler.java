@@ -18,6 +18,7 @@ import com.las.utils.*;
 import com.las.utils.mirai.CmdUtil;
 import com.las.utils.mirai.MiRaiUtil;
 import org.apache.log4j.Logger;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -59,7 +60,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      */
     private Long id;
 
-    // 下面是dao，后续打算手写IOC，提升性能
+    // 下面是dao，使用SpringIOC，提升性能
     private GroupDao groupDao;
 
     private UserDao userDao;
@@ -71,11 +72,11 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
     private GroupExtDao groupExtDao;
 
     protected AbstractBotMsgHandler() {
-        this.groupDao = new GroupDao();
-        this.userDao = new UserDao();
-        this.funDao = new FunDao();
-        this.groupFunDao = new GroupFunDao();
-        this.groupExtDao = new GroupExtDao();
+        this.groupDao = (GroupDao) AppConfigs.context.getBean("groupDao");
+        this.userDao = (UserDao) AppConfigs.context.getBean("userDao");
+        this.funDao = (FunDao) AppConfigs.context.getBean("funDao");
+        this.groupFunDao = (GroupFunDao) AppConfigs.context.getBean("groupFunDao");
+        this.groupExtDao = (GroupExtDao) AppConfigs.context.getBean("groupExtDao");
     }
 
     /**
@@ -202,7 +203,11 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                         Object o = null;
                         try {
                             method = superclass.getDeclaredMethod(methodName);
-                            o = method.invoke(c.newInstance());
+                            String simpleName = c.getSimpleName();
+                            String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                            logger.debug("获取QQ指令的Bean名：" + beanName);
+                            Object obj = AppConfigs.context.getBean(beanName);
+                            o = method.invoke(obj);
                         } catch (Exception e) {
                             logger.error("出错ERROR：" + e.getMessage(), e);
                         }
@@ -224,7 +229,11 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                                     cmdLength = oneCmd.length();
                                     if (null == command) {
                                         try {
-                                            command = (BaseCommand) c.newInstance();
+                                            String simpleName = c.getSimpleName();
+                                            String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                                            logger.debug("确定获取QQ指令的Bean名：" + beanName);
+                                            Object obj = AppConfigs.context.getBean(beanName);
+                                            command = (BaseCommand) obj;
                                             commands.add(command);
                                         } catch (Exception e) {
                                             logger.error("出错ERROR：" + e.getMessage(), e);
@@ -266,7 +275,11 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                     boolean isExecute = checkExe(userId, id, type, annotation);
                     if (isExecute) {
                         try {
-                            BaseCommand notCommand = (BaseCommand) aClass.newInstance();
+                            String simpleName = aClass.getSimpleName();
+                            String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                            logger.debug("获取QQ非匹配指令的Bean名：" + beanName);
+                            Object obj = AppConfigs.context.getBean(beanName);
+                            BaseCommand notCommand = (BaseCommand) obj;
                             logger.info("执行非匹配指令是：" + notCommand.toString());
                             notCommand.execute(cqObj, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
                         } catch (Exception e) {

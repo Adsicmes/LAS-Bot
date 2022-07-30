@@ -2,12 +2,15 @@ package com.las.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.las.cmd.admin.ResetFun;
+import com.las.core.Bot;
 import com.las.service.wx.WeChatPushService;
 import org.apache.log4j.Logger;
 import org.dtools.ini.BasicIniFile;
 import org.dtools.ini.IniFile;
 import org.dtools.ini.IniFileReader;
 import org.dtools.ini.IniSection;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +31,7 @@ public class AppConfigs {
     public static DruidDataSource dataSource;
     public static String wxServerUrl;
     public static WeChatPushService wxPushService;
+    public static ClassPathXmlApplicationContext context;
 
 
     static {
@@ -58,6 +62,13 @@ public class AppConfigs {
         // 根据路径地址构建文件
         File html = new File(System.getProperty("user.dir"), webPath);
         logger.debug("根据路径地址构建文件信息：" + html.getAbsolutePath());
+
+        // 设置spring容器
+        context = new ClassPathXmlApplicationContext("spring.xml");
+        JedisPoolConfig poolConfig = (JedisPoolConfig) context.getBean("poolConfig");
+        if (null == poolConfig) {
+            logger.error("redis未配置");
+        }
 
         // 更新机器人权限
         try {

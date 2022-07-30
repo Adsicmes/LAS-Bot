@@ -5,12 +5,14 @@ import com.las.dao.base.BaseDao;
 import com.las.model.GroupExt;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
 /**
  * @author dullwolf
  */
+@Component
 public class GroupExtDao extends BaseDao<GroupExt> {
 
     private static Logger logger = Logger.getLogger(GroupExtDao.class);

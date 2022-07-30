@@ -6,12 +6,14 @@ import com.las.dao.base.BaseDao;
 import com.las.model.User;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
 /**
  * @author dullwolf
  */
+@Component
 public class UserDao extends BaseDao<User> {
 
     private static Logger logger = Logger.getLogger(UserDao.class);
