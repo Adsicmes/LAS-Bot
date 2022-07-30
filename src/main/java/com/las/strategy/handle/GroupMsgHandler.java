@@ -1,8 +1,10 @@
 package com.las.strategy.handle;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope("prototype")
 public class GroupMsgHandler extends AbstractBotMsgHandler {
 
     @Override

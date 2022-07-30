@@ -6,12 +6,14 @@ import com.las.common.Constant;
 import com.las.model.GroupExt;
 import com.las.utils.mirai.CmdUtil;
 import com.las.utils.StrUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
  * @author dullwolf
  */
 @Component
+@Scope("prototype")
 public class MemberJoinMsgHandler extends AbstractBotMsgHandler {
 
     @Override
