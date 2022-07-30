@@ -205,7 +205,6 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                             method = superclass.getDeclaredMethod(methodName);
                             String simpleName = c.getSimpleName();
                             String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                            logger.debug("获取QQ指令的Bean名：" + beanName);
                             Object obj = AppConfigs.context.getBean(beanName);
                             o = method.invoke(obj);
                         } catch (Exception e) {
@@ -231,7 +230,6 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                                         try {
                                             String simpleName = c.getSimpleName();
                                             String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                                            logger.debug("确定获取QQ指令的Bean名：" + beanName);
                                             Object obj = AppConfigs.context.getBean(beanName);
                                             command = (BaseCommand) obj;
                                             commands.add(command);
@@ -277,7 +275,6 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                         try {
                             String simpleName = aClass.getSimpleName();
                             String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                            logger.debug("获取QQ非匹配指令的Bean名：" + beanName);
                             Object obj = AppConfigs.context.getBean(beanName);
                             BaseCommand notCommand = (BaseCommand) obj;
                             logger.info("执行非匹配指令是：" + notCommand.toString());

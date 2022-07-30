@@ -7,7 +7,7 @@
     <dependency>
         <groupId>com.github.Adsicmes</groupId>
         <artifactId>LAS-Bot</artifactId>
-        <version>v1.6</version>
+        <version>v1.6.1</version>
     </dependency>
 </dependencies>
 ```
@@ -39,23 +39,6 @@ public class App {
 - botQQ就是机器人QQ
 - keyAuth是Mirai插件设置的密钥（后面文档会讲）
 
-还需要在resources目录下新建spring.xml文件，填写如下内容
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-     http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
-
-
-    <context:component-scan base-package="com.las,com.你的项目" />
-
-    <context:annotation-config/>
-
-
-</beans>
-```
 
 #### 启动报错问题
 - 请检查你maven项目有没有创建com.xxx的包路径

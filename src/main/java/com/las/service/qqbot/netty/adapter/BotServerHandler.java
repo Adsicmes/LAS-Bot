@@ -67,9 +67,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                         try {
                             Class<?> aClass = Class.forName(className);
                             String simpleName = aClass.getSimpleName();
-                            logger.debug("获取QQ事件类名：" + simpleName);
                             String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                            logger.debug("获取QQ事件Bean名：" + beanName);
                             Object obj = AppConfigs.context.getBean(beanName);
                             //Object obj = aClass.newInstance();
                             // 用反射机制拿handleMsg方法
