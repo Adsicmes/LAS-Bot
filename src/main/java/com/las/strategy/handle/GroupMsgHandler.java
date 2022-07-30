@@ -1,5 +1,8 @@
 package com.las.strategy.handle;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class GroupMsgHandler extends AbstractBotMsgHandler {
 
     @Override
