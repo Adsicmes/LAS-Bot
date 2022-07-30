@@ -52,13 +52,13 @@ public class Bot {
                 BotRun annotation = aClass.getDeclaredAnnotation(BotRun.class);
                 if (annotation != null) {
                     // 初始化环境
+                    init(annotation);
                     ClassPathXmlApplicationContext context = AppConfigs.context;
                     JedisPoolConfig poolConfig = (JedisPoolConfig) context.getBean("poolConfig");
                     if (null == poolConfig) {
                         logger.info("redis未配置");
                         throw new Exception("redis未配置");
                     }
-                    init(annotation);
                     logger.warn("启动完成，请勿关闭程序窗口");
                     ThreadPoolExecutor executor = ThreadPoolUtil.getPool();
                     executor.execute(() -> initBotService(annotation));

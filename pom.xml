@@ -6,7 +6,7 @@
 
     <groupId>com.frz</groupId>
     <artifactId>LAS-Bot</artifactId>
-    <version>v1.5</version>
+    <version>v1.6</version>
     <packaging>jar</packaging>
 
     <profiles>
