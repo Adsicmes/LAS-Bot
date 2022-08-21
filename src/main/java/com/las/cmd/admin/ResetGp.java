@@ -6,6 +6,7 @@ import com.las.cmd.BaseCommand;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.model.GroupExt;
+import com.las.utils.StrUtils;
 import com.las.utils.mirai.CmdUtil;
 
 import java.util.ArrayList;
@@ -31,6 +32,10 @@ public class ResetGp extends BaseCommand {
                     String prefix = args.get(0).trim();
                     if (Constant.KONG.equals(prefix) || Constant.NONE.equalsIgnoreCase(prefix)) {
                         prefix = "";
+                    }
+                    if(StrUtils.isNotBlank(prefix) && prefix.length() != 1){
+                        CmdUtil.sendMessage("前缀符号长度必须为1", userId, id, type);
+                        return;
                     }
                     GroupExt groupExt = getGroupExtDao().findByGid(id);
                     if (null != groupExt) {
