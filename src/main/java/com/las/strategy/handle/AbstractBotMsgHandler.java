@@ -171,10 +171,6 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      */
     protected void exeCommand(String msg, Long userId, Long id, int type) {
         try {
-            if (StrKit.isBlank(msg)) {
-                logger.error("执行指令传入msg为空！");
-                return;
-            }
             List<BaseCommand> commands = new ArrayList<>();
             BaseCommand command = null;
             String cmd = getLowerParams(msg);
@@ -199,6 +195,10 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                         }
                     }
                 }
+            }
+            if (StrKit.isBlank(msg)) {
+                logger.error("执行指令传入msg为空！");
+                return;
             }
             // 需要找匹配指令的
             msg = readPrefix(msg, id, type);
@@ -554,6 +554,9 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      * @return 优化好的参数
      */
     private String getLowerParams(String msg) {
+        if(StrUtils.isBlank(msg)){
+            return null;
+        }
         Matcher m = Constant.PATTERN_ONE_SPACE.matcher(msg);
         return m.replaceAll(" ").toLowerCase().trim();
     }
