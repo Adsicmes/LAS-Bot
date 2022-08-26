@@ -2,13 +2,14 @@ package com.las.cq.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import lombok.extern.slf4j.Slf4j;
+import com.las.config.AppConfigs;
 import com.las.cq.CQGlobal;
 import com.las.cq.boot.EventProperties;
 import com.las.cq.robot.ApiHandler;
 import com.las.cq.robot.CoolQ;
 import com.las.cq.robot.CoolQFactory;
 import com.las.cq.robot.EventHandler;
+import org.apache.log4j.Logger;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -27,8 +28,9 @@ import java.util.concurrent.TimeUnit;
  * 断开连接
  * 收到消息
  */
-@Slf4j
 public class WebSocketHandler extends TextWebSocketHandler {
+
+    private static Logger log = Logger.getLogger(WebSocketHandler.class);
 
     private CoolQFactory coolQFactory;
     private ApiHandler apiHandler;
@@ -56,7 +58,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         long xSelfId = Long.parseLong(session.getHandshakeHeaders().get("x-self-id").get(0));
-        log.info("{} connected", xSelfId);
+        log.info("connected" + xSelfId);
 
         // 新连接上的，创建一个对象
         CoolQ cq = coolQFactory.createCoolQ(xSelfId, session);
@@ -74,7 +76,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         long xSelfId = Long.parseLong(session.getHandshakeHeaders().get("x-self-id").get(0));
-        log.info("{} disconnected", xSelfId);
+        log.info("disconnected" + xSelfId);
 
         CQGlobal.robots.remove(xSelfId);
     }

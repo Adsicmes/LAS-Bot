@@ -1,4 +1,4 @@
-package com.las.cq;
+package com.las.annotation;
 
 import com.las.cq.boot.CQAutoConfiguration;
 import org.springframework.context.annotation.Import;

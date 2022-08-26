@@ -1,16 +1,19 @@
 package com.las.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.las.config.AppConfigs;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
  * @author dullwolf
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BotRun {
+@Documented
+@Inherited
+@Import({AppConfigs.class})
+public @interface EnableMirai {
 
     /**
      * 静态资源路径
@@ -35,7 +38,7 @@ public @interface BotRun {
     /**
      * 本项目服务端口
      */
-    int botPort() default 8080;
+    int botPort() default 8888;
 
     /**
      * mirai服务url和端口

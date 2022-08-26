@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <version>2.1.8.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.frz</groupId>
     <artifactId>LAS-Bot</artifactId>
-    <version>v1.6</version>
+    <version>v2.0</version>
     <packaging>jar</packaging>
 
     <profiles>
@@ -118,7 +118,7 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>3.3.0</version>
+            <version>2.10.2</version>
         </dependency>
 
 
@@ -126,7 +126,6 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
-            <version>2.3.3.RELEASE</version>
         </dependency>
 
         <!--log4j日志-->
@@ -142,7 +141,6 @@
             <version>1.7.25</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.exp-blog/javaini -->
         <dependency>
             <groupId>com.exp-blog</groupId>
             <artifactId>javaini</artifactId>
@@ -150,7 +148,6 @@
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -158,28 +155,24 @@
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.6.Final</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
             <version>1.7</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.1.10</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.jfinal/jfinal -->
         <dependency>
             <groupId>com.jfinal</groupId>
             <artifactId>jfinal</artifactId>
@@ -215,11 +208,23 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

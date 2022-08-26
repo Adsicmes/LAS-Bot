@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.las.common.Constant;
 import com.las.config.AppConfigs;
 import com.las.enums.MsgCallBackEnum;
+import com.las.utils.SpringUtils;
 import com.las.utils.mirai.MiRaiUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
@@ -68,7 +69,7 @@ public class BotServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                             Class<?> aClass = Class.forName(className);
                             String simpleName = aClass.getSimpleName();
                             String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                            Object obj = AppConfigs.context.getBean(beanName);
+                            Object obj = SpringUtils.getBean(beanName);
                             //Object obj = aClass.newInstance();
                             // 用反射机制拿handleMsg方法
                             Method handleMsg = aClass.getMethod("handleMsg", Map.class);

@@ -186,7 +186,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                         try {
                             String simpleName = aClass.getSimpleName();
                             String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                            Object obj = AppConfigs.context.getBean(beanName);
+                            Object obj = SpringUtils.getBean(beanName);
                             BaseCommand notCommand = (BaseCommand) obj;
                             logger.info("执行非匹配指令是：" + notCommand.toString());
                             notCommand.execute(cqObj, userId, id, type, cmd, getParamsArray(getParams(cmd, cmdLength)));
@@ -229,7 +229,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                         method = superclass.getDeclaredMethod(methodName);
                         String simpleName = c.getSimpleName();
                         String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                        Object obj = AppConfigs.context.getBean(beanName);
+                        Object obj = SpringUtils.getBean(beanName);
                         o = method.invoke(obj);
                     } catch (Exception e) {
                         logger.error("出错ERROR：" + e.getMessage(), e);
@@ -254,7 +254,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                                     try {
                                         String simpleName = c.getSimpleName();
                                         String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
-                                        Object obj = AppConfigs.context.getBean(beanName);
+                                        Object obj = SpringUtils.getBean(beanName);
                                         command = (BaseCommand) obj;
                                         commands.add(command);
                                     } catch (Exception e) {

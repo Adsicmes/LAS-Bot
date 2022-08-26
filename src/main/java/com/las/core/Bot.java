@@ -1,17 +1,19 @@
 package com.las.core;
 
 import cn.hutool.core.util.StrUtil;
-import com.las.annotation.BotRun;
+import com.las.annotation.EnableMirai;
 import com.las.config.AppConfigs;
 import com.las.dao.UserDao;
 import com.las.model.User;
 import com.las.service.qqbot.netty.HttpServer;
 import com.las.service.wx.WeChatPushService;
 import com.las.utils.ClassUtil;
+import com.las.utils.SpringUtils;
 import com.las.utils.StrUtils;
 import com.las.utils.ThreadPoolUtil;
 import org.apache.log4j.Logger;
 import org.java_websocket.enums.ReadyState;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -27,8 +29,8 @@ public class Bot {
     private static Logger logger = Logger.getLogger(Bot.class);
 
     public static void run(Class<?> appClass) {
-        BotRun botRun = appClass.getDeclaredAnnotation(BotRun.class);
-        if (botRun != null) {
+        EnableMirai enableMirai = appClass.getDeclaredAnnotation(EnableMirai.class);
+        if (enableMirai != null) {
             String className = appClass.getName();
             int index = className.lastIndexOf(".");
             if (-1 != index) {
@@ -47,14 +49,13 @@ public class Bot {
             if (StrUtil.isBlank(basePackage)) {
                 throw new Exception("包名路径找不到，请检查是否带了BotRun注解，项目至少在com.xxx包路径下");
             }
-            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(basePackage, false, BotRun.class);
+            Set<Class<?>> classSet = ClassUtil.scanPackageByAnnotation(basePackage, false, EnableMirai.class);
             for (Class<?> aClass : classSet) {
-                BotRun annotation = aClass.getDeclaredAnnotation(BotRun.class);
+                EnableMirai annotation = aClass.getDeclaredAnnotation(EnableMirai.class);
                 if (annotation != null) {
                     // 初始化环境
                     init(annotation);
-                    ClassPathXmlApplicationContext context = AppConfigs.context;
-                    JedisPoolConfig poolConfig = (JedisPoolConfig) context.getBean("poolConfig");
+                    JedisPoolConfig poolConfig = (JedisPoolConfig) SpringUtils.getBean("poolConfig");
                     if (null == poolConfig) {
                         logger.info("redis未配置");
                         throw new Exception("redis未配置");
@@ -78,7 +79,7 @@ public class Bot {
      *
      * @param annotation 注解参数
      */
-    private static void initBotService(BotRun annotation) {
+    private static void initBotService(EnableMirai annotation) {
         HttpServer httpServer = new HttpServer(annotation.botPort());
         try {
             httpServer.start();
@@ -125,10 +126,10 @@ public class Bot {
     /**
      * 初始化配置文件
      */
-    private static void init(BotRun annotation) throws Exception {
+    private static void init(EnableMirai annotation) throws Exception {
         readEnvFile();
         readBotFile(annotation);
-        UserDao userDao = (UserDao) AppConfigs.context.getBean("userDao");
+        UserDao userDao = (UserDao) SpringUtils.getBean("userDao");
         User superUser;
         try {
             superUser = userDao.findSuperQQ();
@@ -166,7 +167,7 @@ public class Bot {
     }
 
 
-    private static void readBotFile(BotRun annotation) throws IOException {
+    private static void readBotFile(EnableMirai annotation) throws IOException {
         String path = System.getProperty("user.dir") + File.separator + "bot.ini";
         logger.debug("当前bot配置路径是：" + path);
         InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("qqbot.ini");
@@ -188,14 +189,14 @@ public class Bot {
     /**
      * 更改文件中的替换文字
      */
-    private static String changeLine(String content, BotRun botRun) {
-        content = content.replaceAll("SUPER_QQ_PARAM", botRun.superQQ());
-        content = content.replaceAll("BOT_QQ_PARAM", botRun.botQQ());
-        content = content.replaceAll("QQ_AUTH_PARAM", botRun.keyAuth());
-        content = content.replaceAll("MIRAI_URL_PARAM", botRun.miRaiUrl());
-        content = content.replaceAll("BOT_SERVER_PARAM", botRun.botServer());
-        content = content.replaceAll("WEB_PATH_PARAM", botRun.webPath());
-        content = content.replaceAll("WX_SERVER_PARAM", botRun.wxServerUrl());
+    private static String changeLine(String content, EnableMirai enableMirai) {
+        content = content.replaceAll("SUPER_QQ_PARAM", enableMirai.superQQ());
+        content = content.replaceAll("BOT_QQ_PARAM", enableMirai.botQQ());
+        content = content.replaceAll("QQ_AUTH_PARAM", enableMirai.keyAuth());
+        content = content.replaceAll("MIRAI_URL_PARAM", enableMirai.miRaiUrl());
+        content = content.replaceAll("BOT_SERVER_PARAM", enableMirai.botServer());
+        content = content.replaceAll("WEB_PATH_PARAM", enableMirai.webPath());
+        content = content.replaceAll("WX_SERVER_PARAM", enableMirai.wxServerUrl());
         return content;
     }
 

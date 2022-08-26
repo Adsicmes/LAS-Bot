@@ -2,12 +2,11 @@ package com.las.cq.robot;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import com.las.cq.entity.CQGroupAnonymous;
 import com.las.cq.entity.CQStatus;
 import com.las.cq.retdata.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.List;
  * API文档 https://github.com/lz1998/Spring-CQ/blob/demo/API.md
  * EVENT文档 https://github.com/lz1998/Spring-CQ/blob/demo/Event.md
  */
-@Slf4j
 public class CoolQ {
 
     @Getter

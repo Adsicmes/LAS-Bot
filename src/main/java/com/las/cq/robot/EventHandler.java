@@ -1,7 +1,6 @@
 package com.las.cq.robot;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 import com.las.cq.event.message.CQDiscussMessageEvent;
 import com.las.cq.event.message.CQGroupMessageEvent;
 import com.las.cq.event.message.CQPrivateMessageEvent;
@@ -19,7 +18,6 @@ import org.springframework.context.ApplicationContext;
  * 然后交给对应的继续分类
  * 职责链模式调用插件，返回MESSAGE_BLOCK停止
  */
-@Slf4j
 public class EventHandler {
 
     private ApplicationContext applicationContext;
@@ -189,7 +187,7 @@ public class EventHandler {
         try {
             return applicationContext.getBean(pluginClass);
         } catch (Exception e) {
-            log.error("已跳过 {} ，请检查 @Component", pluginClass.getSimpleName());
+            //log.error("已跳过 {} ，请检查 @Component", pluginClass.getSimpleName());
             return defaultPlugin;
         }
     }

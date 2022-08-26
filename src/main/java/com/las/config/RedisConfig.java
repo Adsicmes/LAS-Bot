@@ -57,18 +57,4 @@ public class RedisConfig {
     }
 
 
-//    @Bean("redisTemplate")
-//    public RedisTemplate getRedisTemplate(@Qualifier("redisConnectionFactory") RedisConnectionFactory redisConnectionFactory){
-//        RedisTemplate<String, Object> template = new RedisTemplate<>();
-//        template.setKeySerializer(new StringRedisSerializer());
-//        template.setValueSerializer(new JdkSerializationRedisSerializer());
-//
-//        template.setHashKeySerializer(new StringRedisSerializer());
-//        template.setHashValueSerializer(new JdkSerializationRedisSerializer());
-//
-//        template.setConnectionFactory(redisConnectionFactory);
-//        return template;
-//    }
-
-
 }
