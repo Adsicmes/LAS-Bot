@@ -53,8 +53,8 @@ public class Bot {
             for (Class<?> aClass : classSet) {
                 EnableMirai annotation = aClass.getDeclaredAnnotation(EnableMirai.class);
                 if (annotation != null) {
-                    // 初始化环境
-                    init(annotation);
+                    // 再检查环境
+                    check();
                     JedisPoolConfig poolConfig = (JedisPoolConfig) SpringUtils.getBean("poolConfig");
                     if (null == poolConfig) {
                         logger.info("redis未配置");
@@ -126,10 +126,8 @@ public class Bot {
     /**
      * 初始化配置文件
      */
-    private static void init(EnableMirai annotation) throws Exception {
-        readEnvFile();
-        readBotFile(annotation);
-        UserDao userDao = (UserDao) SpringUtils.getBean("userDao");
+    private static void check() throws Exception {
+        UserDao userDao = SpringUtils.getBean("userDao");
         User superUser;
         try {
             superUser = userDao.findSuperQQ();
@@ -145,59 +143,6 @@ public class Bot {
         if (!StrUtils.isNotBlank(AppConfigs.botQQ)) {
             throw new Exception("botQQ暂未初始化，请检查BotRun注解里面的参数");
         }
-    }
-
-    private static void readEnvFile() throws IOException {
-        String path = System.getProperty("user.dir") + File.separator + "env.ini";
-        logger.debug("当前env配置路径是：" + path);
-        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("env.ini");
-        BufferedReader br;
-        BufferedWriter bw;
-        br = new BufferedReader(new InputStreamReader(initialStream));
-        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("env.ini")));
-        String line;
-        while (null != (line = br.readLine())) {
-            bw.write(line);
-            bw.newLine();
-            bw.flush();
-        }
-        bw.close();
-        br.close();
-        initialStream.close();
-    }
-
-
-    private static void readBotFile(EnableMirai annotation) throws IOException {
-        String path = System.getProperty("user.dir") + File.separator + "bot.ini";
-        logger.debug("当前bot配置路径是：" + path);
-        InputStream initialStream = ClassLoader.getSystemClassLoader().getResourceAsStream("qqbot.ini");
-        BufferedReader br;
-        BufferedWriter bw;
-        br = new BufferedReader(new InputStreamReader(initialStream));
-        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("bot.ini")));
-        String line;
-        while (null != (line = br.readLine())) {
-            bw.write(changeLine(line, annotation));
-            bw.newLine();
-            bw.flush();
-        }
-        bw.close();
-        br.close();
-        initialStream.close();
-    }
-
-    /**
-     * 更改文件中的替换文字
-     */
-    private static String changeLine(String content, EnableMirai enableMirai) {
-        content = content.replaceAll("SUPER_QQ_PARAM", enableMirai.superQQ());
-        content = content.replaceAll("BOT_QQ_PARAM", enableMirai.botQQ());
-        content = content.replaceAll("QQ_AUTH_PARAM", enableMirai.keyAuth());
-        content = content.replaceAll("MIRAI_URL_PARAM", enableMirai.miRaiUrl());
-        content = content.replaceAll("BOT_SERVER_PARAM", enableMirai.botServer());
-        content = content.replaceAll("WEB_PATH_PARAM", enableMirai.webPath());
-        content = content.replaceAll("WX_SERVER_PARAM", enableMirai.wxServerUrl());
-        return content;
     }
 
 }
