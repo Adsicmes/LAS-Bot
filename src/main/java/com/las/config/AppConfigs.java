@@ -1,13 +1,8 @@
 package com.las.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.las.App;
 import com.las.annotation.EnableMirai;
 import com.las.cmd.admin.ResetFun;
-import com.las.core.Bot;
-import com.las.cq.boot.CQBean;
-import com.las.cq.boot.CQProperties;
-import com.las.cq.boot.EventProperties;
 import com.las.service.wx.WeChatPushService;
 import com.las.utils.ClassUtil;
 import org.apache.log4j.Logger;
@@ -15,15 +10,8 @@ import org.dtools.ini.BasicIniFile;
 import org.dtools.ini.IniFile;
 import org.dtools.ini.IniFileReader;
 import org.dtools.ini.IniSection;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.*;
 import java.util.Set;
