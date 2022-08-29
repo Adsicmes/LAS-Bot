@@ -41,7 +41,7 @@ public class MiRaiUtil {
                 info.put("authKey", qqAuth);
                 String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
                 Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
-                if(!checkSession()){
+                if (!checkSession()) {
                     throw new Exception("获取会话后验证失败");
                 }
             }
@@ -415,15 +415,37 @@ public class MiRaiUtil {
         info.put("target", id);
         String result = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
         logger.debug("撤回消息响应结果：" + result);
-//        JSONObject jsonObject = JSONObject.parseObject(result);
-//        if (jsonObject.getInteger("code") == 5 && null != Constant.oldSession) {
-//            // 有可能消息ID在原先的会话，再尝试
-//            info = new HashMap<>();
-//            info.put("sessionKey", Constant.oldSession);
-//            info.put("target", id);
-//            String result2 = HttpKit.post(baseURL + "/recall", JsonUtils.getJsonString(info));
-//            logger.debug("撤回消息响应结果2：" + result2);
-//        }
     }
+
+    /**
+     * 禁言群成员
+     * @param gId 群号
+     * @param uId 用户QQ
+     * @param time 时间秒
+     */
+    public void mute(Long gId, Long uId, int time) {
+        Map<String, Object> info = new HashMap<>();
+        info.put("sessionKey", Constant.session);
+        info.put("target", gId);
+        info.put("memberId", uId);
+        info.put("time", time);
+        String result = HttpKit.post(baseURL + "/mute", JsonUtils.getJsonString(info));
+        logger.debug("禁言响应结果：" + result);
+    }
+
+    /**
+     * 解除禁言群成员
+     * @param gId 群号
+     * @param uId 用户QQ
+     */
+    public void unmute(Long gId, Long uId) {
+        Map<String, Object> info = new HashMap<>();
+        info.put("sessionKey", Constant.session);
+        info.put("target", gId);
+        info.put("memberId", uId);
+        String result = HttpKit.post(baseURL + "/unmute", JsonUtils.getJsonString(info));
+        logger.debug("解除禁言响应结果：" + result);
+    }
+
 
 }
