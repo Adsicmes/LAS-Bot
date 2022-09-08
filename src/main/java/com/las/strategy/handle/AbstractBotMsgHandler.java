@@ -18,6 +18,7 @@ import com.las.utils.*;
 import com.las.utils.mirai.CmdUtil;
 import com.las.utils.mirai.MiRaiUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.lang.reflect.Field;
@@ -61,23 +62,28 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
     private Long id;
 
     // 下面是dao，使用SpringIOC，提升性能
+    @Autowired
     private GroupDao groupDao;
 
+    @Autowired
     private UserDao userDao;
 
+    @Autowired
     private FunDao funDao;
 
+    @Autowired
     private GroupFunDao groupFunDao;
 
+    @Autowired
     private GroupExtDao groupExtDao;
 
-    protected AbstractBotMsgHandler() {
-        this.groupDao = new GroupDao();
-        this.userDao = new UserDao();
-        this.funDao = new FunDao();
-        this.groupFunDao = new GroupFunDao();
-        this.groupExtDao = new GroupExtDao();
-    }
+//    protected AbstractBotMsgHandler() {
+//        this.groupDao = new GroupDao();
+//        this.userDao = new UserDao();
+//        this.funDao = new FunDao();
+//        this.groupFunDao = new GroupFunDao();
+//        this.groupExtDao = new GroupExtDao();
+//    }
 
     /**
      * 提供getter
