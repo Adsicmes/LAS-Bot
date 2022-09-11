@@ -75,12 +75,6 @@ public class AppConfigs {
         File html = new File(System.getProperty("user.dir"), webPath);
         logger.debug("根据路径地址构建文件信息：" + html.getAbsolutePath());
 
-        // 更新机器人权限
-        try {
-            new ResetFun().execute(null, null, null, null, null);
-        } catch (Exception e) {
-            logger.error("初始化机器人权限失败，原因：" + e.getMessage(), e);
-        }
     }
 
     private static void initEnv(EnableMirai annotation) {

@@ -55,11 +55,6 @@ public class Bot {
                 if (annotation != null) {
                     // 再检查环境
                     check();
-                    JedisPoolConfig poolConfig = (JedisPoolConfig) SpringUtils.getBean("poolConfig");
-                    if (null == poolConfig) {
-                        logger.info("redis未配置");
-                        throw new Exception("redis未配置");
-                    }
                     logger.warn("启动完成，请勿关闭程序窗口");
                     ThreadPoolExecutor executor = ThreadPoolUtil.getPool();
                     executor.execute(() -> initBotService(annotation));
