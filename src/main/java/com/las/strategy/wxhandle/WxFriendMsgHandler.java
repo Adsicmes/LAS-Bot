@@ -11,6 +11,6 @@ public class WxFriendMsgHandler extends AbstractWxBotMsgHandler {
 
     @Override
     public void exec() {
-        logger.info("处理一条微信好友消息...");
+
     }
 }

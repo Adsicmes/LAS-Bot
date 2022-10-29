@@ -1,5 +1,7 @@
 package com.las.annotation;
 
+import com.las.enums.WxMsgCallBackEnum;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
@@ -13,11 +15,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Component
-public @interface WxBotCmd {
+@Scope("prototype")
+public @interface WxEvent {
 
     /**
-     * 是否根据指令匹配，默认true，有部分指令不需要，可以改为false
+     * 微信事件名称
      */
-    boolean isMatch() default true;
+    WxMsgCallBackEnum event();
 
 }
