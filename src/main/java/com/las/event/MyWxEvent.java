@@ -9,11 +9,11 @@ import com.las.utils.WxCmdUtil;
 import org.apache.log4j.Logger;
 
 /**
- * 自定义QQ私聊消息事件（此类作为参考）
+ * 自定义wx私聊消息事件（此类作为参考）
  *
  * @author dullwolf
  */
-@WxEvent(event = WxMsgCallBackEnum.WX_FRIEND_MSG)
+//@WxEvent(event = WxMsgCallBackEnum.WX_FRIEND_MSG)
 public class MyWxEvent extends AbstractWxBotMsgHandler {
 
     private static Logger logger = Logger.getLogger(MyWxEvent.class);
@@ -25,7 +25,7 @@ public class MyWxEvent extends AbstractWxBotMsgHandler {
 
         String content = msgData.getString("content");
         if (content.startsWith("123")) {
-            String wxid = msgData.getString("wxid");
+            String wxid = msgData.getString("sender");
             logger.info("准备发送消息，wxID是？" + wxid);
             WxCmdUtil.sendMsg(wxid, "测试成功");
         }
