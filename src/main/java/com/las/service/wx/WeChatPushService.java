@@ -5,6 +5,7 @@ import com.las.dto.WeChatMsgDTO;
 import com.las.enums.MsgCallBackEnum;
 import com.las.enums.WxMsgCallBackEnum;
 import com.las.utils.JsonUtils;
+import com.las.utils.SpringUtils;
 import com.las.utils.StrUtils;
 import org.apache.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
@@ -68,7 +69,10 @@ public class WeChatPushService extends WebSocketClient {
             try {
                 Map<String, Object> params = JsonUtils.getMapByObject(content);
                 Class<?> aClass = Class.forName(className);
-                Object obj = aClass.newInstance();
+                String simpleName = aClass.getSimpleName();
+                String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                Object obj = SpringUtils.getBean(beanName);
+                //Object obj = aClass.newInstance();
                 // 用反射机制拿handleMsg方法
                 Method handleMsg = aClass.getMethod("handleMsg", Map.class);
                 // 代理执行 obj.handleMsg()
@@ -77,6 +81,7 @@ public class WeChatPushService extends WebSocketClient {
                 Method exec = aClass.getMethod("exec");
                 if (exec != null) {
                     exec.invoke(obj);
+                    System.gc();
                 }
             } catch (Exception e) {
                 logger.error("执行微信事件类型报错，原因：" + e.toString());
