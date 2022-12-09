@@ -38,8 +38,8 @@ public class MiRaiUtil {
         try {
             if (!checkSession()) {
                 Map<String, Object> info = new HashMap<>();
-                info.put("authKey", qqAuth);
-                String result = HttpKit.post(baseURL + "/auth", JsonUtils.getJsonString(info));
+                info.put("verifyKey", qqAuth);
+                String result = HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
                 Constant.session = JsonUtils.getJsonObjectByJsonString(result).getString("session");
                 if (!checkSession()) {
                     throw new Exception("获取会话后验证失败");
@@ -76,7 +76,7 @@ public class MiRaiUtil {
         Map<String, Object> info = new HashMap<>();
         info.put("sessionKey", Constant.session);
         info.put("qq", Long.parseLong(qq));
-        String result = HttpKit.post(baseURL + "/verify", JsonUtils.getJsonString(info));
+        String result = HttpKit.post(baseURL + "/bind", JsonUtils.getJsonString(info));
         JSONObject obj = JSONObject.parseObject(result);
         logger.debug("验证会话：" + JSONObject.toJSONString(obj));
         return obj.getIntValue("code") == 0;
