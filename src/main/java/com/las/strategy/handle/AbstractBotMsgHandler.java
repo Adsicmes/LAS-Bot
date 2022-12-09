@@ -191,7 +191,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                     if (isExecute) {
                         try {
                             String simpleName = aClass.getSimpleName();
-                            String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                            String beanName = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
                             Object obj = SpringUtils.getBean(beanName);
                             BaseCommand notCommand = (BaseCommand) obj;
                             logger.info("执行非匹配指令是：" + notCommand.toString());
@@ -234,7 +234,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                     try {
                         method = superclass.getDeclaredMethod(methodName);
                         String simpleName = c.getSimpleName();
-                        String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                        String beanName = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
                         Object obj = SpringUtils.getBean(beanName);
                         o = method.invoke(obj);
                     } catch (Exception e) {
@@ -259,7 +259,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
                                 if (null == command) {
                                     try {
                                         String simpleName = c.getSimpleName();
-                                        String beanName = simpleName.substring(0,1).toLowerCase() + simpleName.substring(1);
+                                        String beanName = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
                                         Object obj = SpringUtils.getBean(beanName);
                                         command = (BaseCommand) obj;
                                         commands.add(command);
@@ -420,7 +420,11 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      * 初始化机器人好友和群(权限为保护：只允许子类去使用)
      */
     protected void initBot() {
-        List<JSONObject> list = MiRaiUtil.getInstance().getGroupList();
+        String result = MiRaiUtil.getInstance().getGroupList();
+        List<JSONObject> list = new ArrayList<>();
+        if (CollectionUtil.isEmpty(list)) {
+            return;
+        }
         //采取异步
         list.parallelStream().forEach(item -> {
             Group group = getGroupDao().findByGid(item.getLong("id"));
@@ -447,7 +451,11 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
         });
 
         //下一步查询机器人QQ所有的好友列表
-        List<JSONObject> friendList = MiRaiUtil.getInstance().getFriendList();
+        String friendMsg = MiRaiUtil.getInstance().getFriendList();
+        List<JSONObject> friendList = new ArrayList<>();
+        if (CollectionUtil.isEmpty(friendList)) {
+            return;
+        }
         friendList.parallelStream().forEach(item -> {
             User user = getUserDao().findByUid(item.getLong("id"));
             if (null == user) {
@@ -560,7 +568,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      * @return 优化好的参数
      */
     private String getLowerParams(String msg) {
-        if(StrUtils.isBlank(msg)){
+        if (StrUtils.isBlank(msg)) {
             return null;
         }
         Matcher m = Constant.PATTERN_ONE_SPACE.matcher(msg);
