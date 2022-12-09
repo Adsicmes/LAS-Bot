@@ -420,8 +420,13 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
      * 初始化机器人好友和群(权限为保护：只允许子类去使用)
      */
     protected void initBot() {
-        String result = MiRaiUtil.getInstance().getGroupList();
         List<JSONObject> list = new ArrayList<>();
+        String result = MiRaiUtil.getInstance().getGroupList();
+        JSONObject object = JSONObject.parseObject(result);
+        if(0 == object.getIntValue("code")){
+            JSONArray data = object.getJSONArray("data");
+            list = JSONObject.parseArray(data.toJSONString(), JSONObject.class);
+        }
         if (CollectionUtil.isEmpty(list)) {
             return;
         }
@@ -451,8 +456,13 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
         });
 
         //下一步查询机器人QQ所有的好友列表
-        String friendMsg = MiRaiUtil.getInstance().getFriendList();
         List<JSONObject> friendList = new ArrayList<>();
+        String friendMsg = MiRaiUtil.getInstance().getFriendList();
+        JSONObject friendObj = JSONObject.parseObject(friendMsg);
+        if(0 == friendObj.getIntValue("code")){
+            JSONArray data = friendObj.getJSONArray("data");
+            friendList = JSONObject.parseArray(data.toJSONString(), JSONObject.class);
+        }
         if (CollectionUtil.isEmpty(friendList)) {
             return;
         }
