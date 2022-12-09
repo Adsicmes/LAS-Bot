@@ -109,18 +109,14 @@ public class MiRaiUtil {
      * 获取群列表
      */
     public String getGroupList() {
-        String result = HttpKit.get(baseURL + "/groupList?sessionKey=" + Constant.session);
-        logger.info("获取群列表数据:" + result);
-        return result;
+        return HttpKit.get(baseURL + "/groupList?sessionKey=" + Constant.session);
     }
 
     /**
      * 获取好友列表
      */
     public String getFriendList() {
-        String result = HttpKit.get(baseURL + "/friendList?sessionKey=" + Constant.session);
-        logger.info("获取好友列表数据:" + result);
-        return result;
+        return HttpKit.get(baseURL + "/friendList?sessionKey=" + Constant.session);
     }
 
     public CqResponse sendImgMsg(Long id, Long gId, List<String> urls, String type) {
