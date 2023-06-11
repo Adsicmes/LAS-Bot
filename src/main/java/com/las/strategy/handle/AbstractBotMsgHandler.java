@@ -582,7 +582,7 @@ public abstract class AbstractBotMsgHandler implements BotStrategy {
             return null;
         }
         Matcher m = Constant.PATTERN_ONE_SPACE.matcher(msg);
-        return m.replaceAll(" ").toLowerCase().trim();
+        return m.replaceAll(" ").trim();
     }
 
 
